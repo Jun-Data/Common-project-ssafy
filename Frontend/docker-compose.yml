@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  react-app:
+    # image: muinus-fe
+    build: ./
+    container_name: muinus-fe
+    ports:
+      - "80:80"
+    restart: always
