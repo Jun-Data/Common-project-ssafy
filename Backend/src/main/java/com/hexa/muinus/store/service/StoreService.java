@@ -193,6 +193,20 @@ public class StoreService {
     }
 
     /**
+     * 내 주변 매장 조회
+     * @param x, x 경도
+     * @param y, y 위도
+     * @return List<StoreMapDTO>
+     */
+    public List<StoreMapDTO> getNearStores(BigDecimal x, BigDecimal y) {
+        log.info("Searching store Near By x: {} and y: {}", x, y);
+        // 내 주변 매장 리스트
+        return storeRepository.findStoreByUserLocation(x.doubleValue(), y.doubleValue()).stream()
+                .map(StoreMapDTO::new)
+                .toList();
+    }
+
+    /**
      * 매장 상세 정보 조회
      * - 매장 검색이 되었을 때 매장 번호 반환
      * -> 해당 번호로 매장 접근

@@ -84,6 +84,19 @@ public class StoreController {
     }
 
     /**
+     * 내 주변 매장 리스트
+     * @param x 경도
+     * @param y 위도
+     * @return List<StoreMapDTO
+     *
+     */
+    @GetMapping("/list/near")
+    public ResponseEntity<List<StoreMapDTO>> getNearStores(BigDecimal x, BigDecimal y){
+        log.info("StoreController > getNearStores");
+        return ResponseEntity.ok().body(storeService.getNearStores(x, y));
+    }
+
+    /**
      * 매장 상세 정보 조회
      * @param storeNo 조회할 매장 정보
      * @return StoreDetailDTO
