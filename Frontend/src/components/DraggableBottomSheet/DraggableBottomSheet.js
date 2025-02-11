@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import MainpageStoreDetailApi from "../../api/MainpageStorelistApi";
+import { useNavigate } from "react-router-dom";
+import BottomSheetApi from "../../api/BottomSheetApi";
 import "./DraggableBottomSheet.css";
 
-const DraggableBottomSheet = ({ coords }) => {
-  const [mainpageStorelist, setMainpageStorelist] = useState(null);
+const DraggableBottomSheet = ({ coords, setStorelist }) => {
+  const navigate = useNavigate();
+
   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
   const [startY, setStartY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const panelRef = useRef(null);
-
   const NAV_HEIGHT = 69; // 네비게이션 높이
   const PANEL_WIDTH = "100%"; // 바텀시트 너비
 
@@ -28,7 +29,7 @@ const DraggableBottomSheet = ({ coords }) => {
     e.stopPropagation();
 
     const currentY = e.clientY || e.touches?.[0]?.clientY;
-    const deltaY = currentY - startY;
+    const deltaY = startY - currentY; // 방향 반대로 수정
 
     requestAnimationFrame(() => {
       let newHeight = panelHeight + (deltaY / window.innerHeight) * 100;
@@ -47,22 +48,6 @@ const DraggableBottomSheet = ({ coords }) => {
     }
   };
 
-  // coords가 변경될 때 API 호출
-  useEffect(() => {
-    let isMounted = true; // 컴포넌트가 마운트 상태인지 확인
-    if (coords) {
-      MainpageStoreDetailApi({
-        coords,
-        receivedData: (data) => {
-          if (isMounted) setMainpageStorelist(data);
-        },
-      });
-    }
-    return () => {
-      isMounted = false; // 언마운트 시 상태 업데이트 방지
-    };
-  }, [coords]);
-
   // 드래그 중 transition 비활성화
   useEffect(() => {
     if (isDragging) {
@@ -71,6 +56,35 @@ const DraggableBottomSheet = ({ coords }) => {
       panelRef.current.classList.remove("dragging");
     }
   }, [isDragging]);
+
+  const [localstorelist, setLocalStorelist] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      if (coords) {
+        try {
+          await BottomSheetApi({
+            coords,
+            receivedData: (data) => {
+              if (isMounted && data) {
+                setLocalStorelist(data);
+                setStorelist(data);
+              }
+            },
+          });
+        } catch (error) {
+          console.error('데이터를 가져오는 중 오류 발생:', error);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [coords, setStorelist]);
 
   return (
       <div
@@ -89,17 +103,20 @@ const DraggableBottomSheet = ({ coords }) => {
 
         {/* 바텀시트 내용 */}
         <div className="bottom-sheet-content">
-          <h2>매장 리스트</h2>
-          <p>위도: {coords?.lat}</p>
-          <p>경도: {coords?.lng}</p>
-          {mainpageStorelist ? (
+          <h2>근처 매장</h2>
+          {localstorelist ? (
               <ul>
-                {mainpageStorelist.map((store, index) => (
-                    <li key={index}>{store.name}</li>
+                {localstorelist.map((store, index) => (
+                    <li
+                        onClick={() => navigate(`/storedetail/${store.storeNo}`)}
+                        key={index}
+                    >
+                      {store.storeName}
+                    </li>
                 ))}
               </ul>
           ) : (
-              <p>데이터를 불러오는 중...</p>
+              <p>근처에 매장이 없습니다.</p>
           )}
         </div>
       </div>

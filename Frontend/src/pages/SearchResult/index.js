@@ -1,22 +1,40 @@
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import './style.css'
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+import ResultBottomSheet from "../../components/ResultBottomSheet";
+import BottomNav from "../../components/BottomNav/BottomNav";
 import KakaoMapBackground from "../../components/KakaoMapBackground";
-import React from "react";
+import KakaoMapMarkers from "../../components/KakaoMapMarkers";
+import './style.css'
 
 const SearchResult = () => {
+    const [storelist, setStorelist] = useState([]);
+    const [map, setMap] = useState(null); // 지도 객체 상태 추가
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
-    const lat = queryParams.get('lat');
-    const lng = queryParams.get('lng');
+
+    const coords = {lat: queryParams.get('lat'), lng: queryParams.get('lng')}
+    const itemId = queryParams.get('itemId');
+
 
     return (
-        <div>
-            <HeaderContainer/>
-            <h1>검색 결과</h1>
-            {/*<KakaoMapBackground coords={lat: lat, lng: lng} />*/}
+        <div className="result-page">
+            <div className="resultpagecontents">
+                <div className="resultheader"><HeaderContainer/></div>
+                <div className="resultpagenotice;">검색 결과</div>
+                <ResultBottomSheet coords={coords}
+                                   itemId={itemId}
+                                   setStorelist={setStorelist} />
+                <BottomNav/>
+            </div>
+            <div className="resultpagemap">
+                <KakaoMapBackground coords={coords} onMapLoad={setMap} />
+            </div>
+            <div className="resultpagemarker">
+                {map && <KakaoMapMarkers map={map} storelist={storelist} />}
+            </div>
 
         </div>
     )

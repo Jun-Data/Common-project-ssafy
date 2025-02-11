@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import SearchApi from "../../api/searchApi";
 import SearchBar from "../../components/SearchBar";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchDropdownList from "../../components/SearchDropdownList";
@@ -19,12 +19,10 @@ const debounce = (func, delay) => {
 };
 
 const Search = () => {
-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
     const [query, setQuery] = useState(""); // 검색어 상태
     const [results, setResults] = useState([]); // API 결과 상태
     const [isDropdownVisible, setDropdownVisible] = useState(false); // 드롭다운 표시 여부
     const navigate = useNavigate();
-
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -33,20 +31,11 @@ const Search = () => {
     const lng = queryParams.get('lng');
 
     // 디바운스를 적용한 API 호출 함수
-    const fetchResults = debounce(async (searchQuery) => {
-        if (searchQuery.trim() === "") {
-            setResults([]);
-            setDropdownVisible(false);
-            return;
-        }
-
+    const debouncedFetchResults = debounce(async (searchQuery) => {
         try {
-            const response = await axios.get(`${apiUrl}/api/items/autocomplete`, {
-                params: { prefix: searchQuery }, // 쿼리 파라미터 전달
-            });
-            setResults(response.data);// API 결과 업데이트
-            console.log(response.data)
-            setDropdownVisible(true);
+            const data = await SearchApi(searchQuery); // SearchApi 호출
+            setResults(data); // API 결과 업데이트
+            setDropdownVisible(data.length > 0);
         } catch (error) {
             console.error("검색 오류:", error);
         }
@@ -55,8 +44,7 @@ const Search = () => {
     // 검색어 변경 시 디바운스 호출
     const handleQueryChange = (newQuery) => {
         setQuery(newQuery);
-        fetchResults(newQuery);
-        console.log(newQuery)
+        debouncedFetchResults(newQuery);
     };
 
     const handleItemClick = (item) => {
@@ -67,12 +55,16 @@ const Search = () => {
 
     return (
         <div className="searchpage">
-            <HeaderContainer/>
-            <SearchBar setQuery={handleQueryChange} />
-            {isDropdownVisible && results?.length > 0 && (
-                <SearchDropdownList results={results} onItemClick={handleItemClick} />
-            )}
+            <div className="searchpageheader"><HeaderContainer /></div>
+            <div className="searchpagesearchbar">
+                <SearchBar setQuery={handleQueryChange} />
+            </div>
             <SearchNavbar />
+            {isDropdownVisible && results?.length > 0 && (
+                <div className="searchpagedropdown">
+                    <SearchDropdownList results={results} onItemClick={handleItemClick} />
+                </div>
+            )}
         </div>
     );
 };

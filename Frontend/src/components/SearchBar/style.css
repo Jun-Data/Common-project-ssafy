@@ -1,14 +1,29 @@
 .searchbar {
-    display: grid;
     width: 100%;
-    place-items: center;
-    margin-top: 2vh;
-    position: relative; /* 버튼 위치를 조정하기 위해 relative 추가 */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-content: center;
+    justify-content: center;
 }
 
-.search-input {
+/* 검색 입력창 스타일 */
+.search-input-searchpage {
+    width: 100%; /* 가로 비율 설정 */
+    height: 100%; /* 부모 높이에 맞춤 */
+    font-size: 16px;
+    border: 2px solid #3f72af;
+    outline: none;
+    border-radius: 5px;
+    padding-left: 10px; /* 입력창 내부 여백 */
+}
+
+
+
+.search-input-mainpage {
     width: 85%;
-    height: 6vh;
+    height: 85%;
     overflow: hidden;
     font-size: 16px;
     border: 3px solid #3f72af;
@@ -16,36 +31,5 @@
     border-radius: 30px;
     background-color: white;
     box-sizing: border-box;
-    padding-left: 50px; /* 버튼과의 간격 확보 */
-    position: relative;
-    z-index: 99;
-}
-
-/* 뒤로가기 버튼 스타일 */
-.back-button {
-    position: absolute; /* 검색창 안쪽에 위치하도록 설정 */
-    z-index: 101;
-
-    left: 7.5%; /* 검색창 왼쪽에 맞춰 위치 조정 */
-    height: 6vh; /* 검색창 높이와 동일하게 설정 */
-    width: 6vh; /* 정사각형 버튼 */
-
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #3f72af; /* 검색창 테두리 색상과 동일하게 설정 */
-    color: white; /* 텍스트 색상 */
-    border: none; /* 기본 테두리 제거 */
-    border-radius: 50%; /* 원형 버튼 */
-
-    font-size: 18px; /* 텍스트 크기 */
-    cursor: pointer;
-
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
-}
-
-.back-button:hover {
-    background-color: #2c598a; /* 호버 시 약간 어두운 색상으로 변경 */
+    padding-left: 40px; /* 버튼과의 간격 확보 */
 }
