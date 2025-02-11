@@ -6,30 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/MainpageStorelistApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/StoreDetailApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/StoreDetailApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapBackground/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapBackground/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/hooks/UseGeolocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/hooks/UseGeolocation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Map/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoreDetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoreDetail/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +84,7 @@
       <workItem from="1739153054176" duration="42770000" />
       <workItem from="1739247929410" duration="30265000" />
       <workItem from="1739291868462" duration="14695000" />
-      <workItem from="1739308289993" duration="1351000" />
+      <workItem from="1739308289993" duration="2183000" />
     </task>
     <servers />
   </component>
