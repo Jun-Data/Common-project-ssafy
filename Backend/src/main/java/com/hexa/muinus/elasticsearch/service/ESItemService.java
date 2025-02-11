@@ -28,7 +28,7 @@ public class ESItemService {
         // Criteria를 이용하여 "item_name" 필드가 prefix로 시작하는 조건 생성
         Criteria criteria = new Criteria("item_name").startsWith(prefix);
         CriteriaQuery query = new CriteriaQuery(criteria);
-        query.setPageable(PageRequest.of(0, 5));  // 상위 5개만 검색
+        query.setPageable(PageRequest.of(0, 7));  // 상위 5개만 검색
 
         SearchHits<ESItem> searchHits = elasticsearchOperations.search(query, ESItem.class);
         return searchHits.getSearchHits()
