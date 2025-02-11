@@ -79,8 +79,8 @@ public class JwtProvider {
     public void setAccessTokensInCookie(HttpServletResponse response, String accessToken) {
         // 액세스 토큰 쿠키 설정
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-//        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setSecure(false);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge((int) (accessTokenExpiration / 1000));
 
