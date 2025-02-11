@@ -36,9 +36,9 @@ public class CouponController {
     }
 
     // 가게 쿠폰 전체 조회(점주)
-    @GetMapping("/list/{storeNo}")
-    public ResponseEntity<List<CouponListResponseDto>> getCouponList(@PathVariable Integer storeNo){
-        return ResponseEntity.ok().body(couponService.getCouponList(storeNo));
+    @GetMapping("/list")
+    public ResponseEntity<List<CouponListResponseDto>> getCouponList(HttpServletRequest request){
+        return ResponseEntity.ok().body(couponService.getCouponList(request));
     }
 
     // 쿠폰 수령

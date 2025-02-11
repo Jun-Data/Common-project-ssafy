@@ -96,19 +96,26 @@ public class CouponService {
     }
 
     @Transactional(readOnly = true)
-    public List<CouponListResponseDto> getCouponList(Integer storeNo) {
+    public List<CouponListResponseDto> getCouponList(HttpServletRequest request) {
+        // 이메일 추출
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+
+        // 로그인 유저 조회 후 스토어 가져오기
+        Users user = userRepository.findByEmail(email);
+        Store store = storeRepository.findByUser(user);
 
         // 가게 번호와 맞는 쿠폰들 전체 조회
-        List<CouponHistory> couponHistories = couponHistoryRepository.findById_StoreNo(storeNo);
+        List<CouponHistory> couponHistories = couponHistoryRepository.findById_StoreNo(store.getStoreNo());
         return couponHistories.stream()
                 .map(ch -> {
                     // CouponHistory -> Coupon 참조
                     Coupon coupon = ch.getCoupon();
 
-                    // CouponHistory에서 만료일, Coupon에서 name, discountRate, content 추출
+                    // CouponHistory에서 수량, 만료일, Coupon에서 name, discountRate, content 추출
                     return new CouponListResponseDto(
                             coupon.getName(),
                             coupon.getDiscountRate(),
+                            ch.getCount(),
                             coupon.getContent(),
                             ch.getExpirationDate()
                     );

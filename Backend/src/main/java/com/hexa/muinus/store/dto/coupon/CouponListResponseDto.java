@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class CouponListResponseDto {
     private String name;
     private Integer discountRate;
+    private Integer count;
     private String content;
     private LocalDateTime expirationDate;
 }
