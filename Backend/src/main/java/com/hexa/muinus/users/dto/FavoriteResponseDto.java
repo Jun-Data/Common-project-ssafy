@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteResponseDto {
+    private Integer storeNo;
     private String storeName;
     private String storeAddress;
 }
