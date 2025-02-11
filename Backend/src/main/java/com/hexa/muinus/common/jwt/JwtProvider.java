@@ -80,7 +80,7 @@ public class JwtProvider {
         // 액세스 토큰 쿠키 설정
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
+//        accessTokenCookie.setSecure(true);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge((int) (accessTokenExpiration / 1000));
 
@@ -92,7 +92,7 @@ public class JwtProvider {
         // 리프레시 토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
+//        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/api/users/refresh");
         refreshTokenCookie.setMaxAge((int) (refreshTokenExpiration / 1000));
 
