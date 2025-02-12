@@ -1,4 +1,4 @@
-package com.hexa.muinus.elasticsearch.temp;
+package com.hexa.muinus.elasticsearch.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

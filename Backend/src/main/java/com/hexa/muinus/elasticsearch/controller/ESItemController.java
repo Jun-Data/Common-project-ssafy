@@ -3,21 +3,24 @@ package com.hexa.muinus.elasticsearch.controller;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.domain.ESStoreItem;
 import com.hexa.muinus.elasticsearch.service.ESItemService;
+import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
+import com.hexa.muinus.elasticsearch.service.ItemNameSearchEngine;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
 public class ESItemController {
 
     private final ESItemService esItemService;
+    private final ItemNameSearchEngine searchEngine;
 
     @GetMapping("/autocomplete")
     public List<ESItem> autocomplete(@RequestParam String prefix) {
@@ -58,5 +61,13 @@ public class ESItemController {
         List<ESStoreItem> results = esItemService.searchStoreByRange(lat, lon);
         return ResponseEntity.ok(results);
     }
+
+    @GetMapping("/search-native")
+    public List<ESItem> searchByQuery(@Valid @ModelAttribute SearchNativeDTO searchNativeDTO) {
+        log.info("Search Item: {}", searchNativeDTO);
+        return searchEngine.searchByQuery(searchNativeDTO);
+    }
+
+
 }
 

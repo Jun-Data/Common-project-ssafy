@@ -1,16 +1,14 @@
-package com.hexa.muinus.elasticsearch.temp;
+package com.hexa.muinus.elasticsearch.service;
 
 import com.hexa.muinus.common.exception.ESErrorCode;
 import com.hexa.muinus.common.exception.MuinusException;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
+import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
 import com.hexa.muinus.elasticsearch.repository.ESItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
