@@ -15,7 +15,7 @@ export function KakaoRedirect() {
     }
 
     // 요청 보낼 URL
-    const url = "http://i12a506.p.ssafy.io:8000/api/users/login"; // 백엔드 API 주소
+    const url = "https://i12a506.p.ssafy.io/api/users/login"; // 백엔드 API 주소
 
     // POST 요청을 보내기 위한 데이터
     const data = { code };

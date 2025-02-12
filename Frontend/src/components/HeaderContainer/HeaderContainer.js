@@ -49,7 +49,7 @@ function HeaderContainer() {
             );
         } else {
             return (
-                <Link to="http://i12a506.p.ssafy.io:8000/api/users/login">회원가입</Link>
+                <Link to="https://i12a506.p.ssafy.io/api/users/login">회원가입</Link>
             );
         }
     };
@@ -76,7 +76,7 @@ function HeaderContainer() {
                         <FontAwesomeIcon icon={faUser} className="login-icon" onClick={handleNavigateToMyPage} />
                     ) : (
                         // 로그인되지 않은 유저: faRightToBracket 아이콘 + 로그인 페이지 이동
-                        <Link to="http://i12a506.p.ssafy.io:8000/api/users/login">
+                        <Link to="https://i12a506.p.ssafy.io/api/users/login">
                             <FontAwesomeIcon icon={faRightToBracket} className="login-icon" />
                         </Link>
                     )}

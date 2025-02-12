@@ -225,7 +225,7 @@ function OwnerSignUp() {
             try {
                 // JSON 형식으로 데이터를 변환
                 const response = await axios.post(
-                    'http://i12a506.p.ssafy.io:8000/api/users/store-owner',
+                    'https://i12a506.p.ssafy.io/api/users/store-owner',
                     formData, // JSON 데이터 전달
                     {
                         headers: {

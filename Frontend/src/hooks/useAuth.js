@@ -7,7 +7,7 @@ function useAuth() {
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
-                const response = await axios.get("http://i12a506.p.ssafy.io:8000/api/users/info", {
+                const response = await axios.get("https://i12a506.p.ssafy.io/api/users/info", {
                     withCredentials: true, // 쿠키 포함
                 });
 
