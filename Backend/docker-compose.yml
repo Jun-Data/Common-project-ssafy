@@ -47,4 +47,4 @@ services:
 
 networks:
   muinus-network:
-    driver: bridge
+    external: true
