@@ -23,7 +23,7 @@ function useAuth() {
         };
 
         checkLoginStatus();
-    }, []);
+    });
 
     return { logindata };
 }

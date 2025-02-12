@@ -3,40 +3,106 @@ import axios from 'axios';
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
+import { DummyStockRequests } from '../../dummydata/stockrequests';
+import styled from 'styled-components';
 
-const StockRequests = ({ storeNo }) => { //storeNo 를 가져와서 props로
-  const [items, setItems] = useState([]); // 아이템들을 배열로 저장
+// const email = "jun9048@naver.com";
+
+const StockRequests = () => { 
+  const [items, setItems] = useState([]); // 요청 아이템들을 배열로 저장
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 요청 URL을 직접 수정
-        const response = await axios.get(`http://i12a506.p.ssafy.io:8000/api/item/regist_list?storeNo=${storeNo}`);
-        setItems(response.data); // 배열로 저장
-      } catch (error) {
-        console.error("데이터 가져오기 실패", error);
-      }
-    };
-    fetchData();
-  }, [storeNo]);
+    // API 대신 더미 데이터를 사용
+    setItems(DummyStockRequests);
+  }, []);
+
+
+  // useEffect(() => {
+  //   const fetchStockRequests = async () => {
+  //     try {
+  //       // 요청 URL을 직접 수정
+  //       const response = await axios.get(`http://i12a506.p.ssafy.io:8000/api/item/regist_list?email=${email}`);
+  //       setItems(response.data); // 배열로 저장
+  //     } catch (error) {
+  //       console.error("데이터 가져오기 실패", error);
+  //     }
+  //   };
+  //   fetchStockRequests();
+  // }, []);
 
   return (
     <div>
       <HeaderContainer />
       <MyPageHeader />
-      <h2>상품 요청 목록</h2>
+      <Title>상품 요청 목록</Title>
+      <Container>
       {items.length > 0 ? ( // 아이템 배열이 비어있지 않으면 출력
         items.map((item, index) => ( // 아이템 배열을 반복하여 출력
-          <p key={index}>
-            {item.itemName}에 대한 요청 수: {item.requestCount}
-          </p>
+          <ItemCard key={index}>
+            <ItemDetails>
+              <strong>아이템 이름:</strong> {item.itemName}
+            </ItemDetails>
+            <ItemDetails>
+              <strong>요청 수:</strong> {item.requestCount}
+            </ItemDetails>
+          </ItemCard>
         ))
       ) : (
-        <p>입고 요청 내역이 없습니다</p>
+        <NoRequests>입고 요청 내역이 없습니다</NoRequests>
       )}
+      </Container>
       <BottomNav />
     </div>
   );
 };
 
 export default StockRequests;
+
+const Container = styled.div`
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7fc;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Title = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+`;
+
+const ItemCard = styled.div`
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const ItemDetails = styled.p`
+  font-size: 16px;
+  color: #555;
+  margin: 8px 0;
+`;
+
+const NoRequests = styled.p`
+  font-size: 18px;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 600px;
+`;

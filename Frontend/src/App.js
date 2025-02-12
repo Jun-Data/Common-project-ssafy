@@ -45,10 +45,10 @@ function App() {
       <Route path="/mypage/user/coupons" element={<Coupons/>}/>
       <Route path="/mypage/user/chats" element={<Chats/>}/>
       <Route path="/mypage/admin" element={<MyPage/>}/>
-      <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
-      <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
-      <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
-      <Route path="/mypage/admin/notice" element={<Notice/>}/>
+        <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
+        <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
+        <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
+        <Route path="/mypage/admin/notice" element={<Notice/>}/>
 
       <Route path="/oauth/kakao" element={<KakaoRedirect />} />
 

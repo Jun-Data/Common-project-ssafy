@@ -4,8 +4,8 @@ import RegisterButtons from "../../components/RegisterButtons";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import KakaoMapBackground from "../../components/KakaoMapBackground";
 import { useNavigate } from "react-router-dom";
+import RegisterMap from "../../components/RegisterMap";
 
 function OwnerSignUp() {
     const navigate = useNavigate(); 
@@ -381,11 +381,9 @@ function OwnerSignUp() {
                         {errors.fliMarketSectionCount && <ErrorMessage>{errors.fliMarketSectionCount}</ErrorMessage>}
                     </InputGroup>
                 )}
-                <KakaoMapWrapper>
-                    <KakaoMapBackground
+                    <RegisterMap
                         onLocationSelect={handleLocationSelect}
                     />
-                </KakaoMapWrapper>
 
                 <RegisterButtonsWrapper>
                     <RegisterButtons />
@@ -457,13 +455,6 @@ const ErrorMessage = styled.div`
   margin-top: 5px;
 `;
 
-const KakaoMapWrapper = styled.div`
-  width: 300px;         
-  height: 200px;       
-  display: flex;
-  justify-content: center;
 
-  overflow: hidden;    // 지도 크기 이상으로 확장되지 않도록
-`;
 
 export default OwnerSignUp;
