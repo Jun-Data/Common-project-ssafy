@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const KakaoMapBackground = ({ coords, onMapLoad }) => {
+const KakaoMapBackgroundResult = ({ coords, onMapLoad }) => {
     useEffect(() => {
         const script = document.createElement("script");
         script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&libraries=services&autoload=false`;
@@ -61,4 +61,4 @@ const KakaoMapBackground = ({ coords, onMapLoad }) => {
     return <div id="map" style={{ width: "100vw", height: "100vh" }}></div>;
 };
 
-export default KakaoMapBackground;
+export default KakaoMapBackgroundResult;

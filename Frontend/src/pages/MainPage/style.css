@@ -1,9 +1,25 @@
+.mainpagebackground {
+    width: 100%;
+    height: 100%;
+}
+
 .mainpagecontents {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-rows: 8vh 6vh 6vh auto auto 6vh;
     position: relative;
-    grid-template-rows: 64px 48px 64px auto auto 68px;
+    z-index: 100;
+}
+
+.mainpageheader {
+    grid-row: 1;
+    width: 100%;
 }
 
 .mainpagecurrentaddress {
+    grid-row: 2;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -11,19 +27,45 @@
     background-color: #3f72af;
     align-items: center;
     position: relative;
-    z-index: 99;
+    z-index: 100;
 }
 
 .mainpageaddressdetail {
-    width: 280px;
+    width: 80%;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.addressSearchButton {
+.mainpagesearchbar {
+    grid-row: 3;
+    position: relative;
+    z-index: 100;
+    width: 85%;
     height: 100%;
-    width: 80px;
+    margin-top: 20px;
+}
+
+
+.addressSearchButton {
+    width: 20%;
+    height: 100%;
     font-size: 12px;
+}
+
+.mainpagemap {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+}
+
+.mainpagemarker {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    pointer-events: none;
+
 }

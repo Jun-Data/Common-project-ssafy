@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './style.css';
 
-const SearchNavbar = () => {
+const SearchNavbar = ({lat, lng}) => {
     const navigate = useNavigate()
     const handlenavigate = () => {
-        navigate("/searchbynutrition")
+        navigate(`/searchbynutrition?lat=${lat}&llng=${lng}`);
     }
 
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);

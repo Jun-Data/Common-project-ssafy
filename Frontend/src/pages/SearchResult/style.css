@@ -1,0 +1,41 @@
+.result-page {
+    width: 100%;
+    height: 100%;
+}
+
+.resultpagecontents {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-rows: 8vh 6vh 6vh auto auto 6vh;
+    position: relative;
+    z-index: 100;
+}
+
+.resultpageheader {
+    grid-row: 1;
+    width: 100%;
+}
+
+.resultpagenotice {
+    grid-row: 2;
+    width: 100%;
+}
+
+
+.resultpagemap {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+}
+
+.resultpagemarker {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    pointer-events: none;
+
+}

@@ -4,11 +4,11 @@ import './style.css'
 
 const SearchbyNurtrition = () => {
     return (
-        <div>
-            <HeaderContainer/>
-            <SearchNutritionScroll/>
-        </div>
-    )
+    <div className="searchbynurtritioncontents">
+        <div className="nutritionheader"><HeaderContainer/></div>
+        <div className="nutritionScroll"><SearchNutritionScroll/></div>
+    </div>
+)
 }
 
 export default SearchbyNurtrition

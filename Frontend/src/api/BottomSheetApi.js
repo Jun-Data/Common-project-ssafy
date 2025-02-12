@@ -2,21 +2,18 @@ import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-const MainpageStoreDetailApi = async ({ coords, receivedData, abortController }) => {
+const BottomSheetApi = async ({ coords, receivedData }) => {
     try {
-        const lat = coords.lat;
-        const lng = coords.lng;
-
-        // AbortController가 없으면 새로 생성
-        const controller = abortController || new AbortController();
-
         // API 호출
-        const response = await axios.get(`${apiUrl}/api/stores/list/`, {
-            params: { lat, lng },
-            signal: controller.signal, // AbortController의 signal 전달
+        const response = await axios.get(`${apiUrl}/api/store/list/near`, {
+            params: { x: coords.lat,
+                      y: coords.lng },
         });
 
         const nearStorelist = response.data;
+        // console.log("바텀시트api에서lat", coords.lat)
+        // console.log("바텀시트api에서lng", coords.lng)
+        // console.log("바텀시트api에서리스트", nearStorelist);
 
         if (response.status === 200) {
             receivedData(nearStorelist); // 데이터를 부모 컴포넌트로 전달
@@ -34,11 +31,7 @@ const MainpageStoreDetailApi = async ({ coords, receivedData, abortController })
             console.error('요청 설정 중 오류 발생:', error.message);
         }
 
-        // 요청 취소
-        if (abortController) {
-            abortController.abort();
-        }
     }
 };
 
-export default MainpageStoreDetailApi
+export default BottomSheetApi

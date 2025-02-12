@@ -1,0 +1,14 @@
+.searchbynurtritioncontents {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 8vh 92vh;
+}
+
+.nutritionheader {
+    grid-row: 1;
+}
+
+.nutritionScroll {
+    grid-row: 2;
+}
