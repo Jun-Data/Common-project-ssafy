@@ -6,6 +6,9 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
+const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+
 function UserSignUp() {
     const navigate = useNavigate(); 
 
@@ -113,7 +116,7 @@ function UserSignUp() {
         try {
             // JSON 형식으로 데이터를 변환
             const response = await axios.post(
-                'https://i12a506.p.ssafy.io/api/users/consumer',
+                `${apiUrl}`,
                 formData, // JSON 데이터 전달
                 {
                     headers: {

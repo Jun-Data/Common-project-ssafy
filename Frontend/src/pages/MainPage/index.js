@@ -58,6 +58,8 @@ const MainPage = () => {
         }
     };
 
+    console.log(address)
+
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">
@@ -80,8 +82,6 @@ const MainPage = () => {
                     <KakaoMapContainer coords={coords} />
                     <KakaoMapMarkers storelist={storelist} />
                 </div>
-
-                <BottomNav />
 
                 {isPopupOpen && (
                     <KakaoPostcodePopup

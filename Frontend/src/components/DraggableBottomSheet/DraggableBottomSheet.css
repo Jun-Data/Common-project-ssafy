@@ -1,3 +1,4 @@
+/* 바텀시트를 화면 맨 아래에 고정 */
 .bottom-sheet {
     position: fixed;
     left: 0;
@@ -5,17 +6,43 @@
     background-color: #fff;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    box-shadow: 0px -4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100; /* 다른 요소 위에 표시되도록 설정 */
 }
 
-.drag-handle {
-    width: 40px;
-    height: 6px;
-    background-color: #ccc;
-    border-radius: 3px;
-    margin: auto;
+/* ul 스타일 */
+.bottom-sheet-content ul {
+    list-style: none; /* 기본 불릿 제거 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* 아이템을 세로로 정렬 */
+    gap: 10px; /* 리스트 아이템 간 간격 추가 */
 }
 
-.dragging {
-    transition: none !important; /* 드래깅 중에는 트랜지션 비활성화 */
+/* li 스타일 */
+.bottom-sheet-content li {
+    padding: 10px 15px;
+    background-color: #f9f9f9; /* 밝은 배경색으로 가독성 향상 */
+    border-radius: 8px; /* 부드러운 모서리 */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가로 깊이감 제공 */
+    cursor: pointer; /* 클릭 가능하다는 표시 */
+    transition: background-color 0.2s ease; /* 부드러운 호버 효과 */
+}
+
+/* li 호버 효과 */
+.bottom-sheet-content li:hover {
+    background-color: #eaeaea; /* 호버 시 약간 더 어두운 배경색 */
+}
+
+/* li 텍스트 스타일 */
+.bottom-sheet-content li {
+    font-size: 16px; /* 기본 폰트 크기 */
+}
+
+/* 작은 화면에서 반응형 폰트 크기 조정 */
+@media (max-width: 768px) {
+    .bottom-sheet-content li {
+        font-size: 14px; /* 작은 화면에서는 폰트 크기 축소 */
+    }
 }

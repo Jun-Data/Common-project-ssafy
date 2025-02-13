@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BottomSheetApi from "../../api/BottomSheetApi";
 import "./DraggableBottomSheet.css";
 
-const DraggableBottomSheet = (coords, setStorelist) => {
+const DraggableBottomSheet = ({ coords, setStorelist }) => {
   const navigate = useNavigate();
   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
   const panelRef = useRef(null);
@@ -74,9 +74,9 @@ const DraggableBottomSheet = (coords, setStorelist) => {
     };
   }, []);
 
-  const [localstorelist, setLocalStorelist] = useState([]);
+  const [LocalStorelist, setLocalStorelist] = useState([]);
 
-  console.log('바로', coords)
+  console.log(coords)
 
   useEffect(() => {
     let isMounted = true;
@@ -105,6 +105,8 @@ const DraggableBottomSheet = (coords, setStorelist) => {
     };
   }, [coords, setStorelist]);
 
+
+  console.log(LocalStorelist);
   return (
       <div
           ref={panelRef}
@@ -124,14 +126,14 @@ const DraggableBottomSheet = (coords, setStorelist) => {
         {/* 바텀시트 내용 */}
         <div className="bottom-sheet-content">
           <h2>근처 매장</h2>
-          {localstorelist ? (
+          {LocalStorelist ? (
               <ul>
-                {localstorelist.map((store, index) => (
+                {LocalStorelist.map((store, index) => (
                     <li
                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
                         key={index}
                     >
-                      {store.name}
+                      {store.name} {store.distance}
                     </li>
                 ))}
               </ul>

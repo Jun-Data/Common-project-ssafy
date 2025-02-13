@@ -8,7 +8,7 @@
     height: 100%;
     display: grid;
     place-items: center;
-    grid-template-rows: 8vh 6vh 6vh auto auto 6vh;
+    grid-template-rows: 8vh 6vh 6vh auto;
     position: relative;
     z-index: 100;
 }
