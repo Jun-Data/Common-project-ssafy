@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {

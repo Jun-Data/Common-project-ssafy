@@ -113,7 +113,7 @@ const StoredetailFlearequest = () => {
                             <li>
                                 <label>가격:</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
