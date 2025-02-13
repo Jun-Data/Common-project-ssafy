@@ -3,6 +3,7 @@ package com.hexa.muinus.store.service;
 
 import com.hexa.muinus.common.exception.store.StoreNotFoundException;
 import com.hexa.muinus.common.exception.user.UserNotFoundException;
+import com.hexa.muinus.common.s3.service.S3ImageService;
 import com.hexa.muinus.store.domain.item.FliItem;
 import com.hexa.muinus.store.domain.item.FliItem.FliItemStatus;
 import com.hexa.muinus.store.domain.item.repository.FliItemRepository;
@@ -34,6 +35,7 @@ public class FliRequestService {
     private final FliItemRepository fliItemRepository;
     private final StoreRepository storeRepository;
     private final UserRepository usersRepository;
+    private final S3ImageService s3ImageService;
 
     /**
      * fliItem 등록 요청 시 처리 로직
@@ -69,6 +71,7 @@ public class FliRequestService {
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
         // FliItem 엔티티 생성
+        String imageUrl = s3ImageService.Base64toImageUrl(dto.getImageUrl());
         FliItem fliItem = FliItem.builder()
                 .store(store)
                 .users(user)
@@ -79,7 +82,7 @@ public class FliRequestService {
                 .status(FliItemStatus.PENDING)
                 .applicationDate(dto.getStartDate())
                 .expirationDate(dto.getStartDate().plusDays(dto.getExpirationDate()))
-                .imagePath(dto.getImageUrl())
+                .imagePath(imageUrl)
                 .build();
 
         fliItemRepository.save(fliItem);

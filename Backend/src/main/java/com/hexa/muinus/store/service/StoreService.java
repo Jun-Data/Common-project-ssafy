@@ -3,6 +3,7 @@ package com.hexa.muinus.store.service;
 import com.hexa.muinus.common.enums.YesNo;
 import com.hexa.muinus.common.exception.store.*;
 import com.hexa.muinus.common.exception.user.*;
+import com.hexa.muinus.common.s3.service.S3ImageService;
 import com.hexa.muinus.store.domain.information.Announcement;
 import com.hexa.muinus.store.domain.store.Store;
 import com.hexa.muinus.store.dto.fli.FliItemDTO;
@@ -32,6 +33,7 @@ public class StoreService {
     private final StoreItemService storeItemService;
     private final AnnouncementService announcementService;
     private final FliItemService fliItemService;
+    private final S3ImageService s3ImageService;
 
 
     /**
@@ -48,6 +50,8 @@ public class StoreService {
         validateStoreLocation(storeRegisterDTO.getLocationX(), storeRegisterDTO.getLocationY());
         validateStoreRegistrationNo(storeRegisterDTO.getRegistrationNo());
 
+        String image = s3ImageService.Base64toImageUrl(storeRegisterDTO.getStoreImageUrl());
+        storeRegisterDTO.setStoreImageUrl(image);
         Store store = storeRegisterDTO.toEntity(user);
         log.debug("Converted StoreRegistDTO to Store entity: {}", store);
         saveStore(store);
