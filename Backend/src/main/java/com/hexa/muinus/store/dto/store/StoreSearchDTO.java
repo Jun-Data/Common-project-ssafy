@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StoreSearchDTO {
     private Integer storeNo;
-    private String name;
+    private String storeName;
     private Double locationX;
     private Double locationY;
     private String address;
@@ -27,7 +27,7 @@ public class StoreSearchDTO {
 
     public StoreSearchDTO(StoreSearchProjection projection) {
         this.storeNo = projection.getStoreNo();
-        this.name = projection.getName();
+        this.storeName = projection.getName();
         this.locationX = projection.getLocationX();
         this.locationY = projection.getLocationY();
         this.address = projection.getAddress();
