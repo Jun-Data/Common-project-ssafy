@@ -1,13 +1,25 @@
 /* 바텀시트를 화면 맨 아래에 고정 */
 .bottom-sheet {
     position: fixed;
+    bottom: 0 !important; /* ✅ 하단 고정 */
     left: 0;
     right: 0;
     background-color: #fff;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 100; /* 다른 요소 위에 표시되도록 설정 */
+
+    touch-action: none; /* 터치 스크롤 충돌 방지 */
+    -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
+
+    max-height: 85vh; /* 최대 높이 제한 */
+    overflow-y: auto; /* 내용 스크롤 활성화 */
+    padding: 8px 0;
+}
+
+
+.drag-handle {
+    height: 24px; /* 핸들 높이 확보 */
 }
 
 /* ul 스타일 */

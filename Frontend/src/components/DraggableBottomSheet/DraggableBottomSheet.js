@@ -9,7 +9,7 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
   const panelRef = useRef(null);
   const isDraggingRef = useRef(false);
   const startYRef = useRef(0);
-  const NAV_HEIGHT = 69; // 네비게이션 높이
+  const NAV_HEIGHT = 0 // 네비게이션 높이
   const PANEL_WIDTH = "100%"; // 바텀시트 너비
 
   // 드래그 시작 핸들러

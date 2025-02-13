@@ -8,7 +8,8 @@ export const KakaoMapProvider = ({ children }) => {
 
     useEffect(() => {
         const script = document.createElement("script");
-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&autoload=false`;
+        // ✅ libraries=services 추가
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&libraries=services&autoload=false`;
         script.async = true;
 
         script.onload = () => {

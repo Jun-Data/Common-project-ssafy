@@ -5,6 +5,8 @@ const KakaoMapContainer = ({ coords }) => {
     const { map, setMap, isSDKLoaded } = useKakaoMap();
     const mapContainer = useRef(null);
 
+    console.log('롤에서',coords)
+
     // 지도 초기화
     useEffect(() => {
         if (isSDKLoaded && !map && mapContainer.current) {

@@ -6,6 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/hooks/useGeocoding.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/hooks/useGeocoding.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/hooks/useReverseGeocoding.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/hooks/useReverseGeocoding.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +92,7 @@
       <workItem from="1739247929410" duration="30265000" />
       <workItem from="1739291868462" duration="14695000" />
       <workItem from="1739308289993" duration="36322000" />
-      <workItem from="1739350559470" duration="11459000" />
+      <workItem from="1739350559470" duration="15182000" />
     </task>
     <servers />
   </component>
