@@ -7,7 +7,7 @@ public class CouponAlreadyClaimedException extends MuinusException {
     public CouponAlreadyClaimedException() {
         super(APIErrorCode.COUPON_ALREADY_CLAIMED);
     }
-    public CouponAlreadyClaimedException(int storeNo, int couponId) {
-        super(APIErrorCode.COUPON_ALREADY_CLAIMED, String.format("storeNo: %d, couponId %d", storeNo, couponId));
+    public CouponAlreadyClaimedException(int storeNo, int couponId, int userNo) {
+        super(APIErrorCode.COUPON_ALREADY_CLAIMED, String.format("storeNo: %d, couponId %d, userNo: %d", storeNo, couponId, userNo));
     }
 }

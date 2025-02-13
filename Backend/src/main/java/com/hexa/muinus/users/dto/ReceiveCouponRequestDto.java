@@ -15,7 +15,4 @@ public class ReceiveCouponRequestDto {
 
     @NotNull(message = "가게 번호는 필수 입력 항목입니다.")
     private Integer storeNo;
-
-    @NotNull(message = "사용자 번호는 필수 입력 항목입니다.")
-    private Integer userNo;
 }

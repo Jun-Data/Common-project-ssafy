@@ -43,5 +43,8 @@ public class CouponHistory {
         this.expirationDate = expirationDate;
         this.createdAt = createdAt;
     }
+
+    @Version
+    private Integer version;
 }
 

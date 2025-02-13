@@ -43,8 +43,8 @@ public class CouponController {
 
     // 쿠폰 수령
     @PostMapping("/receive")
-    public ResponseEntity<?> receiveCoupon(@Valid @RequestBody ReceiveCouponRequestDto receiveCouponRequestDto){
-        couponService.receiveCoupon(receiveCouponRequestDto);
+    public ResponseEntity<?> receiveCoupon(HttpServletRequest request, @Valid @RequestBody ReceiveCouponRequestDto receiveCouponRequestDto){
+        couponService.receiveCoupon(request, receiveCouponRequestDto);
         return ResponseEntity.ok("쿠폰 수령이 완료되었습니다.");
     }
 

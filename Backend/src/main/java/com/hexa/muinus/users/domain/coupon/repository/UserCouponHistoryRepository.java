@@ -11,6 +11,8 @@ public interface UserCouponHistoryRepository extends JpaRepository<UserCouponHis
 
     Optional<UserCouponHistory> findById_UserNoAndId_CouponIdAndId_StoreNoAndUsedAtIsNull(Integer userNo, Integer couponId, Integer storeNo);
 
+    boolean existsByIdAndUsedAtIsNull(UserCouponHistoryId id);
+
     boolean existsById(UserCouponHistoryId id);
 
     //특정 사용자의 모든 쿠폰을 조회
