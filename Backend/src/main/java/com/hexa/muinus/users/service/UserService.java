@@ -160,6 +160,7 @@ public class UserService {
                 .userNo(user.getUserNo())
                 .userName(user.getUserName())
                 .storeNo(store.getStoreNo())
+                .userEmail(user.getEmail())
                 .userType(user.getUserType())
                 .build();
     }

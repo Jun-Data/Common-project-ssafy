@@ -13,5 +13,6 @@ public class UserInfoResponseDto {
     private Integer userNo;
     private String userName;
     private Integer storeNo;
+    private String userEmail;
     private Users.UserType userType;
 }
