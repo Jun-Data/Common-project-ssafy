@@ -15,40 +15,39 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
     private final JwtProvider jwtProvider;
 
-    @PostMapping("/consumer")
+    @PostMapping("/api/users/consumer")
     public ResponseEntity<?> registerConsumer(@RequestBody ConsumerRegisterRequestDto requestDto, HttpServletResponse response) {
         return ResponseEntity.ok(userService.registerConsumer(requestDto, response));
     }
 
-    @PostMapping("/store-owner")
+    @PostMapping("/api/users/store-owner")
     public ResponseEntity<?> registerStoreOwner(@RequestBody StoreOwnerRegisterRequestDto requestDto, HttpServletResponse response) {
         return ResponseEntity.ok(userService.registerStoreOwner(requestDto, response));
     }
 
-    @PostMapping("/reissue")
+    @PostMapping("/api/users/reissue")
     public ResponseEntity<?> reissueAccessToken(HttpServletRequest request, HttpServletResponse response, @RequestBody ReissueAccessTokenRequestDto requestDto) {
         userService.reissueAccessToken(request, response, requestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/update")
+    @PatchMapping("/api/users/update")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequestDto requestDto, HttpServletRequest request){
         userService.updateUser(requestDto.getUserTelephone(), request);
         return ResponseEntity.ok("수정 완료");
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/api/users/mypage")
     public ResponseEntity<UserPageResponseDto> getMyPage(HttpServletRequest request){
         return ResponseEntity.ok().body(userService.getMyPage(request));
     }
 
-    @GetMapping("/info")
+    @GetMapping("/api/users/info")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request){
         return ResponseEntity.ok().body(userService.getUserInfo(request));
     }
