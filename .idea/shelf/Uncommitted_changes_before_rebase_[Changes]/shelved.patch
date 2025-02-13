@@ -1,0 +1,213 @@
+Index: Frontend/src/pages/MainPage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect } from \"react\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchBar from \"../../components/SearchBar\";\nimport KakaoPostcodePopup from \"../../components/KakaoPostcodePopup\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport useGeolocation from \"../../hooks/UseGeolocation\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport {useKakaoMap} from \"../../contexts/ KakaoMapContext\";\n\nimport \"./style.css\";\n\nconst MainPage = () => {\n\n    const { isSDKLoaded } = useKakaoMap();\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const { geoCoords, error } = useGeolocation()\n\n    const [coords, setCoords] = useState({lat: 37.5015376, lng: 127.0397208});\n    const [address, setAddress] = useState(\"인재의 산실 멀티캠퍼스\");\n    const [isPopupOpen, setIsPopupOpen] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n    const [isManualAddress, setIsManualAddress] = useState(false);\n\n\n    useEffect(() => {\n        if (isSDKLoaded && !isManualAddress && geoCoords) { // ✅ SDK 로드 확인 추가\n            (async () => {\n                try {\n                    const newAddress = await coordToAddress(geoCoords);\n                    setCoords(geoCoords);\n                    setAddress(newAddress);\n                } catch (error) {\n                    console.error(\"역지오코딩 실패:\", error);\n                    setAddress(\"위치 정보를 가져올 수 없음\"); // ✅ 오류 처리 추가\n                }\n            })();\n        }\n    }, [geoCoords, isSDKLoaded, isManualAddress]); // ✅ 종속성 수정\n\n    const handleAddressComplete = async (data) => {\n        try {\n            const newAddress = data.fullAddress;\n            setAddress(prev => { // 함수형 업데이트\n                console.log('주소 업데이트:', prev, '→', newAddress);\n                return newAddress;\n            });\n\n            const newCoords = await addressToCoord(newAddress);\n            if (newCoords) {\n                setCoords(prevCoords => ({ // 함수형 업데이트\n                    ...prevCoords,\n                    ...newCoords\n                }));\n                setIsManualAddress(true);\n            }\n        } catch (error) {\n            console.error(\"지오코딩 실패:\", error);\n        }\n    };\n\n    return (\n        <div className=\"mainpagebackground\">\n            <div className=\"mainpagecontents\">\n                <div className=\"mainpageheader\">\n                    <HeaderContainer />\n                </div>\n                <div className=\"mainpagecurrentaddress\">\n                    <div className=\"mainpageaddressdetail\">내 위치: {address}</div>\n                    <button onClick={() => setIsPopupOpen(true)} className=\"addressSearchButton\">\n                        주소 찾기\n                    </button>\n                </div>\n                <div className=\"mainpagesearchbar\">\n                    <SearchBar coords={coords} />\n                </div>\n\n                <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />\n\n                <div className=\"mainpagemap\">\n                    <KakaoMapContainer coords={coords} />\n                    <KakaoMapMarkers storelist={storelist} />\n                </div>\n\n                {isPopupOpen && (\n                    <KakaoPostcodePopup\n                        onClose={() => setIsPopupOpen(false)}\n                        onComplete={handleAddressComplete}\n                    />\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default MainPage;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/index.js b/Frontend/src/pages/MainPage/index.js
+--- a/Frontend/src/pages/MainPage/index.js	(revision 1eac7554a2f1135fe89eaeff6a8d8c52222f06ec)
++++ b/Frontend/src/pages/MainPage/index.js	(date 1739425707255)
+@@ -78,7 +78,9 @@
+                     <SearchBar coords={coords} />
+                 </div>
+ 
+-                <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />
++                <div className="mainpagebottomsheet">
++                    <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />
++                </div>
+ 
+                 <div className="mainpagemap">
+                     <KakaoMapContainer coords={coords} />
+Index: Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useRef, useEffect } from \"react\";\nimport { useNavigate } from \"react-router-dom\";\nimport BottomSheetApi from \"../../api/BottomSheetApi\";\nimport \"./DraggableBottomSheet.css\";\n\nconst DraggableBottomSheet = ({ coords, setStorelist }) => {\n  const navigate = useNavigate();\n  const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%\n  const panelRef = useRef(null);\n  const isDraggingRef = useRef(false);\n  const startYRef = useRef(0);\n  const NAV_HEIGHT = 0 // 네비게이션 높이\n  const PANEL_WIDTH = \"100%\"; // 바텀시트 너비\n\n  // 드래그 시작 핸들러\n  const handlePointerDown = (e) => {\n    e.preventDefault();\n    e.stopPropagation();\n\n    isDraggingRef.current = true;\n    startYRef.current = e.clientY || e.touches?.[0]?.clientY;\n\n    // 드래깅 클래스 추가\n    panelRef.current.classList.add(\"dragging\");\n  };\n\n  // 드래그 중 핸들러\n  const handlePointerMove = (e) => {\n    if (!isDraggingRef.current) return;\n\n    e.preventDefault();\n    e.stopPropagation();\n\n    const currentY = e.clientY || e.touches?.[0]?.clientY;\n    const deltaY = startYRef.current - currentY;\n\n    requestAnimationFrame(() => {\n      let newHeight = panelHeight + (deltaY / window.innerHeight) * 100;\n      newHeight = Math.max(10, Math.min(newHeight, 85)); // 최소 10%, 최대 85%\n      setPanelHeight(newHeight);\n      startYRef.current = currentY; // 현재 위치 업데이트\n    });\n  };\n\n  // 드래그 종료 핸들러\n  const handlePointerUp = () => {\n    if (!isDraggingRef.current) return;\n\n    isDraggingRef.current = false;\n\n    // 스냅 위치 설정\n    setPanelHeight((prevHeight) => {\n      if (prevHeight > 70) return 85; // 최대 위치로 스냅\n      if (prevHeight > 20) return 50; // 중간 위치로 스냅\n      return 10; // 최소 위치로 스냅\n    });\n\n    // 드래깅 클래스 제거\n    panelRef.current.classList.remove(\"dragging\");\n  };\n\n  // 이벤트 리스너 등록 및 해제\n  useEffect(() => {\n    const handleGlobalPointerUp = () => {\n      if (isDraggingRef.current) handlePointerUp();\n    };\n\n    window.addEventListener(\"pointerup\", handleGlobalPointerUp);\n    window.addEventListener(\"touchend\", handleGlobalPointerUp);\n\n    return () => {\n      window.removeEventListener(\"pointerup\", handleGlobalPointerUp);\n      window.removeEventListener(\"touchend\", handleGlobalPointerUp);\n    };\n  }, []);\n\n  const [LocalStorelist, setLocalStorelist] = useState([]);\n\n  console.log(coords)\n\n  useEffect(() => {\n    let isMounted = true;\n    const fetchData = async () => {\n      if (coords) {\n        try {\n          await BottomSheetApi({\n            coords,\n            receivedData: (data) => {\n              if (isMounted && data) {\n                setLocalStorelist(data);\n                setStorelist(data);\n              }\n            },\n          });\n        } catch (error) {\n          console.error('데이터를 가져오는 중 오류 발생:', error);\n        }\n      }\n    };\n\n    fetchData();\n\n    return () => {\n      isMounted = false;\n    };\n  }, [coords, setStorelist]);\n\n\n  console.log(LocalStorelist);\n  return (\n      <div\n          ref={panelRef}\n          className=\"bottom-sheet\"\n          style={{\n            height: `${panelHeight}%`,\n            bottom: `${NAV_HEIGHT}px`,\n            width: `${PANEL_WIDTH}`,\n            transition: isDraggingRef.current ? \"none\" : \"height 0.3s ease\", // 드래그 중에는 트랜지션 비활성화\n          }}\n          onPointerMove={handlePointerMove}\n          onTouchMove={handlePointerMove}\n      >\n        {/* 드래그 핸들 */}\n        <div className=\"drag-handle\" onPointerDown={handlePointerDown} onTouchStart={handlePointerDown}></div>\n\n        {/* 바텀시트 내용 */}\n        <div className=\"bottom-sheet-content\">\n          <h2>근처 매장</h2>\n          {LocalStorelist ? (\n              <ul>\n                {LocalStorelist.map((store, index) => (\n                    <li\n                        onClick={() => navigate(`/storedetail/${store.storeNo}`)}\n                        key={index}\n                    >\n                      {store.name} {store.distance}\n                    </li>\n                ))}\n              </ul>\n          ) : (\n              <p>근처에 매장이 없습니다.</p>\n          )}\n        </div>\n      </div>\n  );\n};\n\nexport default DraggableBottomSheet;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+--- a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(revision 1eac7554a2f1135fe89eaeff6a8d8c52222f06ec)
++++ b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(date 1739427432967)
+@@ -1,9 +1,11 @@
+ import React, { useState, useRef, useEffect } from "react";
+-import { useNavigate } from "react-router-dom";
++import { useNavigate, useLocation } from "react-router-dom";
+ import BottomSheetApi from "../../api/BottomSheetApi";
++import resultBottomSheetApi from "../../api/resultBottomsheetApi";
+ import "./DraggableBottomSheet.css";
+ 
+-const DraggableBottomSheet = ({ coords, setStorelist }) => {
++const DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {
++  const location = useLocation();
+   const navigate = useNavigate();
+   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
+   const panelRef = useRef(null);
+@@ -76,25 +78,38 @@
+ 
+   const [LocalStorelist, setLocalStorelist] = useState([]);
+ 
+-  console.log(coords)
+-
+   useEffect(() => {
+     let isMounted = true;
++
+     const fetchData = async () => {
+-      if (coords) {
+-        try {
++      if (!coords) return;
++
++      try {
++        // 현재 경로에 따라 API 선택
++        if (location.pathname.startsWith('/search/')) {
++          await resultBottomSheetApi({
++            coords,
++            itemId: itemID,  // 검색 결과 페이지에선 itemID 전달
++            receivedData: (data) => {
++              if (isMounted) {
++                setLocalStorelist(data);
++                setStorelist(data);
++              }
++            }
++          });
++        } else {
+           await BottomSheetApi({
+             coords,
+             receivedData: (data) => {
+-              if (isMounted && data) {
++              if (isMounted) {
+                 setLocalStorelist(data);
+                 setStorelist(data);
+               }
+-            },
++            }
+           });
+-        } catch (error) {
+-          console.error('데이터를 가져오는 중 오류 발생:', error);
+-        }
++        }
++      } catch (error) {
++        console.error('API 요청 실패:', error);
+       }
+     };
+ 
+@@ -103,10 +118,8 @@
+     return () => {
+       isMounted = false;
+     };
+-  }, [coords, setStorelist]);
++  }, [coords, itemID, setStorelist, location.pathname]); // itemID와 경로 변경 감지
+ 
+-
+-  console.log(LocalStorelist);
+   return (
+       <div
+           ref={panelRef}
+@@ -133,7 +146,7 @@
+                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
+                         key={index}
+                     >
+-                      {store.name} {store.distance}
++                      {store.storeName} {store.distance}
+                     </li>
+                 ))}
+               </ul>
+Index: Frontend/src/pages/SearchResult/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from \"react\";\nimport { useLocation } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport ResultBottomSheet from \"../../components/ResultBottomSheet\";\nimport BottomNav from \"../../components/BottomNav/BottomNav\";\nimport KakaoMapBackgroundResult from \"../../components/KakaoMapBackgroundResult\";\nimport KakaoMapMarkersResult from \"../../components/KakaoMapMarkersResult\";\nimport './style.css'\n\nconst SearchResult = () => {\n    const [storelist, setStorelist] = useState([]);\n    const [map, setMap] = useState(null); // 지도 객체 상태 추가\n\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n\n    const coords = {lat: queryParams.get('lat'), lng: queryParams.get('lng')}\n    const itemId = queryParams.get('itemId');\n\n    return (\n        <div className=\"result-page\">\n            <div className=\"resultpagecontents\">\n                <div className=\"resultheader\"><HeaderContainer/></div>\n                <div className=\"resultpagenotice;\">검색 결과</div>\n                <ResultBottomSheet coords={coords}\n                                   itemId={itemId}\n                                   setStorelist={setStorelist} />\n                <BottomNav/>\n            </div>\n            <div className=\"resultpagemap\">\n                <KakaoMapBackgroundResult coords={coords} onMapLoad={setMap} />\n            </div>\n            <div className=\"resultpagemarker\">\n                {map && <KakaoMapMarkersResult map={map} storelist={storelist} />}\n            </div>\n\n        </div>\n    )\n}\n\nexport default SearchResult;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/index.js b/Frontend/src/pages/SearchResult/index.js
+--- a/Frontend/src/pages/SearchResult/index.js	(revision 1eac7554a2f1135fe89eaeff6a8d8c52222f06ec)
++++ b/Frontend/src/pages/SearchResult/index.js	(date 1739427432969)
+@@ -1,15 +1,13 @@
+ import React, { useState } from "react";
+ import { useLocation } from "react-router-dom";
+ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+-import ResultBottomSheet from "../../components/ResultBottomSheet";
+-import BottomNav from "../../components/BottomNav/BottomNav";
+-import KakaoMapBackgroundResult from "../../components/KakaoMapBackgroundResult";
+-import KakaoMapMarkersResult from "../../components/KakaoMapMarkersResult";
++import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
++import KakaoMapMarkers from "../../components/KakaoMapMarkers";
++import KakaoMapContainer from "../../components/KakaoMapContainer";
+ import './style.css'
+ 
+ const SearchResult = () => {
+     const [storelist, setStorelist] = useState([]);
+-    const [map, setMap] = useState(null); // 지도 객체 상태 추가
+ 
+     const location = useLocation();
+     const queryParams = new URLSearchParams(location.search);
+@@ -23,16 +21,15 @@
+             <div className="resultpagecontents">
+                 <div className="resultheader"><HeaderContainer/></div>
+                 <div className="resultpagenotice;">검색 결과</div>
+-                <ResultBottomSheet coords={coords}
++                <DraggableBottomSheet coords={coords}
+                                    itemId={itemId}
+                                    setStorelist={setStorelist} />
+-                <BottomNav/>
+             </div>
+             <div className="resultpagemap">
+-                <KakaoMapBackgroundResult coords={coords} onMapLoad={setMap} />
++                <KakaoMapContainer coords={coords} />
+             </div>
+             <div className="resultpagemarker">
+-                {map && <KakaoMapMarkersResult map={map} storelist={storelist} />}
++                <KakaoMapMarkers storelist={storelist} />
+             </div>
+ 
+         </div>
+Index: Frontend/src/pages/MainPage/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.mainpagebackground {\n    width: 100%;\n    height: 100%;\n}\n\n.mainpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh 6vh auto;\n    position: relative;\n    z-index: 100;\n}\n\n.mainpageheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.mainpagecurrentaddress {\n    grid-row: 2;\n    display: flex;\n    justify-content: space-between;\n    width: 100%;\n    height: 6vh;\n    background-color: #3f72af;\n    align-items: center;\n    position: relative;\n    z-index: 99;\n}\n\n.mainpageaddressdetail {\n    width: 80%;\n    text-align: left;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n}\n\n.mainpagesearchbar {\n    grid-row: 3;\n    position: relative;\n    z-index: 99;\n    width: 85%;\n    height: 100%;\n    margin-top: 20px;\n}\n\n\n.addressSearchButton {\n    width: 20%;\n    height: 100%;\n    font-size: 12px;\n}\n\n.mainpagemap {\n    position: fixed;\n    z-index: 1;\n    top: 0;\n}\n\n.mainpagemarker {\n    width: 100vw;\n    height: 100vh;\n    position: fixed;\n    top: 0;\n    z-index: 10;\n    pointer-events: none;\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/style.css b/Frontend/src/pages/MainPage/style.css
+--- a/Frontend/src/pages/MainPage/style.css	(revision 1eac7554a2f1135fe89eaeff6a8d8c52222f06ec)
++++ b/Frontend/src/pages/MainPage/style.css	(date 1739425754183)
+@@ -23,7 +23,7 @@
+     display: flex;
+     justify-content: space-between;
+     width: 100%;
+-    height: 6vh;
++    height: 100%;
+     background-color: #3f72af;
+     align-items: center;
+     position: relative;
+@@ -69,3 +69,10 @@
+     pointer-events: none;
+ 
+ }
++
++.mainpagebottomsheet {
++    width: 100%;
++    position: fixed;
++    bottom: 0 !important;
++    z-index: 101;
++}
+\ No newline at end of file
+Index: Frontend/src/api/resultBottomsheetApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import axios from 'axios';\n\nconst apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\nconst resultBottomSheetApi = async ({ coords, itemId, receivedData }) => {\n    try {\n        // API 호출\n        const response = await axios.get(`${apiUrl}/api/items/store-items`, {\n            params: { lat: coords.lat,\n                      lon: coords.lng,\n                      itemId: itemId,},\n        });\n\n        const resultnearStorelist = response.data;\n\n        console.log('resultnearStorelist', resultnearStorelist);\n\n        if (response.status === 200) {\n            receivedData(resultnearStorelist); // 데이터를 부모 컴포넌트로 전달\n        } else {\n            console.error('API 요청 실패:');\n        }\n    } catch (error) {\n        if (axios.isCancel(error)) {\n            console.log('요청이 취소되었습니다:', error.message);\n        } else if (error.response) {\n            console.error('API 호출 중 오류 발생:', error.response.data);\n        } else if (error.request) {\n            console.error('응답을 받지 못했습니다:', error.request);\n        } else {\n            console.error('요청 설정 중 오류 발생:', error.message);\n        }\n\n    }\n};\n\nexport default resultBottomSheetApi\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/resultBottomsheetApi.js b/Frontend/src/api/resultBottomsheetApi.js
+--- a/Frontend/src/api/resultBottomsheetApi.js	(revision 1eac7554a2f1135fe89eaeff6a8d8c52222f06ec)
++++ b/Frontend/src/api/resultBottomsheetApi.js	(date 1739424897392)
+@@ -13,8 +13,6 @@
+ 
+         const resultnearStorelist = response.data;
+ 
+-        console.log('resultnearStorelist', resultnearStorelist);
+-
+         if (response.status === 200) {
+             receivedData(resultnearStorelist); // 데이터를 부모 컴포넌트로 전달
+         } else {

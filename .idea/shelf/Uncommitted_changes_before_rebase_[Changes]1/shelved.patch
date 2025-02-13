@@ -1,0 +1,135 @@
+Index: Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useRef, useEffect } from \"react\";\nimport { useNavigate, useLocation } from \"react-router-dom\";\nimport BottomSheetApi from \"../../api/BottomSheetApi\";\nimport resultBottomSheetApi from \"../../api/resultBottomsheetApi\";\nimport \"./DraggableBottomSheet.css\";\n\nconst DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {\n  const location = useLocation();\n  const navigate = useNavigate();\n  const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%\n  const panelRef = useRef(null);\n  const isDraggingRef = useRef(false);\n  const startYRef = useRef(0);\n  const NAV_HEIGHT = 0 // 네비게이션 높이\n  const PANEL_WIDTH = \"100%\"; // 바텀시트 너비\n\n  // 드래그 시작 핸들러\n  const handlePointerDown = (e) => {\n    e.preventDefault();\n    e.stopPropagation();\n\n    isDraggingRef.current = true;\n    startYRef.current = e.clientY || e.touches?.[0]?.clientY;\n\n    // 드래깅 클래스 추가\n    panelRef.current.classList.add(\"dragging\");\n  };\n\n  // 드래그 중 핸들러\n  const handlePointerMove = (e) => {\n    if (!isDraggingRef.current) return;\n\n    e.preventDefault();\n    e.stopPropagation();\n\n    const currentY = e.clientY || e.touches?.[0]?.clientY;\n    const deltaY = startYRef.current - currentY;\n\n    requestAnimationFrame(() => {\n      let newHeight = panelHeight + (deltaY / window.innerHeight) * 100;\n      newHeight = Math.max(10, Math.min(newHeight, 85)); // 최소 10%, 최대 85%\n      setPanelHeight(newHeight);\n      startYRef.current = currentY; // 현재 위치 업데이트\n    });\n  };\n\n  // 드래그 종료 핸들러\n  const handlePointerUp = () => {\n    if (!isDraggingRef.current) return;\n\n    isDraggingRef.current = false;\n\n    // 스냅 위치 설정\n    setPanelHeight((prevHeight) => {\n      if (prevHeight > 70) return 85; // 최대 위치로 스냅\n      if (prevHeight > 20) return 50; // 중간 위치로 스냅\n      return 10; // 최소 위치로 스냅\n    });\n\n    // 드래깅 클래스 제거\n    panelRef.current.classList.remove(\"dragging\");\n  };\n\n  // 이벤트 리스너 등록 및 해제\n  useEffect(() => {\n    const handleGlobalPointerUp = () => {\n      if (isDraggingRef.current) handlePointerUp();\n    };\n\n    window.addEventListener(\"pointerup\", handleGlobalPointerUp);\n    window.addEventListener(\"touchend\", handleGlobalPointerUp);\n\n    return () => {\n      window.removeEventListener(\"pointerup\", handleGlobalPointerUp);\n      window.removeEventListener(\"touchend\", handleGlobalPointerUp);\n    };\n  }, []);\n\n  const [LocalStorelist, setLocalStorelist] = useState([]);\n\n  useEffect(() => {\n    let isMounted = true;\n\n    const fetchData = async () => {\n      if (!coords) return;\n\n      try {\n        // 현재 경로에 따라 API 선택\n        if (location.pathname.startsWith('/search/')) {\n          await resultBottomSheetApi({\n            coords,\n            itemId: itemID,  // 검색 결과 페이지에선 itemID 전달\n            receivedData: (data) => {\n              if (isMounted) {\n                setLocalStorelist(data);\n                setStorelist(data);\n              }\n            }\n          });\n        } else {\n          await BottomSheetApi({\n            coords,\n            receivedData: (data) => {\n              if (isMounted) {\n                setLocalStorelist(data);\n                setStorelist(data);\n              }\n            }\n          });\n        }\n      } catch (error) {\n        console.error('API 요청 실패:', error);\n      }\n    };\n\n    fetchData();\n\n    return () => {\n      isMounted = false;\n    };\n  }, [coords, itemID, setStorelist, location.pathname]); // itemID와 경로 변경 감지\n\n  return (\n      <div\n          ref={panelRef}\n          className=\"bottom-sheet\"\n          style={{\n            height: `${panelHeight}%`,\n            bottom: `${NAV_HEIGHT}px`,\n            width: `${PANEL_WIDTH}`,\n            transition: isDraggingRef.current ? \"none\" : \"height 0.3s ease\", // 드래그 중에는 트랜지션 비활성화\n          }}\n          onPointerMove={handlePointerMove}\n          onTouchMove={handlePointerMove}\n      >\n        {/* 드래그 핸들 */}\n        <div className=\"drag-handle\" onPointerDown={handlePointerDown} onTouchStart={handlePointerDown}></div>\n\n        {/* 바텀시트 내용 */}\n        <div className=\"bottom-sheet-content\">\n          <h2>근처 매장</h2>\n          {LocalStorelist ? (\n              <ul>\n                {LocalStorelist.map((store, index) => (\n                    <li\n                        onClick={() => navigate(`/storedetail/${store.storeNo}`)}\n                        key={index}\n                    >\n                      {store.storeName} {store.distance}\n                    </li>\n                ))}\n              </ul>\n          ) : (\n              <p>근처에 매장이 없습니다.</p>\n          )}\n        </div>\n      </div>\n  );\n};\n\nexport default DraggableBottomSheet;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+--- a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(revision b97e7ecd35657fa9738bfa46b3c17901be4a0d0f)
++++ b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(date 1739428416960)
+@@ -146,7 +146,7 @@
+                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
+                         key={index}
+                     >
+-                      {store.storeName} {store.distance}
++                      {store.storeName} 나와의 거리: {store.distance}
+                     </li>
+                 ))}
+               </ul>
+Index: Frontend/src/components/KakaoMapBackgroundResult/index.js
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapBackgroundResult/index.js b/Frontend/src/components/KakaoMapBackgroundResult/index.js
+deleted file mode 100644
+--- a/Frontend/src/components/KakaoMapBackgroundResult/index.js	(revision b97e7ecd35657fa9738bfa46b3c17901be4a0d0f)
++++ /dev/null	(revision b97e7ecd35657fa9738bfa46b3c17901be4a0d0f)
+@@ -1,64 +0,0 @@
+-import { useEffect } from "react";
+-
+-const KakaoMapBackgroundResult = ({ coords, onMapLoad }) => {
+-    useEffect(() => {
+-        const script = document.createElement("script");
+-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&libraries=services&autoload=false`;
+-        script.async = true;
+-
+-        script.onload = () => {
+-            if (window.kakao && window.kakao.maps) {
+-                window.kakao.maps.load(() => {
+-                    const kakao = window.kakao;
+-                    const mapContainer = document.getElementById("map");
+-                    const mapOption = {
+-                        center: new kakao.maps.LatLng(coords.lat, coords.lng),
+-                        level: 3,
+-                    };
+-                    const map = new kakao.maps.Map(mapContainer, mapOption);
+-
+-                    // 부모 컴포넌트로 지도 객체 전달
+-                    if (onMapLoad) onMapLoad(map);
+-
+-                    // 내 위치 마커 생성
+-                    createMyLocationMarker(map, coords);
+-                });
+-            }
+-        };
+-
+-        script.onerror = () => console.error("Kakao Maps SDK 로드 실패");
+-        document.head.appendChild(script);
+-
+-        return () => document.head.removeChild(script);
+-    }, [coords, onMapLoad]);
+-
+-    // 내 위치 마커 생성 함수
+-    const createMyLocationMarker = (map, coords) => {
+-        const kakao = window.kakao;
+-
+-        // 사용자 정의 이미지 URL
+-        const imageSrc =
+-            "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; // 커스텀 이미지 예제
+-        const imageSize = new kakao.maps.Size(40, 40); // 이미지 크기
+-        const imageOption = { offset: new kakao.maps.Point(20, 40) }; // 중심점 설정
+-
+-        // MarkerImage 객체 생성
+-        const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+-
+-        // 마커 위치 설정
+-        const markerPosition = new kakao.maps.LatLng(coords.lat, coords.lng);
+-
+-        // 마커 생성
+-        const marker = new kakao.maps.Marker({
+-            position: markerPosition,
+-            map: map,
+-            image: markerImage, // 커스텀 이미지 적용
+-        });
+-
+-        return marker;
+-    };
+-
+-    return <div id="map" style={{ width: "100vw", height: "100vh" }}></div>;
+-};
+-
+-export default KakaoMapBackgroundResult;
+\ No newline at end of file
+Index: Frontend/src/components/KakaoMapMarkersResult/index.js
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkersResult/index.js b/Frontend/src/components/KakaoMapMarkersResult/index.js
+deleted file mode 100644
+--- a/Frontend/src/components/KakaoMapMarkersResult/index.js	(revision b97e7ecd35657fa9738bfa46b3c17901be4a0d0f)
++++ /dev/null	(revision b97e7ecd35657fa9738bfa46b3c17901be4a0d0f)
+@@ -1,37 +0,0 @@
+-import React, { useEffect } from "react";
+-
+-const KakaoMapMarkersResult = ({ map, storelist }) => {
+-    useEffect(() => {
+-        if (!map || !storelist) return;
+-
+-        // 마커 생성 함수
+-        const createMarker = (store) => {
+-            const kakao = window.kakao;
+-            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
+-
+-            const marker = new kakao.maps.Marker({
+-                position: markerPosition,
+-                map: map,
+-            });
+-
+-            // 마커 클릭 이벤트
+-            kakao.maps.event.addListener(marker, "click", () => {
+-                alert(`${store.name} 클릭!`);
+-            });
+-
+-            return marker;
+-        };
+-
+-        // 기존 마커 제거 후 새로 생성
+-        const markers = storelist.map((store) => createMarker(store));
+-
+-        // 컴포넌트 언마운트 시 마커 제거
+-        return () => {
+-            markers.forEach((marker) => marker.setMap(null));
+-        };
+-    }, [map, storelist]);
+-
+-    return null; // UI를 렌더링하지 않음 (마커만 지도에 표시)
+-};
+-
+-export default KakaoMapMarkersResult;
