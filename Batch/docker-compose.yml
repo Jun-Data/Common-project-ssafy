@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  springboot_batch:
+    build: ./
+    container_name: muinus-be-batch
+    restart: always
+    ports:
+      - "8001:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://3.39.235.66:3306/hexa
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ssafy
+      SPRING_ELASTICSEARCH_REST_URIS: http://3.39.235.66:9200
+      SPRING_ELASTICSEARCH_DATA_ELASTICSEARCH_REPOSITORIES_ENABLE: true
+    networks:
+      - muinus-network
+
+networks:
+  muinus-network:
+    external: true
