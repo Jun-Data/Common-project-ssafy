@@ -78,25 +78,27 @@ public class JwtProvider {
     }
 
     public void setAccessTokensInCookie(HttpServletResponse response, String accessToken) {
-        // 액세스 토큰 쿠키 설정
-        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge((int) (accessTokenExpiration / 1000));
-        // 쿠키 응답에 추가
-        response.addCookie(accessTokenCookie);
+        ResponseCookie responseCookie = ResponseCookie.from("AccessToken", accessToken)
+                .maxAge(accessTokenExpiration)
+                .path("/")
+                .sameSite("Lax")
+                .httpOnly(true)
+                .secure(true)
+                .build();
+
+        response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
     public void setRefreshTokensInCookie(HttpServletResponse response, String refreshToken) {
-        // 리프레시 토큰 쿠키 설정
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/api/users/refresh");
-        refreshTokenCookie.setMaxAge((int) (refreshTokenExpiration / 1000));
+        ResponseCookie responseCookie = ResponseCookie.from("RefreshToken", refreshToken)
+                .maxAge(refreshTokenExpiration)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .build();
 
-        response.addCookie(refreshTokenCookie);
+        response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
     /**
