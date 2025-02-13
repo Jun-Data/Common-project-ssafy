@@ -4,16 +4,15 @@ const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 const BottomSheetApi = async ({ coords, receivedData }) => {
     try {
+        console.log(coords)
         // API 호출
         const response = await axios.get(`${apiUrl}/api/store/list/near`, {
-            params: { x: coords.lat,
-                      y: coords.lng },
+            params: { x: coords.lng,
+                      y: coords.lat },
         });
 
         const nearStorelist = response.data;
-        // console.log("바텀시트api에서lat", coords.lat)
-        // console.log("바텀시트api에서lng", coords.lng)
-        // console.log("바텀시트api에서리스트", nearStorelist);
+        console.log("바텀시트api에서리스트", nearStorelist);
 
         if (response.status === 200) {
             receivedData(nearStorelist); // 데이터를 부모 컴포넌트로 전달

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import RecommendApi from "../../api/RecommendApi";
+import './style.css'
 
 const RecommendList = () => {
     const [recommendations, setRecommendations] = useState([]);

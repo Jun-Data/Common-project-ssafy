@@ -1,42 +1,46 @@
 import { useState, useEffect } from "react";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchBar from "../../components/SearchBar";
-import KakaoMapBackground from "../../components/KakaoMapBackground";
 import KakaoPostcodePopup from "../../components/KakaoPostcodePopup";
 import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
 import BottomNav from "../../components/BottomNav/BottomNav";
+import KakaoMapContainer from "../../components/KakaoMapContainer";
+import KakaoMapMarkers from "../../components/KakaoMapMarkers";
 import useGeolocation from "../../hooks/UseGeolocation";
 import useReverseGeocoding from "../../hooks/useReverseGeocoding";
 import useGeocoding from "../../hooks/useGeocoding";
-import KakaoMapMarkers from "../../components/KakaoMapMarkers";
+import {useKakaoMap} from "../../contexts/ KakaoMapContext";
 
 import "./style.css";
 
 const MainPage = () => {
-    const { coords: initialCoords } = useGeolocation();
+
+    const { isSDKLoaded } = useKakaoMap();
     const { coordToAddress } = useReverseGeocoding();
     const { addressToCoord } = useGeocoding();
-    const [coords, setCoords] = useState(initialCoords);
+    const { geoCoords, error } = useGeolocation()
+
+    const [coords, setCoords] = useState({lat: 32.1234567, lng: 32.1234567});
     const [address, setAddress] = useState("인재의 산실 멀티캠퍼스");
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [storelist, setStorelist] = useState([]); // 바텀시트에서 전달받을 데이터
-    const [isManualAddress, setIsManualAddress] = useState(false); // 사용자 주소 설정 여부
-    const [map, setMap] = useState(null); // 지도 객체 상태 추가
+    const [storelist, setStorelist] = useState([]);
+    const [isManualAddress, setIsManualAddress] = useState(false);
 
-    // initialCoords가 변경될 때 coords 동기화 및 주소 업데이트
+
+    // geolocation 실행되면 코드, 위치 업데이트
     useEffect(() => {
-        if (initialCoords && !isManualAddress) {
-            setCoords(initialCoords);
+        if (coords && !isManualAddress && isSDKLoaded) {
+            setCoords(geoCoords);
             (async () => {
                 try {
-                    const newAddress = await coordToAddress(initialCoords);
+                    const newAddress = await coordToAddress(coords);
                     setAddress(newAddress);
                 } catch (error) {
                     console.error("역지오코딩 실패:", error);
                 }
             })();
         }
-    }, [initialCoords, coordToAddress, isManualAddress]);
+    }, [coords, coordToAddress, isManualAddress, isSDKLoaded]);
 
     // 카카오 우편번호 검색 완료 핸들러
     const handleAddressComplete = async (data) => {
@@ -53,29 +57,28 @@ const MainPage = () => {
             console.error("지오코딩 실패:", error);
         }
     };
-    console.log(isManualAddress);
 
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">
-                <div className="mainpageheader"><HeaderContainer /></div>
+                <div className="mainpageheader">
+                    <HeaderContainer />
+                </div>
                 <div className="mainpagecurrentaddress">
-                    <div className="mainpageaddressdetail">
-                        현재 주소: {address}
-                    </div>
+                    <div className="mainpageaddressdetail">현재 주소: {address}</div>
                     <button onClick={() => setIsPopupOpen(true)} className="addressSearchButton">
                         주소 찾기
                     </button>
                 </div>
-                <div className="mainpagesearchbar"><SearchBar coords={coords} /></div>
+                <div className="mainpagesearchbar">
+                    <SearchBar coords={coords} />
+                </div>
 
                 <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />
 
                 <div className="mainpagemap">
-                    <KakaoMapBackground coords={coords} onMapLoad={setMap} />
-                </div>
-                <div className="mainpagemarker">
-                    {map && <KakaoMapMarkers map={map} storelist={storelist} />}
+                    <KakaoMapContainer coords={coords} />
+                    <KakaoMapMarkers storelist={storelist} />
                 </div>
 
                 <BottomNav />

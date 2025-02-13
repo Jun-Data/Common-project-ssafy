@@ -4,27 +4,11 @@ const useGeocoding = () => {
     const [geocoder, setGeocoder] = useState(null);
     const cache = useRef(new Map());
 
-    // Kakao Maps API 로드
+    // Geocoder 초기화 (지도 SDK는 이미 로드된 상태라고 가정)
     useEffect(() => {
-        const script = document.createElement("script");
-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&libraries=services`;
-        script.async = true;
-
-        script.onload = () => {
-            if (window.kakao && window.kakao.maps) {
-                window.kakao.maps.load(() => {
-                    // Geocoder 초기화는 API 로드 이후에만 수행
-                    setGeocoder(new window.kakao.maps.services.Geocoder());
-                });
-            }
-        };
-
-        script.onerror = () => console.error("Kakao Maps SDK 로드 실패");
-        document.head.appendChild(script);
-
-        return () => {
-            document.head.removeChild(script);
-        };
+        if (window.kakao && window.kakao.maps) {
+            setGeocoder(new window.kakao.maps.services.Geocoder());
+        }
     }, []);
 
     // 주소를 좌표로 변환

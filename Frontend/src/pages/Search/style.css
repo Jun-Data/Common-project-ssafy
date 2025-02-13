@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-rows: 8vh 6vh auto;
+    grid-template-rows: 8vh 6vh auto auto;
 }
 
 
@@ -24,4 +24,12 @@
     width: 100%;
     top: 118px;
     left: 0;
+}
+
+.searchpagerecommend {
+    grid-row: 3;
+}
+
+.searchpagenavbar {
+    grid-row: 4;
 }

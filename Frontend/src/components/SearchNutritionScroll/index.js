@@ -44,6 +44,8 @@ const SearchNutritionScroll = () => {
         fetchItems(maxSugar, maxCal);
     }, [maxSugar, maxCal]);
 
+    console.log(items);
+
     return (
         <div className="scrollcontents">
             <div className="scrollnotice">영양분으로 검색하기</div>
@@ -76,10 +78,21 @@ const SearchNutritionScroll = () => {
                 {!error && items.length > 0 && (
                     <ul className="nutritionul">
                         {items.map((item) => (
-                            <li className='nutritionli'
+                            <li
+                                className="nutritionli"
                                 key={item.itemId}
-                                onClick={() => navigate(`search/results?lat=${lat}&lng=${lng}&itemId=${item.itemId}`)}>
-                                {item.itemName}
+                                onClick={() =>
+                                    navigate(
+                                        `search/results?lat=${lat}&lng=${lng}&itemId=${item.itemId}`
+                                    )
+                                }
+                            >
+                                <img
+                                    src={item.itemImageUrl} // 이미지 URL
+                                    alt={item.itemName}
+                                    className="nutrition-image"
+                                />
+                                <span className="nutrition-text">{item.itemName}</span>
                             </li>
                         ))}
                     </ul>

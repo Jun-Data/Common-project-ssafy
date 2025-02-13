@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomSheetApi from "../../api/BottomSheetApi";
 import "./DraggableBottomSheet.css";
 
-const DraggableBottomSheet = ({ coords, setStorelist }) => {
+const DraggableBottomSheet = (coords, setStorelist) => {
   const navigate = useNavigate();
-
   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
-  const [startY, setStartY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const panelRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const startYRef = useRef(0);
   const NAV_HEIGHT = 69; // 네비게이션 높이
   const PANEL_WIDTH = "100%"; // 바텀시트 너비
 
@@ -17,47 +16,67 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
   const handlePointerDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const startY = e.clientY || e.touches?.[0]?.clientY;
-    setStartY(startY);
-    setIsDragging(true);
+
+    isDraggingRef.current = true;
+    startYRef.current = e.clientY || e.touches?.[0]?.clientY;
+
+    // 드래깅 클래스 추가
+    panelRef.current.classList.add("dragging");
   };
 
   // 드래그 중 핸들러
-  const handlePointerMove = useCallback((e) => {
-    if (!isDragging) return;
+  const handlePointerMove = (e) => {
+    if (!isDraggingRef.current) return;
+
     e.preventDefault();
     e.stopPropagation();
 
     const currentY = e.clientY || e.touches?.[0]?.clientY;
-    const deltaY = startY - currentY; // 방향 반대로 수정
+    const deltaY = startYRef.current - currentY;
 
     requestAnimationFrame(() => {
       let newHeight = panelHeight + (deltaY / window.innerHeight) * 100;
       newHeight = Math.max(10, Math.min(newHeight, 85)); // 최소 10%, 최대 85%
       setPanelHeight(newHeight);
+      startYRef.current = currentY; // 현재 위치 업데이트
     });
-  }, [isDragging, startY, panelHeight]);
+  };
 
   // 드래그 종료 핸들러
   const handlePointerUp = () => {
-    setIsDragging(false);
-    if (panelHeight > 20) {
-      setPanelHeight(50); // 중간 위치로 스냅
-    } else {
-      setPanelHeight(10); // 최소 위치로 스냅
-    }
+    if (!isDraggingRef.current) return;
+
+    isDraggingRef.current = false;
+
+    // 스냅 위치 설정
+    setPanelHeight((prevHeight) => {
+      if (prevHeight > 70) return 85; // 최대 위치로 스냅
+      if (prevHeight > 20) return 50; // 중간 위치로 스냅
+      return 10; // 최소 위치로 스냅
+    });
+
+    // 드래깅 클래스 제거
+    panelRef.current.classList.remove("dragging");
   };
 
-  // 드래그 중 transition 비활성화
+  // 이벤트 리스너 등록 및 해제
   useEffect(() => {
-    if (isDragging) {
-      panelRef.current.classList.add("dragging");
-    } else {
-      panelRef.current.classList.remove("dragging");
-    }
-  }, [isDragging]);
+    const handleGlobalPointerUp = () => {
+      if (isDraggingRef.current) handlePointerUp();
+    };
+
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    window.addEventListener("touchend", handleGlobalPointerUp);
+
+    return () => {
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
+      window.removeEventListener("touchend", handleGlobalPointerUp);
+    };
+  }, []);
 
   const [localstorelist, setLocalStorelist] = useState([]);
+
+  console.log('바로', coords)
 
   useEffect(() => {
     let isMounted = true;
@@ -94,12 +113,13 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
             height: `${panelHeight}%`,
             bottom: `${NAV_HEIGHT}px`,
             width: `${PANEL_WIDTH}`,
+            transition: isDraggingRef.current ? "none" : "height 0.3s ease", // 드래그 중에는 트랜지션 비활성화
           }}
           onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
+          onTouchMove={handlePointerMove}
       >
         {/* 드래그 핸들 */}
-        <div className="drag-handle" onPointerDown={handlePointerDown}></div>
+        <div className="drag-handle" onPointerDown={handlePointerDown} onTouchStart={handlePointerDown}></div>
 
         {/* 바텀시트 내용 */}
         <div className="bottom-sheet-content">
@@ -111,7 +131,7 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
                         key={index}
                     >
-                      {store.storeName}
+                      {store.name}
                     </li>
                 ))}
               </ul>

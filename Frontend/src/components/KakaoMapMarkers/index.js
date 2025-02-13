@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
-const KakaoMapMarkers = ({ map, storelist }) => {
+const KakaoMapMarkers = ({ storelist }) => {
+    const { map } = useKakaoMap();
+
     useEffect(() => {
         if (!map || !storelist) return;
 
         // 마커 생성 함수
         const createMarker = (store) => {
             const kakao = window.kakao;
-            const markerPosition = new kakao.maps.LatLng(store.locationX, store.locationY);
+            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
 
             const marker = new kakao.maps.Marker({
                 position: markerPosition,

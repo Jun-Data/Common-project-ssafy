@@ -51,7 +51,7 @@ const StoredetailRequestPopup = () => {
         console.log(productImage)
         console.log(item.itemId)
         setSelectedItem(item.itemId);
-        setMessage(`${item.itemName}이 선택되었어요!`)
+        setMessage(`${item.itemName}\n이 선택되었어요!`)
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
     };
 

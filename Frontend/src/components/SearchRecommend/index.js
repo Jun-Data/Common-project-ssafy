@@ -25,7 +25,7 @@ const SearchRecommend = () => {
 
     return (
         <div className="search-recommend">
-            <h2>추천 리스트</h2>
+            <p>인기 추천 제품</p>
             {recommend.length > 0 ? (
                 <ul>
                     {recommend.map((item, index) => (

@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation, matchPath, useMatch } from "react-router-dom";
+import { useNavigate, useLocation,  useMatch } from "react-router-dom";
 import './style.css'
 
 const SearchBar = ({ coords, setQuery }) => {
     const [localQuery, setLocalQuery] = useState(""); // 로컬 상태로 입력값 관리
     const navigate = useNavigate();
-    const location = useLocation();
 
     const isStoreDetailPage = useMatch('/storedetail/*');
     const isSearchPage = useLocation().pathname === '/search';

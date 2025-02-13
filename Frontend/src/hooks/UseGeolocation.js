@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useGeolocation = () => {
-    const [coords, setCoords] = useState({ lat: 37.5012767, lng: 127.0396002 }); // 기본 좌표
+    const [geoCoords, setGeoCoords] = useState({lat: 0, lng: 0}); // 기본 좌표
     const [error, setError] = useState(null); // 에러 상태 추가
 
     const getLocation = () => {
@@ -13,10 +13,7 @@ const useGeolocation = () => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                const preciseLatitude = parseFloat(latitude.toFixed(7));
-                const preciseLongitude = parseFloat(longitude.toFixed(7));
-                console.log(`Latitude: ${preciseLatitude}, Longitude: ${preciseLongitude}`);
-                setCoords({ lat: preciseLatitude, lng: preciseLongitude });
+                setGeoCoords({ lat: latitude, lng: longitude });
             },
             (error) => {
                 console.error("Error getting location:", error);
@@ -33,7 +30,7 @@ const useGeolocation = () => {
         getLocation(); // 컴포넌트 마운트 시 실행
     }, []);
 
-    return { coords, error }; // 에러 상태도 반환
+    return { geoCoords, error }; // 에러 상태도 반환
 };
 
 export default useGeolocation;

@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Kiosk from "./pages/Kiosk"
@@ -20,8 +20,9 @@ import FleaRequests from "./pages/FleaRequests";
 import SearchbyNurtrition from "./pages/SearchbyNurtrition";
 import SearchResult from "./pages/SearchResult";
 import StoredetailRequestPopup from "./pages/StoredetailRequest";
-import StoredetailRequest from "./pages/StoredetailRequest";
 import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
+import {KakaoMapProvider} from "./contexts/ KakaoMapContext";
+
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
   return (
     <div className="App">
 
+      <KakaoMapProvider>
     <Routes>
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/owner-signup" element={<OwnerSignUp/>}/>
@@ -55,15 +57,16 @@ function App() {
       <Route path="/kiosk" element={<Kiosk/>}/>
       <Route path="/kmain" element={<KioskMainScreen/>}/>
 
-      <Route path="/" element={<MainPage/>}/>
+        <Route path="/" element={<MainPage/>}/>
+        <Route path="/search/results" element={<SearchResult/>}/>
       <Route path="/search" element={<SearchPage/>}/>
-      <Route path="/search/results" element={<SearchResult/>}/>
       <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
       <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
       <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
       <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
 
     </Routes>
+      </KakaoMapProvider>
 
     </div>
   );
