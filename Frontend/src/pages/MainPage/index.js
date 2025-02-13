@@ -78,7 +78,9 @@ const MainPage = () => {
                     <SearchBar coords={coords} />
                 </div>
 
-                <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />
+                <div className="mainpagebottomsheet">
+                    <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />
+                </div>
 
                 <div className="mainpagemap">
                     <KakaoMapContainer coords={coords} />

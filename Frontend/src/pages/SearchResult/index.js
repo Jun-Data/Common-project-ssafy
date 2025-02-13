@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import ResultBottomSheet from "../../components/ResultBottomSheet";
-import BottomNav from "../../components/BottomNav/BottomNav";
-import KakaoMapBackgroundResult from "../../components/KakaoMapBackgroundResult";
-import KakaoMapMarkersResult from "../../components/KakaoMapMarkersResult";
+import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
+import KakaoMapMarkers from "../../components/KakaoMapMarkers";
+import KakaoMapContainer from "../../components/KakaoMapContainer";
 import './style.css'
 
 const SearchResult = () => {
     const [storelist, setStorelist] = useState([]);
-    const [map, setMap] = useState(null); // 지도 객체 상태 추가
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -23,16 +21,15 @@ const SearchResult = () => {
             <div className="resultpagecontents">
                 <div className="resultheader"><HeaderContainer/></div>
                 <div className="resultpagenotice;">검색 결과</div>
-                <ResultBottomSheet coords={coords}
+                <DraggableBottomSheet coords={coords}
                                    itemId={itemId}
                                    setStorelist={setStorelist} />
-                <BottomNav/>
             </div>
             <div className="resultpagemap">
-                <KakaoMapBackgroundResult coords={coords} onMapLoad={setMap} />
+                <KakaoMapContainer coords={coords} />
             </div>
             <div className="resultpagemarker">
-                {map && <KakaoMapMarkersResult map={map} storelist={storelist} />}
+                <KakaoMapMarkers storelist={storelist} />
             </div>
 
         </div>

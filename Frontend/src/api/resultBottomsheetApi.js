@@ -13,8 +13,6 @@ const resultBottomSheetApi = async ({ coords, itemId, receivedData }) => {
 
         const resultnearStorelist = response.data;
 
-        console.log('resultnearStorelist', resultnearStorelist);
-
         if (response.status === 200) {
             receivedData(resultnearStorelist); // 데이터를 부모 컴포넌트로 전달
         } else {

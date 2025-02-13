@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import BottomSheetApi from "../../api/BottomSheetApi";
+import resultBottomSheetApi from "../../api/resultBottomsheetApi";
 import "./DraggableBottomSheet.css";
 
-const DraggableBottomSheet = ({ coords, setStorelist }) => {
+const DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
   const panelRef = useRef(null);
@@ -76,25 +78,38 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
 
   const [LocalStorelist, setLocalStorelist] = useState([]);
 
-  console.log(coords)
-
   useEffect(() => {
     let isMounted = true;
+
     const fetchData = async () => {
-      if (coords) {
-        try {
-          await BottomSheetApi({
+      if (!coords) return;
+
+      try {
+        // 현재 경로에 따라 API 선택
+        if (location.pathname.startsWith('/search/')) {
+          await resultBottomSheetApi({
             coords,
+            itemId: itemID,  // 검색 결과 페이지에선 itemID 전달
             receivedData: (data) => {
-              if (isMounted && data) {
+              if (isMounted) {
                 setLocalStorelist(data);
                 setStorelist(data);
               }
-            },
+            }
           });
-        } catch (error) {
-          console.error('데이터를 가져오는 중 오류 발생:', error);
+        } else {
+          await BottomSheetApi({
+            coords,
+            receivedData: (data) => {
+              if (isMounted) {
+                setLocalStorelist(data);
+                setStorelist(data);
+              }
+            }
+          });
         }
+      } catch (error) {
+        console.error('API 요청 실패:', error);
       }
     };
 
@@ -103,10 +118,8 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
     return () => {
       isMounted = false;
     };
-  }, [coords, setStorelist]);
+  }, [coords, itemID, setStorelist, location.pathname]); // itemID와 경로 변경 감지
 
-
-  console.log(LocalStorelist);
   return (
       <div
           ref={panelRef}
@@ -133,7 +146,7 @@ const DraggableBottomSheet = ({ coords, setStorelist }) => {
                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
                         key={index}
                     >
-                      {store.name} {store.distance}
+                      {store.storeName} {store.distance}
                     </li>
                 ))}
               </ul>
