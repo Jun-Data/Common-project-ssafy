@@ -1,9 +1,11 @@
-import apiClient from "./apiClient";
+import axios from "axios";
+
+const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 const StoreDetailApi = async (storeNo, setProductdata) => {
     try {
 
-        const response = await apiClient.get('api/store/detail', {
+        const response = await axios.get(`${apiUrl}/api/store/detail`, {
             params: { storeNo },
         });
 

@@ -1,4 +1,3 @@
-// components/KakaoMapMarkers.js
 import { useEffect, useRef } from 'react';
 import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
@@ -22,11 +21,6 @@ const KakaoMapMarkers = ({ storelist }) => {
                 map: map
             });
         });
-
-        // 지도 범위 조정
-        const bounds = new kakao.maps.LatLngBounds();
-        storelist.forEach(store => bounds.extend(new kakao.maps.LatLng(store.lat, store.lon)));
-        map.setBounds(bounds);
 
         return () => markers.current.forEach(marker => marker.setMap(null));
     }, [storelist, isMapReady]);

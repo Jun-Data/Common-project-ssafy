@@ -21,24 +21,24 @@
 }
 
 .payment-notice {
-    font-size: 80px;
+    font-size: 30px;
 }
 
 .payment-options button {
-    width: 800px;
-    height: 300px;
+    width: 50%;
+    height: 25%;
     margin: 10px;
     padding: 10px 20px;
-    font-size: 120px;
+    font-size: 10px;
     cursor: pointer;
 }
 
 .close-button {
-    width: 600px;
-    height: 200px;
+    width: 75%;
+    height: 15%;
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 120px;
+    font-size: 20px;
     background-color: #ccc;
     border: none;
     cursor: pointer;

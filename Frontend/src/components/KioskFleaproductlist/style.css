@@ -1,12 +1,12 @@
 .kioskfleamarketsection {
     display: grid;
-    width: 1600px;
-    height: 400px;
+    width: 100%;
+    height: 100%;
     grid-template-columns: repeat(4, 1fr); /* 각 버튼이 동일한 비율로 배치 */
 }
 
 .kioskfleamarketbutton {
     width: 100%; /* 부모의 크기에 맞게 조정 */
     height: 100%;
-    font-size: 40px;
+    font-size: 30px;
 }

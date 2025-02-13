@@ -12,8 +12,8 @@
 }
 
 .kiosk-coupon-content {
-    width: 1400px;
-    height: 2000px;
+    width: 80%;
+    height: 80%;
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -21,7 +21,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
     display: grid;
-    grid-template-rows: auto 800px auto;
+    grid-template-rows: 10vh auto 10vh;
     place-items: center;
 }
 
@@ -32,17 +32,18 @@
 
 .kiosk-coupon-scanner {
     grid-row: 2;
-    width: 800px;
+    width: 90%;
     border: black solid 1px;
 }
 
 .coupon-close-button {
     grid-row: 3;
-    width: 600px;
-    height: 200px;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 120px;
+    font-size: 20px;
     background-color: #ccc;
     border: none;
     cursor: pointer;

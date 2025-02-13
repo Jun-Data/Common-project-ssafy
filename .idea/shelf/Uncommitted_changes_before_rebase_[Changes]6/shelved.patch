@@ -1,0 +1,1167 @@
+Index: Frontend/src/pages/Kiosk/main.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/main.js b/Frontend/src/pages/KioskMain/index.js
+rename from Frontend/src/pages/Kiosk/main.js
+rename to Frontend/src/pages/KioskMain/index.js
+--- a/Frontend/src/pages/Kiosk/main.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/pages/KioskMain/index.js	(date 1739466055935)
+@@ -1,14 +1,13 @@
+ import React, { useState } from 'react';
+ import { useNavigate } from "react-router-dom";
+ import KioskHeaderContainer from "../../components/KioskHeaderContainer";
+-import KioskList from "../../components/KioskList";
+ import BarcodeScannerComponent from "../../components/KioskBarcodeScanner";
+ import Cartpage from "../../components/KioskCartpage";
+ import KioskFleaproductlist from "../../components/KioskFleaproductlist";
+ import PaymentPopup from '../../components/KioskPaymentPopup';
+ import KioskCouponPopup from "../../components/KioskCouponPopup";
+ import KioskPaymentFinishPopup from "../../components/KioskPaymentFinishPopup";
+-import './main.css';
++import './style.css';
+ 
+ const KioskMainScreen = () => {
+     const [cartItems, setCartItems] = useState([]);
+@@ -94,7 +93,6 @@
+                     <button onClick={() => setIsCouponPopupOpen(true)}>쿠폰 적용</button>
+                 )}
+             </div>
+-            <div className="mainscreenkiosklist"><KioskList/></div>
+             <div className="mainscreencartpage">
+                 <Cartpage
+                     cartItems={cartItems}
+@@ -103,11 +101,11 @@
+                     onRemove={handleRemove}
+                 />
+             </div>
++            <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
+             <div className="kioskpleaproductlist"><KioskFleaproductlist onAddToCart={handleAddToCart}/></div>
+             <div className="barcodebuttoncontainer">
+                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
+                 <div className="buttonzone">
+-                    <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
+                     <button className="mainscreenpayment" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>
+                     <button className="mainscreentohome" onClick={kioskhomeclick}>홈으로</button>
+                 </div>
+Index: Frontend/src/pages/Kiosk/index.css
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/index.css b/Frontend/src/pages/Kiosk/index.css
+deleted file mode 100644
+--- a/Frontend/src/pages/Kiosk/index.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ /dev/null	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
+@@ -1,39 +0,0 @@
+-.kiosk {
+-    display: grid;
+-    height: 100vh; /* 화면 전체 높이 */
+-    grid-template-rows: auto auto auto auto auto;
+-    place-items: center; /* 모든 자식 요소를 가로와 세로 중앙 정렬 */
+-}
+-
+-.headercontainer1 {
+-    grid-row: 1;
+-}
+-
+-.barcode_image {
+-    grid-row: 2; /* 첫 번째 행에 배치 */
+-    margin-top: 100px; /* 위쪽 여백 */
+-}
+-
+-.instructions {
+-    grid-row: 3; /* 두 번째 행에 배치 */
+-    width: 1600px;
+-    font-size: 80px;
+-    font-weight: bold;
+-    text-align: center;
+-}
+-
+-.start_button {
+-    grid-row: 4; /* 세 번째 행에 배치 */
+-    background-color: #4a90e2;
+-    width: 600px;
+-    height: 250px;
+-    color: white;
+-    border: none;
+-    font-size: 120px;
+-    border-radius: 120px;
+-    cursor: pointer;
+-}
+-
+-.description {
+-    grid-row: 5;
+-}
+Index: Frontend/src/pages/Kiosk/main.css
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/main.css b/Frontend/src/pages/Kiosk/main.css
+deleted file mode 100644
+--- a/Frontend/src/pages/Kiosk/main.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ /dev/null	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
+@@ -1,97 +0,0 @@
+-.kioskmainscreen {
+-    display: grid;
+-    height: 100vh; /* 화면 전체 높이 */
+-    grid-template-rows: 200px 150px 100px 910px 400px auto; /* 마지막 행은 유연하게 조정 가능 */
+-    grid-template-areas:
+-        "header"
+-        "notice"
+-        "kiosklist"
+-        "cartpage"
+-        "kioskpleaproductlist"
+-        "scanner";
+-    place-items: center; /* 모든 자식 요소를 가로와 세로 중앙 정렬 */
+-}
+-
+-.mainscreencontainer {
+-    grid-area: header; /* 첫 번째 행 */
+-}
+-
+-.mainscreennotice {
+-    grid-area: notice; /* 두 번째 행 */
+-    width: 1600px;
+-    height: 150px;
+-    font-size: 110px;
+-    font-weight: bold;
+-    text-align: left;
+-
+-    display: flex;
+-    justify-content: space-between;
+-}
+-
+-.mainscreennotice button {
+-    width: 450px;
+-    height: 150px;
+-    font-size: 80px;
+-    margin-right: 30px;
+-}
+-
+-.mainscreenkiosklist {
+-    grid-area: kiosklist; /* 세 번째 행 */
+-}
+-
+-.mainscreeencartpage {
+-    grid-area: cartpage; /* 네 번째 행 */
+-    width: 1600px;
+-}
+-
+-.kioskpleaproductlist {
+-    grid-area: kioskpleaproductlist;
+-    width: 1600px;
+-}
+-
+-.barcodebuttoncontainer {
+-    grid-area: scanner;
+-    display: flex;
+-    justify-content: space-between;
+-    align-items: center;
+-}
+-
+-.mainscreenbarcodescanner {
+-    width: 800px;
+-    border: black solid 1px;
+-}
+-
+-.buttonzone {
+-    grid-area: scanner;
+-    width: 800px;
+-    height: 800px;
+-    background-color: white;
+-    color: white;
+-    font-weight: bold;
+-
+-    display: flex;
+-    flex-direction: column;
+-    align-items: center;
+-    justify-content: space-evenly;
+-}
+-
+-.cartpagetotal {
+-    width: 700px;
+-    font-size: 80px;
+-    border-radius: 8px;
+-    color: black;
+-    text-align: center;
+-}
+-
+-.mainscreenpayment {
+-    width: 700px;
+-    font-size: 70px;
+-    border-radius: 8px;
+-    background-color: red;
+-}
+-
+-.mainscreentohome {
+-    width: 700px;
+-    font-size: 70px;
+-    border-radius: 8px;
+-}
+Index: Frontend/src/components/KioskHeaderContainer/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.headercontainer {\n    width: 1600px;\n    height: 200px;\n    background-color: #ebf0fa;\n    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);\n}\n\n.logo {\n    text-decoration: none;\n    z-index: 10;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskHeaderContainer/style.css b/Frontend/src/components/KioskHeaderContainer/style.css
+--- a/Frontend/src/components/KioskHeaderContainer/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskHeaderContainer/style.css	(date 1739452992153)
+@@ -1,11 +1,13 @@
+ .headercontainer {
+-    width: 1600px;
+-    height: 200px;
++    display: flex;
++    justify-content: space-between;
++    align-items: center;
++    width: 100%;
++    height: 100%;
+     background-color: #ebf0fa;
+     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+ }
+ 
+ .logo {
+     text-decoration: none;
+-    z-index: 10;
+ }
+Index: Frontend/src/components/KioskPaymentPopup/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.payment-popup {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.5);\n    display: grid;\n    place-items: center;\n    z-index: 800;\n}\n\n.payment-content {\n    width: 80%;\n    height: 80%;\n    background-color: white;\n    padding: 20px;\n    border-radius: 10px;\n    text-align: center;\n    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n}\n\n.payment-notice {\n    font-size: 80px;\n}\n\n.payment-options button {\n    width: 800px;\n    height: 300px;\n    margin: 10px;\n    padding: 10px 20px;\n    font-size: 120px;\n    cursor: pointer;\n}\n\n.close-button {\n    width: 600px;\n    height: 200px;\n    margin-top: 20px;\n    padding: 10px 20px;\n    font-size: 120px;\n    background-color: #ccc;\n    border: none;\n    cursor: pointer;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskPaymentPopup/style.css b/Frontend/src/components/KioskPaymentPopup/style.css
+--- a/Frontend/src/components/KioskPaymentPopup/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskPaymentPopup/style.css	(date 1739465188911)
+@@ -21,24 +21,24 @@
+ }
+ 
+ .payment-notice {
+-    font-size: 80px;
++    font-size: 30px;
+ }
+ 
+ .payment-options button {
+-    width: 800px;
+-    height: 300px;
++    width: 50%;
++    height: 25%;
+     margin: 10px;
+     padding: 10px 20px;
+-    font-size: 120px;
++    font-size: 10px;
+     cursor: pointer;
+ }
+ 
+ .close-button {
+-    width: 600px;
+-    height: 200px;
++    width: 75%;
++    height: 15%;
+     margin-top: 20px;
+     padding: 10px 20px;
+-    font-size: 120px;
++    font-size: 20px;
+     background-color: #ccc;
+     border: none;
+     cursor: pointer;
+Index: Frontend/src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import \"./App.css\";\nimport { useEffect } from \"react\";\nimport { Route, Routes } from \"react-router-dom\";\nimport MainPage from \"./pages/MainPage\";\nimport Kiosk from \"./pages/Kiosk\"\nimport KioskMainScreen from \"./pages/Kiosk/main\";\nimport SignUp from \"./pages/SignUpPage/SignUp\";\nimport OwnerSignUp from \"./pages/SignUpPage/OwnerSignUp\";\nimport UserSignUp from \"./pages/SignUpPage/UserSignUp\";\nimport MyPage from \"./pages/MyPage\";\nimport Coupons from \"./pages/Coupons\";\nimport Chats from \"./pages/Chats\";\nimport KakaoRedirect from \"./pages/KakaoRedirect\";\nimport SearchPage from \"./pages/Search\";\nimport StoreDetail from \"./pages/Storedetail\"\nimport MakeCoupons from \"./pages/MakeCoupons\";\nimport Notice from \"./pages/Notice\";\nimport StockRequests from \"./pages/StockRequests\";\nimport FleaRequests from \"./pages/FleaRequests\";\nimport SearchbyNurtrition from \"./pages/SearchbyNurtrition\";\nimport SearchResult from \"./pages/SearchResult\";\nimport StoredetailRequestPopup from \"./pages/StoredetailRequest\";\nimport StoreDetailFlearequest from \"./pages/StoredetailFlearequest\";\nimport {KakaoMapProvider} from \"./contexts/ KakaoMapContext\";\n\n\nfunction App() {\n\n  function setScreenSize() {\n    let vh = window.innerHeight * 0.01;\n    document.documentElement.style.setProperty(\"--vh\", `${vh}px`);\n  }\n  useEffect(() => {\n    setScreenSize();\n  });\n\n\n  return (\n    <div className=\"App\">\n\n      <KakaoMapProvider>\n    <Routes>\n      <Route path=\"/signup\" element={<SignUp/>}/>\n      <Route path=\"/owner-signup\" element={<OwnerSignUp/>}/>\n      <Route path=\"/user-signup\" element={<UserSignUp/>}/>\n      <Route path=\"/mypage/user\" element={<MyPage/>}/>\n      <Route path=\"/mypage/user/coupons\" element={<Coupons/>}/>\n      <Route path=\"/mypage/user/chats\" element={<Chats/>}/>\n      <Route path=\"/mypage/admin\" element={<MyPage/>}/>\n        <Route path=\"/mypage/admin/flea\" element={<FleaRequests/>}/>\n        <Route path=\"/mypage/admin/stock\" element={<StockRequests/>}/>\n        <Route path=\"/mypage/admin/coupon\" element={<MakeCoupons/>}/>\n        <Route path=\"/mypage/admin/notice\" element={<Notice/>}/>\n\n      <Route path=\"/oauth/kakao\" element={<KakaoRedirect />} />\n\n      <Route path=\"/kiosk\" element={<Kiosk/>}/>\n      <Route path=\"/kmain\" element={<KioskMainScreen/>}/>\n\n        <Route path=\"/\" element={<MainPage/>}/>\n        <Route path=\"/search/results\" element={<SearchResult/>}/>\n      <Route path=\"/search\" element={<SearchPage/>}/>\n      <Route path=\"/storedetail/:storeNo\" element={<StoreDetail/>}/>\n      <Route path=\"/storedetail/:storeNo/request\" element={<StoredetailRequestPopup/>}/>\n      <Route path=\"/storedetail/:storeNo/flearequest\" element={<StoreDetailFlearequest/>}/>\n      <Route path=\"/searchbynutrition\" element={<SearchbyNurtrition/>}/>\n\n    </Routes>\n      </KakaoMapProvider>\n\n    </div>\n  );\n}\n\nexport default App;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.js b/Frontend/src/App.js
+--- a/Frontend/src/App.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/App.js	(date 1739462816844)
+@@ -3,7 +3,7 @@
+ import { Route, Routes } from "react-router-dom";
+ import MainPage from "./pages/MainPage";
+ import Kiosk from "./pages/Kiosk"
+-import KioskMainScreen from "./pages/Kiosk/main";
++import KioskMainScreen from "./pages/KioskMain";
+ import SignUp from "./pages/SignUpPage/SignUp";
+ import OwnerSignUp from "./pages/SignUpPage/OwnerSignUp";
+ import UserSignUp from "./pages/SignUpPage/UserSignUp";
+@@ -55,7 +55,8 @@
+       <Route path="/oauth/kakao" element={<KakaoRedirect />} />
+ 
+       <Route path="/kiosk" element={<Kiosk/>}/>
+-      <Route path="/kmain" element={<KioskMainScreen/>}/>
++      <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
++      {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
+ 
+         <Route path="/" element={<MainPage/>}/>
+         <Route path="/search/results" element={<SearchResult/>}/>
+Index: Frontend/src/pages/Kiosk/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/style.css b/Frontend/src/pages/Kiosk/style.css
+new file mode 100644
+--- /dev/null	(date 1739463023379)
++++ b/Frontend/src/pages/Kiosk/style.css	(date 1739463023379)
+@@ -0,0 +1,56 @@
++.kiosk {
++    display: grid;
++    width: 100%;
++    height: 100%;
++    grid-template-rows: 8vh auto auto auto auto;
++    place-items: center;
++}
++
++.headercontainer1 {
++    grid-row: 1;
++    width: 100%;
++}
++
++.barcode_image {
++    grid-row: 2;
++    display: flex;
++    justify-content: center;
++    align-items: center;
++    margin-top: 1vh;
++    width: 100%;
++    height: 100%;
++}
++
++.barcode_image img {
++    max-width: 100%;
++    max-height: 100%;
++    object-fit: contain;
++}
++
++
++.instructions {
++    grid-row: 3; /* 두 번째 행에 배치 */
++    width: 100%;
++    font-size: 40px;
++    font-weight: bold;
++    text-align: center;
++}
++
++.start_button {
++    grid-row: 4; /* 세 번째 행에 배치 */
++    background-color: #4a90e2;
++    width: 100%;
++    height: 100%;
++    color: white;
++    border: none;
++    font-size: 60px;
++    border-radius: 5%;
++    cursor: pointer;
++}
++
++.description {
++    grid-row: 5;
++    width: 100%;
++    height: 30vh;
++    object-fit: contain;
++}
+Index: Frontend/src/api/StoreDetailApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import apiClient from \"./apiClient\";\n\nconst StoreDetailApi = async (storeNo, setProductdata) => {\n    try {\n\n        const response = await apiClient.get('api/store/detail', {\n            params: { storeNo },\n        });\n\n        const product = response.data;\n\n        if (response.status === 200) {\n            setProductdata(product); // 가져온 데이터를 setProductData로 전달\n        } else {\n            console.error('API 요청 실패:', product.message || '알 수 없는 오류');\n            alert('API 호출 실패!');\n        }\n    } catch (error) {\n        console.error('API 호출 중 오류 발생:', error);\n\n        if (error.response && error.response.data) {\n            alert(`API 호출 중 오류가 발생했습니다: ${error.response.data.message}`);\n        } else {\n            alert('API 호출 중 알 수 없는 오류가 발생했습니다.');\n        }\n    }\n};\n\nexport default StoreDetailApi;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/StoreDetailApi.js b/Frontend/src/api/StoreDetailApi.js
+--- a/Frontend/src/api/StoreDetailApi.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/api/StoreDetailApi.js	(date 1739455980080)
+@@ -1,9 +1,11 @@
+-import apiClient from "./apiClient";
++import axios from "axios";
++
++const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+ 
+ const StoreDetailApi = async (storeNo, setProductdata) => {
+     try {
+ 
+-        const response = await apiClient.get('api/store/detail', {
++        const response = await axios.get(`${apiUrl}/api/store/detail`, {
+             params: { storeNo },
+         });
+ 
+Index: Frontend/src/pages/KioskMain/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/KioskMain/style.css b/Frontend/src/pages/KioskMain/style.css
+new file mode 100644
+--- /dev/null	(date 1739466001450)
++++ b/Frontend/src/pages/KioskMain/style.css	(date 1739466001450)
+@@ -0,0 +1,100 @@
++.kioskmainscreen {
++    display: grid;
++    max-width: 800px;
++    width: 100%;
++    height: 100%;
++    grid-template-rows: 8vh 6vh 48vh 4vh 9vh 25vh;
++    grid-template-areas:
++        "header"
++        "notice"
++        "cartpage"
++        "cartpagetotal"
++        "kioskpleaproductlist"
++        "scanner";
++    place-items: center;
++}
++
++.mainscreencontainer {
++    grid-area: header;
++    width: 100%;
++    height: 100%;
++}
++
++.mainscreennotice {
++    grid-area: notice;
++    width: 100%;
++    height: 100%;
++    font-size: 60px;
++    display: flex;
++    justify-content: space-between;
++    text-align: center;
++}
++
++.mainscreennotice button {
++    width: 20%;
++    height: 100%;
++    font-size: 20px;
++    border-radius: 1px;
++}
++
++.mainscreencartpage {
++    grid-area: cartpage;
++    width: 100%;
++    height: 100%;
++}
++
++.kioskpleaproductlist {
++    grid-area: kioskpleaproductlist;
++    width: 100%;
++    height: 100%;
++}
++
++.barcodebuttoncontainer {
++    bottom: 0;
++    grid-area: scanner;
++    width: 95%;
++    height: 100%;
++    display: flex;
++    justify-content: space-between;
++    align-items: center;
++}
++
++.mainscreenbarcodescanner {
++    width: 45%;
++    height: 90%;
++    border: 0.2vw solid black;
++}
++
++.buttonzone {
++    width: 50%;
++    height: 100%;
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    justify-content: space-evenly;
++}
++
++.cartpagetotal {
++    grid-area: cartpagetotal;
++    width: 95%;
++    text-align: right;
++    font-size: 40px;
++    margin-right: 5%;
++    color: black;
++}
++
++.mainscreenpayment,
++.mainscreentohome {
++    width: 80%;
++    height: 25%;
++    font-size: 2vw;
++    border-radius: 1vw;
++}
++
++.mainscreenpayment {
++    background-color: #ff4444;
++}
++
++.mainscreentohome {
++    background-color: #cccccc;
++}
+Index: Frontend/src/components/KakaoMapMarkers/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// components/KakaoMapMarkers.js\nimport { useEffect, useRef } from 'react';\nimport { useKakaoMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n    const { map, isMapReady } = useKakaoMap();\n    const markers = useRef([]);\n\n    // 마커 생성/제거\n    useEffect(() => {\n        if (!isMapReady || !storelist?.length) return;\n\n        const kakao = window.kakao;\n\n        // 기존 마커 제거\n        markers.current.forEach(marker => marker.setMap(null));\n\n        // 신규 마커 생성\n        markers.current = storelist.map(store => {\n            return new kakao.maps.Marker({\n                position: new kakao.maps.LatLng(store.lat, store.lon),\n                map: map\n            });\n        });\n\n        // 지도 범위 조정\n        const bounds = new kakao.maps.LatLngBounds();\n        storelist.forEach(store => bounds.extend(new kakao.maps.LatLng(store.lat, store.lon)));\n        map.setBounds(bounds);\n\n        return () => markers.current.forEach(marker => marker.setMap(null));\n    }, [storelist, isMapReady]);\n\n    return null;\n};\n\nexport default KakaoMapMarkers;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
+--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739435733633)
+@@ -1,4 +1,3 @@
+-// components/KakaoMapMarkers.js
+ import { useEffect, useRef } from 'react';
+ import { useKakaoMap } from "../../contexts/ KakaoMapContext";
+ 
+@@ -23,11 +22,6 @@
+             });
+         });
+ 
+-        // 지도 범위 조정
+-        const bounds = new kakao.maps.LatLngBounds();
+-        storelist.forEach(store => bounds.extend(new kakao.maps.LatLng(store.lat, store.lon)));
+-        map.setBounds(bounds);
+-
+         return () => markers.current.forEach(marker => marker.setMap(null));
+     }, [storelist, isMapReady]);
+ 
+Index: Frontend/src/pages/Kiosk/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Link } from 'react-router-dom'\nimport \"./index.css\"\nimport KioskHeaderContainer from \"../../components/KioskHeaderContainer\";\n\n\nfunction Kiosk() {\n    return (\n        <div className=\"kiosk\">\n\n            <div className=\"headercontainer1\">\n                <KioskHeaderContainer/>\n            </div>\n\n            {/* Barcode Image Section */}\n            <div className=\"barcode_image\">\n                <img src=\"/barcode_icon.png\" alt=\"kioskbarcode\"/>\n            </div>\n\n            {/* Instruction Section */}\n            <section className=\"instructions\">\n                <p>상품은 <span className=\"highlight\">바코드 스캐너</span>에 찍어주세요!</p>\n                <p>플리마켓 제품은 <span className=\"highlight\">키오스크</span>에서 구매하세요!</p>\n            </section>\n\n            {/* Start Button */}\n            <Link to=\"/kmain\">\n                <button className=\"start_button\">시작하기</button>\n            </Link>\n            \n            {/* Description*/}\n            <div className=\"description\">\n                <img src='/Description.png' alt= \"kioskinstruction\" />\n            </div>\n        </div>\n    )\n}\n\nexport default Kiosk\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/index.js b/Frontend/src/pages/Kiosk/index.js
+--- a/Frontend/src/pages/Kiosk/index.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/pages/Kiosk/index.js	(date 1739462816851)
+@@ -1,9 +1,13 @@
+-import { Link } from 'react-router-dom'
+-import "./index.css"
+ import KioskHeaderContainer from "../../components/KioskHeaderContainer";
++import userInfoApi from "../../api/UserInfoApi";
++import "./style.css"
++
++const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+ 
++const Kiosk = () => {
+ 
+-function Kiosk() {
++    const getUserInfo = userInfoApi();
++
+     return (
+         <div className="kiosk">
+ 
+@@ -11,23 +15,35 @@
+                 <KioskHeaderContainer/>
+             </div>
+ 
+-            {/* Barcode Image Section */}
+             <div className="barcode_image">
+                 <img src="/barcode_icon.png" alt="kioskbarcode"/>
+             </div>
+ 
+-            {/* Instruction Section */}
+             <section className="instructions">
+                 <p>상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!</p>
+                 <p>플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!</p>
+             </section>
+ 
+-            {/* Start Button */}
+-            <Link to="/kmain">
+-                <button className="start_button">시작하기</button>
+-            </Link>
+-            
+-            {/* Description*/}
++            <a
++                href={`localhost:3000/kiosk/main`}
++                className="kioskstartbutton"
++            >
++            {/*<a*/}
++            {/*    href={getUserInfo ? `${apiUrl}/kiosk/${getUserInfo?.storeNo}` : '#'}*/}
++            {/*    className="kioskstartbutton"*/}
++            {/*    onClick={(e) => {*/}
++            {/*    if (!getUserInfo) {*/}
++            {/*        e.preventDefault();*/}
++            {/*        alert("접근 권한이 없습니다");*/}
++            {/*    }*/}
++            {/*        }}*/}
++            {/*    >*/}
++            <button
++                className={`start_button ${!getUserInfo ? 'disabled' : ''}`}
++                // disabled={!getUserInfo}
++                >시작하기</button>
++               </a>
++
+             <div className="description">
+                 <img src='/Description.png' alt= "kioskinstruction" />
+             </div>
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 배포 테스트 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#68&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"8290000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"6\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 배포 테스트 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/.idea/workspace.xml	(date 1739466115205)
+@@ -4,11 +4,24 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 배포 테스트 (#68)">
++    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 지도 호출 흐름 수정 (#68)">
++      <change afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/StoreDetailApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/StoreDetailApi.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskList/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskList/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.css" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -44,6 +57,9 @@
+     &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;
+   }
+ }</component>
++  <component name="ProblemsViewState">
++    <option name="selectedTabId" value="CurrentFile" />
++  </component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 5
+ }</component>
+@@ -76,6 +92,7 @@
+       <recent name="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup" />
+     </key>
+     <key name="MoveFile.RECENT_KEYS">
++      <recent name="$PROJECT_DIR$/Frontend/src/pages/KioskMain" />
+       <recent name="$PROJECT_DIR$/Frontend/src/pages" />
+     </key>
+   </component>
+@@ -109,7 +126,8 @@
+       <workItem from="1739308289993" duration="36322000" />
+       <workItem from="1739350559470" duration="19822000" />
+       <workItem from="1739426375278" duration="2000" />
+-      <workItem from="1739426451033" duration="8290000" />
++      <workItem from="1739426451033" duration="11909000" />
++      <workItem from="1739452113566" duration="9943000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -151,7 +169,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739433129149</updated>
+     </task>
+-    <option name="localTasksCounter" value="6" />
++    <task id="LOCAL-00006" summary="[FE/FIX] 지도 호출 흐름 수정 (#68)">
++      <option name="closed" value="true" />
++      <created>1739435017686</created>
++      <option name="number" value="00006" />
++      <option name="presentableId" value="LOCAL-00006" />
++      <option name="project" value="LOCAL" />
++      <updated>1739435017686</updated>
++    </task>
++    <option name="localTasksCounter" value="7" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -170,6 +196,18 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="[FE/FIX] 배포 테스트 (#68)" />
+-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 배포 테스트 (#68)" />
++    <MESSAGE value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
++    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
++  </component>
++  <component name="XDebuggerManager">
++    <breakpoint-manager>
++      <breakpoints>
++        <line-breakpoint enabled="true" type="javascript">
++          <url>file://$PROJECT_DIR$/Frontend/src/hooks/useAuth.js</url>
++          <properties lambdaOrdinal="-1" />
++          <option name="timeStamp" value="1" />
++        </line-breakpoint>
++      </breakpoints>
++    </breakpoint-manager>
+   </component>
+ </project>
+\ No newline at end of file
+Index: Frontend/src/components/KioskCouponPopup/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.kiosk-coupon-popup {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.5);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    z-index: 700;\n}\n\n.kiosk-coupon-content {\n    width: 1400px;\n    height: 2000px;\n    background-color: white;\n    padding: 20px;\n    border-radius: 10px;\n    text-align: center;\n    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n\n    display: grid;\n    grid-template-rows: auto 800px auto;\n    place-items: center;\n}\n\n.kiosk-coupon-notice {\n    grid-row: 1;\n    font-size: 80px;\n}\n\n.kiosk-coupon-scanner {\n    grid-row: 2;\n    width: 800px;\n    border: black solid 1px;\n}\n\n.coupon-close-button {\n    grid-row: 3;\n    width: 600px;\n    height: 200px;\n    margin-top: 20px;\n    padding: 10px 20px;\n    font-size: 120px;\n    background-color: #ccc;\n    border: none;\n    cursor: pointer;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskCouponPopup/style.css b/Frontend/src/components/KioskCouponPopup/style.css
+--- a/Frontend/src/components/KioskCouponPopup/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskCouponPopup/style.css	(date 1739465346875)
+@@ -12,8 +12,8 @@
+ }
+ 
+ .kiosk-coupon-content {
+-    width: 1400px;
+-    height: 2000px;
++    width: 80%;
++    height: 80%;
+     background-color: white;
+     padding: 20px;
+     border-radius: 10px;
+@@ -21,7 +21,7 @@
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ 
+     display: grid;
+-    grid-template-rows: auto 800px auto;
++    grid-template-rows: 10vh auto 10vh;
+     place-items: center;
+ }
+ 
+@@ -32,17 +32,18 @@
+ 
+ .kiosk-coupon-scanner {
+     grid-row: 2;
+-    width: 800px;
++    width: 90%;
+     border: black solid 1px;
+ }
+ 
+ .coupon-close-button {
+     grid-row: 3;
+-    width: 600px;
+-    height: 200px;
++    bottom: 0;
++    width: 100%;
++    height: 100%;
+     margin-top: 20px;
+     padding: 10px 20px;
+-    font-size: 120px;
++    font-size: 20px;
+     background-color: #ccc;
+     border: none;
+     cursor: pointer;
+Index: Frontend/src/components/KioskFleaproductlist/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.kioskfleamarketsection {\n    display: grid;\n    width: 1600px;\n    height: 400px;\n    grid-template-columns: repeat(4, 1fr); /* 각 버튼이 동일한 비율로 배치 */\n}\n\n.kioskfleamarketbutton {\n    width: 100%; /* 부모의 크기에 맞게 조정 */\n    height: 100%;\n    font-size: 40px;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskFleaproductlist/style.css b/Frontend/src/components/KioskFleaproductlist/style.css
+--- a/Frontend/src/components/KioskFleaproductlist/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskFleaproductlist/style.css	(date 1739464329427)
+@@ -1,12 +1,12 @@
+ .kioskfleamarketsection {
+     display: grid;
+-    width: 1600px;
+-    height: 400px;
++    width: 100%;
++    height: 100%;
+     grid-template-columns: repeat(4, 1fr); /* 각 버튼이 동일한 비율로 배치 */
+ }
+ 
+ .kioskfleamarketbutton {
+     width: 100%; /* 부모의 크기에 맞게 조정 */
+     height: 100%;
+-    font-size: 40px;
++    font-size: 30px;
+ }
+Index: Frontend/src/components/KioskList/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.kiosklist {\n    display: grid;\n    width: 1600px;\n    height: 100px;\n    background-color: #ebf0fa;\n    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);\n    grid-auto-columns: 600px 550px 450px;\n    place-items: center;\n}\n\n.text1 {\n    grid-column : 1;\n    color: black;\n    font-size: 35px;\n    font-weight: bold;\n}\n\n.text2 {\n    grid-column: 2;\n    color: black;\n    font-size: 35px;\n    font-weight: bold;\n}\n\n.text3 {\n    grid-column: 3;\n    color: black;\n    font-size: 35px;\n    font-weight: bold;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskList/style.css b/Frontend/src/components/KioskList/style.css
+--- a/Frontend/src/components/KioskList/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskList/style.css	(date 1739464060628)
+@@ -1,30 +1,31 @@
+ .kiosklist {
+     display: grid;
+-    width: 1600px;
+-    height: 100px;
++    max-width: 800px;
++    width: 100%;
++    height: 100%;
+     background-color: #ebf0fa;
+     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+-    grid-auto-columns: 600px 550px 450px;
++    grid-auto-columns: auto auto auto;
+     place-items: center;
+ }
+ 
+ .text1 {
+     grid-column : 1;
+     color: black;
+-    font-size: 35px;
++    font-size: 30px;
+     font-weight: bold;
+ }
+ 
+ .text2 {
+     grid-column: 2;
+     color: black;
+-    font-size: 35px;
++    font-size: 20px;
+     font-weight: bold;
+ }
+ 
+ .text3 {
+     grid-column: 3;
+     color: black;
+-    font-size: 35px;
++    font-size: 20px;
+     font-weight: bold;
+ }
+\ No newline at end of file
+Index: Frontend/src/api/UserInfoApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/UserInfoApi.js b/Frontend/src/api/UserInfoApi.js
+new file mode 100644
+--- /dev/null	(date 1739456645651)
++++ b/Frontend/src/api/UserInfoApi.js	(date 1739456645651)
+@@ -0,0 +1,29 @@
++import axios from "axios";
++
++const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
++
++const userInfoApi = async () => {
++    try {
++
++        const response = await axios.get(`${apiUrl}/api/users/info`);
++
++        const userInfo = response.data;
++
++        if (response.status === 200) {
++            return userInfo;
++        } else {
++            console.error('API 요청 실패:', userInfo.message || '알 수 없는 오류');
++            return null;
++        }
++    } catch (error) {
++        console.error('API 호출 중 오류 발생:', error);
++
++        if (error.response && error.response.data) {
++            return null
++        } else {
++            return null
++        }
++    }
++};
++
++export default userInfoApi;
+\ No newline at end of file
+Index: Frontend/src/components/KioskCartpage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from 'react';\nimport './style.css'\n\n\nconst CartPage = ({ cartItems, onIncrement, onDecrement, onRemove }) => {\n    return (\n        <div className=\"cartpagedom\">\n            <div className=\"cartpagelist\">\n                {cartItems.length === 0 ? (\n                    <div className=\"cartpageemptynotice\"><h1>장바구니가 비어 있습니다.<br/> 바코드를 스캔하여 물건을 담아보세요!</h1></div>\n                    ) : (\n                    <ul>\n                        {cartItems.map((item) => (\n                            <li key={item.id} className=\"cartpageli\">\n                                {item.itemName}\n                                <button onClick={() => onRemove(item.itemName)} className=\"cartpagedelete\">삭제</button>\n                                <div className=\"eachitemtotal\">{(item.price * item.quantity).toLocaleString()}원</div>\n                                <button onClick={() => onDecrement(item.itemName)} className=\"cartpageplmi1\">-</button>\n                                {item.quantity}\n                                <button onClick={() => onIncrement(item.itemName)} className=\"cartpageplmi2\">+</button>\n                            </li>\n                        ))}\n                    </ul>\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default CartPage;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskCartpage/index.js b/Frontend/src/components/KioskCartpage/index.js
+--- a/Frontend/src/components/KioskCartpage/index.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskCartpage/index.js	(date 1739465124782)
+@@ -12,13 +12,25 @@
+                     <ul>
+                         {cartItems.map((item) => (
+                             <li key={item.id} className="cartpageli">
+-                                {item.itemName}
+-                                <button onClick={() => onRemove(item.itemName)} className="cartpagedelete">삭제</button>
+-                                <div className="eachitemtotal">{(item.price * item.quantity).toLocaleString()}원</div>
+-                                <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
+-                                {item.quantity}
+-                                <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
++                                <div className="image-container">
++                                    <img src={item.imageUrl} alt={item.itemName} />
++                                    <button onClick={() => onRemove(item.itemName)} className="cartpagedelete">×</button>
++                                </div>
++
++                                <div className="item-info">
++                                    <div className="item-name">{item.itemName}</div>
++
++                                    <div className="price-quantity">
++                                        <div className="eachitemtotal">{(item.price * item.quantity).toLocaleString()}원</div>
++                                        <div className="quantity-controls">
++                                            <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
++                                            <span className="quantity">{item.quantity}</span>
++                                            <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
++                                        </div>
++                                    </div>
++                                </div>
+                             </li>
++
+                         ))}
+                     </ul>
+                 )}
+Index: Frontend/src/components/KioskHeaderContainer/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from \"react\";\nimport \"./style.css\";\n\nconst KioskHeaderContainer = () => {\n    return (\n        <div className=\"headercontainer\">\n            <div className=\"logo\"> <img src=\"/logo.png\" alt=\"headercontainerimg\"/></div>\n        </div>\n    );\n}\n\nexport default KioskHeaderContainer;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskHeaderContainer/index.js b/Frontend/src/components/KioskHeaderContainer/index.js
+--- a/Frontend/src/components/KioskHeaderContainer/index.js	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskHeaderContainer/index.js	(date 1739457085096)
+@@ -1,10 +1,49 @@
+-import React from "react";
++import React, { useEffect } from "react";
++import useAuth from "../../hooks/useAuth";
+ import "./style.css";
+ 
++const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
++
+ const KioskHeaderContainer = () => {
++    const { logindata } = useAuth();
++
++    useEffect(() => {
++        if (logindata && logindata.usertype !== 'A') {
++            window.location.href = `${apiUrl}/api/users/logout`;
++        }
++    }, [logindata]);
++
+     return (
+         <div className="headercontainer">
+-            <div className="logo"> <img src="/logo.png" alt="headercontainerimg"/></div>
++            <div className="logo">
++                <img src="/logo.png" alt="headercontainerimg"/>
++            </div>
++
++            <div className="auth-section">
++                {logindata ? (
++                    logindata.usertype === 'A' ? (
++                        <a
++                            href={`${apiUrl}/api/users/logout`}
++                            className="logout-button"
++                        >
++                            로그아웃
++                        </a>
++                    ) : (
++                        <div className="auth-message">
++                            <span className="permission-error">
++                                페이지 접근 권한이 없습니다 (자동 로그아웃)
++                            </span>
++                        </div>
++                    )
++                ) : (
++                    <a
++                        href={`${apiUrl}/api/users/login`}
++                        className="login-button"
++                    >
++                        <button className="login-button">로그인</button>
++                    </a>
++                )}
++            </div>
+         </div>
+     );
+ }
+Index: Frontend/src/components/KioskCartpage/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.cartpagedom {\n    display: grid;\n    width: 1600px ;\n    height: 910px ;\n    grid-template-rows: 1100px 210px;\n}\n\n.cartpagelist {\n    grid-row: 1;\n\n}\n\n.cartpageemptynotice {\n    display: flex;\n    justify-content: center;\n    font-size: 50px;\n\n}\n\n.cartpagelist ul {\n    list-style: none;\n    margin: 0;\n    display: grid;\n    max-height: 910px;\n    overflow-y: auto;\n}\n\n.cartpageli {\n    width: 1500px;\n    height: 100px;\n    border: 3px solid #ddd;\n    border-radius: 8px;\n    background-color: lightgray;\n    font-size: 40px;\n\n    display: grid; /* Flexbox 활성화 */\n    grid-template-columns: 500px 100px 600px 40px 200px 40px;\n    place-items: center;\n}\n\n.cartpageli .itemname {\n    grid-column: 1;\n    width: 300px;\n    white-space: nowrap; /* 텍스트 줄바꿈 방지 */\n    overflow: hidden; /* 넘치는 텍스트 숨기기 */\n    text-overflow: ellipsis; /* 말줄임표 처리 */\n}\n\n.cartpagedelete {\n    grid-column: 2;\n    width : 100px;\n    height: 70px;\n    font-size: 30px;\n    font-weight: bold;\n\n}\n\n.eachitemtotal {\n    grid-column: 3;\n    width: 300px;\n    font-size: 40px;\n}\n\n.cartpageplmi1 {\n    grid-column: 4;\n    width: 60px;\n    font-size: 40px;\n}\n\n.carpageli .item.quantity {\n    grid-column: 5;\n    width: 100px;\n}\n.cartpageplmi2 {\n    width: 60px;\n    font-size: 40px;\n}\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskCartpage/style.css b/Frontend/src/components/KioskCartpage/style.css
+--- a/Frontend/src/components/KioskCartpage/style.css	(revision 7f8fae0fcfbf6b491668d19588e08d407c76209a)
++++ b/Frontend/src/components/KioskCartpage/style.css	(date 1739464815872)
+@@ -1,80 +1,136 @@
+ .cartpagedom {
+-    display: grid;
+-    width: 1600px ;
+-    height: 910px ;
+-    grid-template-rows: 1100px 210px;
+-}
+-
+-.cartpagelist {
+-    grid-row: 1;
+-
+-}
+-
+-.cartpageemptynotice {
+-    display: flex;
+-    justify-content: center;
+-    font-size: 50px;
+-
++    width: 100%;
++    height: 100vh;
++    background: #f8f9fa;
+ }
+ 
+ .cartpagelist ul {
+     list-style: none;
++    padding: 0;
+     margin: 0;
+     display: grid;
+-    max-height: 910px;
+-    overflow-y: auto;
++    gap: 15px;
++    padding: 20px;
+ }
+ 
+ .cartpageli {
+-    width: 1500px;
+-    height: 100px;
+-    border: 3px solid #ddd;
++    position: relative;
++    background: white;
++    border-radius: 12px;
++    padding: 20px;
++    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
++    display: grid;
++    grid-template-columns: 120px 1fr;
++    gap: 20px;
++    min-height: 150px;
++}
++
++/* 이미지 영역 */
++.cartpageli .image-container {
++    position: relative;
++    width: 120px;
++    height: 120px;
+     border-radius: 8px;
+-    background-color: lightgray;
+-    font-size: 40px;
+-
+-    display: grid; /* Flexbox 활성화 */
+-    grid-template-columns: 500px 100px 600px 40px 200px 40px;
+-    place-items: center;
++    overflow: hidden;
+ }
+ 
+-.cartpageli .itemname {
+-    grid-column: 1;
+-    width: 300px;
+-    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+-    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+-    text-overflow: ellipsis; /* 말줄임표 처리 */
++.cartpageli img {
++    width: 100%;
++    height: 100%;
++    object-fit: cover;
++    border-radius: 8px;
+ }
+ 
++/* 삭제 버튼 */
+ .cartpagedelete {
+-    grid-column: 2;
+-    width : 100px;
+-    height: 70px;
+-    font-size: 30px;
+-    font-weight: bold;
++    position: absolute;
++    top: 8px;
++    right: 8px;
++    width: 32px;
++    height: 32px;
++    background: rgba(0, 0, 0, 0.7);
++    color: white;
++    border: none;
++    border-radius: 50%;
++    cursor: pointer;
++    display: flex;
++    align-items: center;
++    justify-content: center;
++    font-size: 18px;
++    z-index: 2;
++}
++
++/* 상품 정보 영역 */
++.item-info {
++    display: flex;
++    flex-direction: column;
++    justify-content: space-between;
++}
+ 
++.item-name {
++    font-size: 22px;
++    font-weight: 600;
++    color: #2d3748;
++    margin-bottom: 8px;
++    display: -webkit-box;
++    -webkit-line-clamp: 2;
++    -webkit-box-orient: vertical;
++    overflow: hidden;
++    text-overflow: ellipsis;
++}
++
++/* 가격 & 수량 컨트롤 */
++.price-quantity {
++    display: flex;
++    align-items: center;
++    justify-content: space-between;
+ }
+ 
+ .eachitemtotal {
+-    grid-column: 3;
+-    width: 300px;
+-    font-size: 40px;
++    font-size: 24px;
++    font-weight: 700;
++    color: #2d3748;
+ }
+ 
+-.cartpageplmi1 {
+-    grid-column: 4;
+-    width: 60px;
+-    font-size: 40px;
++.quantity-controls {
++    display: flex;
++    align-items: center;
++    gap: 12px;
+ }
+ 
+-.carpageli .item.quantity {
+-    grid-column: 5;
+-    width: 100px;
+-}
++.cartpageplmi1,
+ .cartpageplmi2 {
+-    width: 60px;
+-    font-size: 40px;
++    width: 40px;
++    height: 40px;
++    border: none;
++    border-radius: 8px;
++    background: #4a5568;
++    color: white;
++    font-size: 24px;
++    cursor: pointer;
++    display: flex;
++    align-items: center;
++    justify-content: center;
+ }
+ 
++.cartpageli .quantity {
++    font-size: 22px;
++    min-width: 30px;
++    text-align: center;
++}
+ 
++/* 빈 장바구니 표시 */
++.cartpageemptynotice {
++    display: flex;
++    align-items: center;
++    justify-content: center;
++    height: 100%;
++    text-align: center;
++    padding: 30px;
++}
+ 
++.cartpageemptynotice h1 {
++    font-size: 28px;
++    color: #718096;
++    line-height: 1.5;
++}

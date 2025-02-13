@@ -1,0 +1,100 @@
+.kioskmainscreen {
+    display: grid;
+    max-width: 800px;
+    width: 100%;
+    height: 100%;
+    grid-template-rows: 8vh 6vh 48vh 4vh 9vh 25vh;
+    grid-template-areas:
+        "header"
+        "notice"
+        "cartpage"
+        "cartpagetotal"
+        "kioskpleaproductlist"
+        "scanner";
+    place-items: center;
+}
+
+.mainscreencontainer {
+    grid-area: header;
+    width: 100%;
+    height: 100%;
+}
+
+.mainscreennotice {
+    grid-area: notice;
+    width: 100%;
+    height: 100%;
+    font-size: 60px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.mainscreennotice button {
+    width: 20%;
+    height: 100%;
+    font-size: 20px;
+    border-radius: 1px;
+}
+
+.mainscreencartpage {
+    grid-area: cartpage;
+    width: 100%;
+    height: 100%;
+}
+
+.kioskpleaproductlist {
+    grid-area: kioskpleaproductlist;
+    width: 100%;
+    height: 100%;
+}
+
+.barcodebuttoncontainer {
+    bottom: 0;
+    grid-area: scanner;
+    width: 95%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mainscreenbarcodescanner {
+    width: 45%;
+    height: 90%;
+    border: 0.2vw solid black;
+}
+
+.buttonzone {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.cartpagetotal {
+    grid-area: cartpagetotal;
+    width: 95%;
+    text-align: right;
+    font-size: 40px;
+    margin-right: 5%;
+    color: black;
+}
+
+.mainscreenpayment,
+.mainscreentohome {
+    width: 80%;
+    height: 25%;
+    font-size: 2vw;
+    border-radius: 1vw;
+}
+
+.mainscreenpayment {
+    background-color: #ff4444;
+}
+
+.mainscreentohome {
+    background-color: #cccccc;
+}

@@ -12,13 +12,25 @@ const CartPage = ({ cartItems, onIncrement, onDecrement, onRemove }) => {
                     <ul>
                         {cartItems.map((item) => (
                             <li key={item.id} className="cartpageli">
-                                {item.itemName}
-                                <button onClick={() => onRemove(item.itemName)} className="cartpagedelete">삭제</button>
-                                <div className="eachitemtotal">{(item.price * item.quantity).toLocaleString()}원</div>
-                                <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
-                                {item.quantity}
-                                <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
+                                <div className="image-container">
+                                    <img src={item.imageUrl} alt={item.itemName} />
+                                    <button onClick={() => onRemove(item.itemName)} className="cartpagedelete">×</button>
+                                </div>
+
+                                <div className="item-info">
+                                    <div className="item-name">{item.itemName}</div>
+
+                                    <div className="price-quantity">
+                                        <div className="eachitemtotal">{(item.price * item.quantity).toLocaleString()}원</div>
+                                        <div className="quantity-controls">
+                                            <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
+                                            <span className="quantity">{item.quantity}</span>
+                                            <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
+
                         ))}
                     </ul>
                 )}

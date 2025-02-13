@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import KioskHeaderContainer from "../../components/KioskHeaderContainer";
-import KioskList from "../../components/KioskList";
 import BarcodeScannerComponent from "../../components/KioskBarcodeScanner";
 import Cartpage from "../../components/KioskCartpage";
 import KioskFleaproductlist from "../../components/KioskFleaproductlist";
 import PaymentPopup from '../../components/KioskPaymentPopup';
 import KioskCouponPopup from "../../components/KioskCouponPopup";
 import KioskPaymentFinishPopup from "../../components/KioskPaymentFinishPopup";
-import './main.css';
+import './style.css';
 
 const KioskMainScreen = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -94,7 +93,6 @@ const KioskMainScreen = () => {
                     <button onClick={() => setIsCouponPopupOpen(true)}>쿠폰 적용</button>
                 )}
             </div>
-            <div className="mainscreenkiosklist"><KioskList/></div>
             <div className="mainscreencartpage">
                 <Cartpage
                     cartItems={cartItems}
@@ -103,11 +101,11 @@ const KioskMainScreen = () => {
                     onRemove={handleRemove}
                 />
             </div>
+            <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
             <div className="kioskpleaproductlist"><KioskFleaproductlist onAddToCart={handleAddToCart}/></div>
             <div className="barcodebuttoncontainer">
                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
                 <div className="buttonzone">
-                    <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
                     <button className="mainscreenpayment" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>
                     <button className="mainscreentohome" onClick={kioskhomeclick}>홈으로</button>
                 </div>

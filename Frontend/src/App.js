@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Kiosk from "./pages/Kiosk"
-import KioskMainScreen from "./pages/Kiosk/main";
+import KioskMainScreen from "./pages/KioskMain";
 import SignUp from "./pages/SignUpPage/SignUp";
 import OwnerSignUp from "./pages/SignUpPage/OwnerSignUp";
 import UserSignUp from "./pages/SignUpPage/UserSignUp";
@@ -55,7 +55,8 @@ function App() {
       <Route path="/oauth/kakao" element={<KakaoRedirect />} />
 
       <Route path="/kiosk" element={<Kiosk/>}/>
-      <Route path="/kmain" element={<KioskMainScreen/>}/>
+      <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
+      {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
 
         <Route path="/" element={<MainPage/>}/>
         <Route path="/search/results" element={<SearchResult/>}/>
