@@ -3,40 +3,28 @@ import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {
     const { map, isSDKLoaded } = useKakaoMap();
-    const markersRef = useRef([]); // 마커 참조 저장용
+    const markers = useRef([]);
 
+    // 마커 생성/제거 핵심 로직
     useEffect(() => {
-        if (!isSDKLoaded || !map || !storelist?.length) return;
+        if (!isSDKLoaded || !map || !storelist) return;
 
         const kakao = window.kakao;
-        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용
 
-        // 기존 마커 제거
-        markersRef.current.forEach(marker => marker.setMap(null));
-        markersRef.current = [];
+        // 기존 마커 전부 제거
+        markers.current.forEach(marker => marker.setMap(null));
+        markers.current = [];
 
-        // 신규 마커 생성
+        // 새 마커 생성
         storelist.forEach(store => {
-            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
-
             const marker = new kakao.maps.Marker({
-                position: markerPosition,
-                map: map,
+                position: new kakao.maps.LatLng(store.lat, store.lon),
+                map: map
             });
-
-            // 이벤트 리스너 추가
-            kakao.maps.event.addListener(marker, 'click', () => {
-                alert(`${store.storeName} 클릭!`);
-            });
-
-            markersRef.current.push(marker);
-            bounds.extend(markerPosition); // 범위 확장
+            markers.current.push(marker);
         });
 
-        // 지도 범위 조정
-        map.setBounds(bounds);
-
-    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가
+    }, [storelist, map, isSDKLoaded]); // 의존성 배열 최소화
 
     return null;
 };
