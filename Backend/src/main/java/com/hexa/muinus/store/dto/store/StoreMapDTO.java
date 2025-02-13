@@ -12,8 +12,8 @@ public class StoreMapDTO {
 
     private int storeNo;
     private String name;
-    private Double locationX; // 경도
-    private Double locationY; // 위도
+    private Double locationX; // 위도
+    private Double locationY; // 경도
     private Double distance; // 검색 위치와의 거리(m)
 
     public StoreMapDTO(StoreMapProjection projection) {

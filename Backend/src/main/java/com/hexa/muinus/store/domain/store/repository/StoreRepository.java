@@ -28,12 +28,12 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
         SELECT 	s.store_no AS storeNo, s.name AS name, s.location_x AS locationX, s.location_y AS locationY,
                 s.address AS address, s.phone AS phone, i.item_name AS itemName, si.sale_price AS salePrice,
                 si.discount_rate AS discountRate, si.quantity AS quantity, s.flimarket_yn AS flimarketYn,
-                SQRT(POW((s.location_y - :y) * 111, 2) + POW((s.location_x - :x) * 111 * COS(RADIANS(:x)), 2)) * 1000 AS distance
+                SQRT(POW((s.location_x - :x) * 111, 2) + POW((s.location_y - :y) * 111 * COS(RADIANS(:y)), 2)) * 1000 AS distance
          FROM store s
          JOIN store_item si ON si.store_no = s.store_no
          AND	 si.item_id = :itemId
          JOIN item i ON i.item_id = si.item_id
-         WHERE SQRT(POW((s.location_y - :y) * 111, 2) + POW((s.location_x - :x) * 111 * COS(RADIANS(:x)), 2)) * 1000 <= :radius
+         WHERE SQRT(POW((s.location_x - :x) * 111, 2) + POW((s.location_y - :y) * 111 * COS(RADIANS(:y)), 2)) * 1000 <= :radius
          AND   si.quantity > 0
          ORDER BY distance
     """, nativeQuery = true)
@@ -43,9 +43,9 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
                                                      @Param("radius") int radius);
     @Query(value = """
         SELECT  s.store_no AS storeNo, s.name AS name, s.location_x AS locationX, s.location_y AS locationY,
-                SQRT(POW((s.location_y - :y) * 111, 2) + POW((s.location_x - :x) * 111 * COS(RADIANS(:x)), 2)) * 1000 AS distance
+                SQRT(POW((s.location_x - :x) * 111, 2) + POW((s.location_y - :y) * 111 * COS(RADIANS(:y)), 2)) * 1000 AS distance
         FROM store s
-        WHERE SQRT(POW((s.location_y - :y) * 111, 2) + POW((s.location_x - :x) * 111 * COS(RADIANS(:x)), 2)) < 1
+        WHERE SQRT(POW((s.location_x - :x) * 111, 2) + POW((s.location_y - :y) * 111 * COS(RADIANS(:y)), 2)) < 1
         ORDER BY distance
 
         """, nativeQuery = true)
@@ -66,7 +66,7 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
     @Modifying
     @Query(value = "INSERT INTO store (user_no, name, location_x, location_y, address, registration_no, flimarket_yn, flimarket_section_cnt) " +
-            "VALUES (:userNo, :name, :longitude, :latitude, :address, :registrationNo, :flimarketYn, :fliMarketSectionCount)", nativeQuery = true)
+            "VALUES (:userNo, :name, :latitude, :longitude, :address, :registrationNo, :flimarketYn, :fliMarketSectionCount)", nativeQuery = true)
     int saveStore(Integer userNo, String name, Double longitude, Double latitude, String address, String registrationNo, String flimarketYn, Byte fliMarketSectionCount);
 
     Store findStoreByUser_Email(String userEmail);

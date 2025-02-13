@@ -17,24 +17,25 @@ public class BatchJobScheduler {
 
     private final JobLauncher jobLauncher;
     private final Job dailySalesJob;
-//    private final Job preferenceJob;
+    private final Job preferenceJob;
 
     public BatchJobScheduler(JobLauncher jobLauncher,
-                             @Qualifier("dailySalesBatchJob") Job dailySalesJob) {
-//                             @Qualifier("preferenceBatchJob") Job preferenceJob) {
+                             @Qualifier("dailySalesBatchJob") Job dailySalesJob,
+                             @Qualifier("preferenceBatchJob") Job preferenceJob) {
         this.jobLauncher = jobLauncher;
         this.dailySalesJob = dailySalesJob;
-//        this.preferenceJob = preferenceJob;
+        this.preferenceJob = preferenceJob;
     }
 
     /**
-     * 매일 자정 00:00:00에 병렬로 배치 Job 실행
+     * 매일 자정 실행
      */
-    @Scheduled(cron = "0 35 15 * * ?")
-    public void runBatchJobsInParallel() {
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void runBatchJobs() {
+        log.info("배치 Job 실행 시작: {}", new Date());
         try {
-//            log.info("PreferenceJob 시작: {}", new Date());
-//            jobLauncher.run(preferenceJob, createJobParameters());
+            log.info("PreferenceJob 시작: {}", new Date());
+            jobLauncher.run(preferenceJob, createJobParameters());
 
             log.info("DailySalesJob 시작: {}", new Date());
             jobLauncher.run(dailySalesJob, createJobParameters());
@@ -42,6 +43,9 @@ public class BatchJobScheduler {
         } catch (Exception e) {
             log.error("배치 Job 실행 중 오류 발생: {}", e.getMessage(), e);
         }
+
+
+        log.info("모든 배치 Job 순차 실행 완료: {}", new Date());
     }
 
     /**

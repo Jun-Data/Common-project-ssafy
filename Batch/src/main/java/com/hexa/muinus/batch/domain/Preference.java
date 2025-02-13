@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Preference {
     private PreferenceId id;
-    private BigDecimal score;
-    private LocalDate updatedAt;
+    private BigDecimal dailyScore;
+    private BigDecimal monthlyScore;
 
     public Long getUserNo() {
         return id != null ? id.getUserNo() : null;
@@ -20,4 +20,7 @@ public class Preference {
     public Long getItemId() {
         return id != null ? id.getItemId() : null;
     }
+
+    public LocalDate getUpdatedDate() { return id != null ? id.getUpdatedAt() : null; }
+
 }

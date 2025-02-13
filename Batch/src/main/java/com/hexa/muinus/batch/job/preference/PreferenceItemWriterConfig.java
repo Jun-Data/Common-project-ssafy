@@ -1,8 +1,8 @@
 package com.hexa.muinus.batch.job.preference;
 
+import com.hexa.muinus.batch.domain.Preference;
 import com.hexa.muinus.batch.exeption.BatchErrorCode;
 import com.hexa.muinus.batch.exeption.BatchProcessingException;
-import com.hexa.muinus.batch.domain.Preference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -15,14 +15,16 @@ import javax.sql.DataSource;
 @Slf4j
 @Configuration
 public class PreferenceItemWriterConfig {
-    private final static String query = """
-                    INSERT INTO hexa.preference (user_no, item_id, score, updated_at)
-                    VALUES (:userNo, :itemId, :score, :updatedAt)
-                    ON DUPLICATE KEY UPDATE score = VALUES(score), updated_at = VALUES(updated_at)
-                    """
-            ;
 
     private final DataSource dataDBSource;
+
+    private static final String QUERY = """
+        INSERT INTO preference (user_no, item_id, updated_at, daily_score, monthly_score)
+        VALUES (:id.userNo, :id.itemId, :id.updatedAt, :dailyScore, :monthlyScore)
+    """;
+//    ON DUPLICATE KEY UPDATE
+//    daily_score = VALUES(daily_score),
+//    monthly_score = VALUES(monthly_score)
 
     public PreferenceItemWriterConfig(@Qualifier("dataDBSource") DataSource dataDBSource) {
         this.dataDBSource = dataDBSource;
@@ -31,10 +33,10 @@ public class PreferenceItemWriterConfig {
     @Bean
     public JdbcBatchItemWriter<Preference> preferenceItemWriter() {
         try {
-            log.debug("Preference Writer 초기화 시작");
+            log.info("Preference Writer 초기화 시작");
             return new JdbcBatchItemWriterBuilder<Preference>()
                     .dataSource(dataDBSource)
-                    .sql(query)
+                    .sql(QUERY)
                     .beanMapped()
                     .build();
         } catch (Exception e) {

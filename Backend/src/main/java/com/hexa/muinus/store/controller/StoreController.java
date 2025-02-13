@@ -87,7 +87,7 @@ public class StoreController {
      * 내 주변 매장 리스트
      * @param x 경도
      * @param y 위도
-     * @return List<StoreMapDTO
+     * @return List<StoreMapDTO>
      *
      */
     @GetMapping("/list/near")
