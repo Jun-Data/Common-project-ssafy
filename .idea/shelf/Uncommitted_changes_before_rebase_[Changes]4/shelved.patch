@@ -1,0 +1,218 @@
+Index: Frontend/src/components/KakaoMapMarkers/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useRef } from \"react\";\nimport { useKakaoMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n    const { map, isSDKLoaded } = useKakaoMap();\n    const markersRef = useRef([]); // 마커 참조 저장용\n\n    useEffect(() => {\n        if (!isSDKLoaded || !map || !storelist?.length) return;\n\n        const kakao = window.kakao;\n        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용\n\n        // 기존 마커 제거\n        markersRef.current.forEach(marker => marker.setMap(null));\n        markersRef.current = [];\n\n        // 신규 마커 생성\n        storelist.forEach(store => {\n            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);\n\n            const marker = new kakao.maps.Marker({\n                position: markerPosition,\n                map: map,\n            });\n\n            // 이벤트 리스너 추가\n            kakao.maps.event.addListener(marker, 'click', () => {\n                alert(`${store.storeName} 클릭!`);\n            });\n\n            markersRef.current.push(marker);\n            bounds.extend(markerPosition); // 범위 확장\n        });\n\n        // 지도 범위 조정\n        map.setBounds(bounds);\n\n    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가\n\n    return null;\n};\n\nexport default KakaoMapMarkers;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
+--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision f9d8af8b6780bff86494fe18306da07892e7df76)
++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739433065849)
+@@ -3,40 +3,28 @@
+ 
+ const KakaoMapMarkers = ({ storelist }) => {
+     const { map, isSDKLoaded } = useKakaoMap();
+-    const markersRef = useRef([]); // 마커 참조 저장용
++    const markers = useRef([]);
+ 
++    // 마커 생성/제거 핵심 로직
+     useEffect(() => {
+-        if (!isSDKLoaded || !map || !storelist?.length) return;
++        if (!isSDKLoaded || !map || !storelist) return;
+ 
+         const kakao = window.kakao;
+-        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용
+ 
+-        // 기존 마커 제거
+-        markersRef.current.forEach(marker => marker.setMap(null));
+-        markersRef.current = [];
++        // 기존 마커 전부 제거
++        markers.current.forEach(marker => marker.setMap(null));
++        markers.current = [];
+ 
+-        // 신규 마커 생성
++        // 새 마커 생성
+         storelist.forEach(store => {
+-            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
+-
+             const marker = new kakao.maps.Marker({
+-                position: markerPosition,
+-                map: map,
+-            });
+-
+-            // 이벤트 리스너 추가
+-            kakao.maps.event.addListener(marker, 'click', () => {
+-                alert(`${store.storeName} 클릭!`);
++                position: new kakao.maps.LatLng(store.lat, store.lon),
++                map: map
+             });
+-
+-            markersRef.current.push(marker);
+-            bounds.extend(markerPosition); // 범위 확장
++            markers.current.push(marker);
+         });
+ 
+-        // 지도 범위 조정
+-        map.setBounds(bounds);
+-
+-    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가
++    }, [storelist, map, isSDKLoaded]); // 의존성 배열 최소화
+ 
+     return null;
+ };
+Index: .idea/shelf/Uncommitted_changes_before_rebase_[Changes]3/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]3/shelved.patch b/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]3/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1739432324512)
++++ b/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]3/shelved.patch	(date 1739432324512)
+@@ -0,0 +1,85 @@
++Index: Frontend/src/components/KakaoMapMarkers/index.js
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>import { useEffect } from \"react\";\nimport { useKakaoMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n    const { map, isSDKLoaded } = useKakaoMap();\n    const markersRef = useRef([]); // 마커 참조 저장용\n\n    useEffect(() => {\n        if (!isSDKLoaded || !map || !storelist?.length) return;\n\n        const kakao = window.kakao;\n        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용\n\n        // 기존 마커 제거\n        markersRef.current.forEach(marker => marker.setMap(null));\n        markersRef.current = [];\n\n        // 신규 마커 생성\n        storelist.forEach(store => {\n            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);\n\n            const marker = new kakao.maps.Marker({\n                position: markerPosition,\n                map: map,\n            });\n\n            // 이벤트 리스너 추가\n            kakao.maps.event.addListener(marker, 'click', () => {\n                alert(`${store.storeName} 클릭!`);\n            });\n\n            markersRef.current.push(marker);\n            bounds.extend(markerPosition); // 범위 확장\n        });\n\n        // 지도 범위 조정\n        map.setBounds(bounds);\n\n    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가\n\n    return null;\n};\n\nexport default KakaoMapMarkers;\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
++--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision d14bbebe947a52779cb2fb2f65dc28812b1fb08d)
+++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739432189828)
++@@ -1,4 +1,4 @@
++-import { useEffect } from "react";
+++import { useEffect, useRef } from "react";
++ import { useKakaoMap } from "../../contexts/ KakaoMapContext";
++ 
++ const KakaoMapMarkers = ({ storelist }) => {
++Index: Frontend/src/pages/StoredetailFlearequest/index.js
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>import React, { useState } from \"react\";\nimport { useNavigate } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport FleaRequestApi from \"../../api/FleaRequestApi\";\nimport './style.css';\n\nconst StoredetailFlearequest = () => {\n    const navigate = useNavigate();\n\n    const [formData, setFormData] = useState({\n        userAccount: \"\",\n        userBank: \"\",\n        accountName: \"\",\n        itemName: \"\",\n        quantity: 1,\n        price: 10000,\n        sectionNumber: 1,\n        startDate: \"\",\n        expireDate: 30,\n        imagePath: \"\", // Base64 형식으로 저장\n    });\n\n    // 입력값 변경 핸들러\n    const handleChange = (e) => {\n        const { name, value } = e.target;\n        setFormData({\n            ...formData,\n            [name]: value,\n        });\n    };\n\n    // 이미지 파일 업로드 핸들러\n    const handleFileChange = (e) => {\n        const file = e.target.files[0];\n        if (file) {\n            const reader = new FileReader();\n            reader.onloadend = () => {\n                setFormData({\n                    ...formData,\n                    imagePath: reader.result, // Base64 데이터 저장\n                });\n            };\n            reader.readAsDataURL(file); // 파일을 Base64로 변환\n        }\n    };\n\n    // 폼 제출 핸들러\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        console.log(\"입력된 데이터:\", formData);\n        FleaRequestApi(formData);\n        // API 호출 또는 추가 처리\n    };\n\n    return (\n        <div className=\"storedetailpageflearequest\">\n            <div className=\"requestheader\"><HeaderContainer /></div>\n            <div className=\"requestpopup\">\n                <div className=\"storedetailflea\">\n                    <div className=\"fleanotice\">플리마켓 신청하기</div>\n                    <form onSubmit={handleSubmit} className=\"fleaform\">\n                        <ul>\n                            <li>\n                                <label>계좌:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"userAccount\"\n                                    value={formData.userAccount}\n                                    onChange={handleChange}\n                                    placeholder=\"계좌번호를 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>은행:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"userBank\"\n                                    value={formData.userBank}\n                                    onChange={handleChange}\n                                    placeholder=\"은행 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>계좌:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"accountName\"\n                                    value={formData.accountName}\n                                    onChange={handleChange}\n                                    placeholder=\"소유주 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>상품:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"itemName\"\n                                    value={formData.itemName}\n                                    onChange={handleChange}\n                                    placeholder=\"상품 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>수량:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"quantity\"\n                                    value={formData.quantity}\n                                    onChange={handleChange}\n                                    min=\"1\"\n                                />\n                            </li>\n                            <li>\n                                <label>가격:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"price\"\n                                    value={formData.price}\n                                    onChange={handleChange}\n                                    min=\"0\"\n                                />\n                            </li>\n                            <li>\n                                <label>섹션:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"sectionNumber\"\n                                    value={formData.sectionNumber}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li className=\"datetimeinputfield\">\n                                <label>시작:</label>\n                                <input\n                                    type=\"datetime-local\"\n                                    name=\"startDate\"\n                                    value={formData.startDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li>\n                                <label>보관:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"expireDate\"\n                                    value={formData.expireDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            {/* 파일 업로드 버튼 */}\n                            <li>\n                                <label>사진:</label>\n                                <input\n                                    type=\"file\"\n                                    accept=\"image/*\" // 이미지 파일만 허용\n                                    onChange={handleFileChange} // 파일 변경 핸들러 호출\n                                />\n                            </li>\n                        </ul>\n                        {/* 제출 버튼 */}\n                        <button type=\"submit\" className=\"flearequestsubmitbutton\">제출하기</button>\n                    </form>\n\n                    {/* 뒤로가기 버튼 */}\n                    <button\n                        onClick={() => navigate(-1)}\n                        className='flearequestbackbutton'>뒤로가기</button>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default StoredetailFlearequest;\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/Frontend/src/pages/StoredetailFlearequest/index.js b/Frontend/src/pages/StoredetailFlearequest/index.js
++--- a/Frontend/src/pages/StoredetailFlearequest/index.js	(revision d14bbebe947a52779cb2fb2f65dc28812b1fb08d)
+++++ b/Frontend/src/pages/StoredetailFlearequest/index.js	(date 1739432294967)
++@@ -113,7 +113,7 @@
++                             <li>
++                                 <label>가격:</label>
++                                 <input
++-                                    type="number"
+++                                    type="text"
++                                     name="price"
++                                     value={formData.price}
++                                     onChange={handleChange}
++Index: .idea/workspace.xml
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 배포 테스트 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkersResult/index.js\" beforeDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#68&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"5350000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"3\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 배포 테스트 (#68)\" />\n  </component>\n</project>
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/.idea/workspace.xml b/.idea/workspace.xml
++--- a/.idea/workspace.xml	(revision d14bbebe947a52779cb2fb2f65dc28812b1fb08d)
+++++ b/.idea/workspace.xml	(date 1739432294992)
++@@ -6,12 +6,8 @@
++   <component name="ChangeListManager">
++     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 배포 테스트 (#68)">
++       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
++       <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkersResult/index.js" beforeDir="false" />
++-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
++     </list>
++     <option name="SHOW_DIALOG" value="false" />
++     <option name="HIGHLIGHT_CONFLICTS" value="true" />
++@@ -112,7 +108,7 @@
++       <workItem from="1739308289993" duration="36322000" />
++       <workItem from="1739350559470" duration="19822000" />
++       <workItem from="1739426375278" duration="2000" />
++-      <workItem from="1739426451033" duration="5350000" />
+++      <workItem from="1739426451033" duration="5753000" />
++     </task>
++     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
++       <option name="closed" value="true" />
++@@ -130,7 +126,15 @@
++       <option name="project" value="LOCAL" />
++       <updated>1739428785456</updated>
++     </task>
++-    <option name="localTasksCounter" value="3" />
+++    <task id="LOCAL-00003" summary="[FE/FIX] 배포 테스트 (#68)">
+++      <option name="closed" value="true" />
+++      <created>1739432038269</created>
+++      <option name="number" value="00003" />
+++      <option name="presentableId" value="LOCAL-00003" />
+++      <option name="project" value="LOCAL" />
+++      <updated>1739432038269</updated>
+++    </task>
+++    <option name="localTasksCounter" value="4" />
++     <servers />
++   </component>
++   <component name="TypeScriptGeneratedFilesManager">
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 배포 테스트 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#68&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"5753000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"4\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 배포 테스트 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision f9d8af8b6780bff86494fe18306da07892e7df76)
++++ b/.idea/workspace.xml	(date 1739433065872)
+@@ -5,9 +5,7 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 배포 테스트 (#68)">
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -108,7 +106,7 @@
+       <workItem from="1739308289993" duration="36322000" />
+       <workItem from="1739350559470" duration="19822000" />
+       <workItem from="1739426375278" duration="2000" />
+-      <workItem from="1739426451033" duration="5753000" />
++      <workItem from="1739426451033" duration="6523000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -134,7 +132,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739432038269</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="[FE/FIX] 배포 테스트 (#68)">
++      <option name="closed" value="true" />
++      <created>1739432340013</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1739432340013</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+Index: .idea/shelf/Uncommitted_changes_before_rebase__Changes_3.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_rebase__Changes_3.xml b/.idea/shelf/Uncommitted_changes_before_rebase__Changes_3.xml
+new file mode 100644
+--- /dev/null	(date 1739433065856)
++++ b/.idea/shelf/Uncommitted_changes_before_rebase__Changes_3.xml	(date 1739433065856)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_rebase_[Changes]3" date="1739432324678" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]3/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
++</changelist>
+\ No newline at end of file

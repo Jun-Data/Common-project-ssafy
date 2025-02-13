@@ -1,52 +1,42 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapContainer = ({ coords }) => {
-    const { map, setMap, isSDKLoaded } = useKakaoMap();
-    const mapContainer = useRef(null);
-    const markerRef = useRef(null); // 마커 참조 저장
+    const { map, setMap, isSDKLoaded, setIsSDKLoaded, setIsMapReady } = useKakaoMap();
+    const containerRef = useRef(null);
 
-    // 지도 초기화 및 마커 생성
+    // SDK 초기화
     useEffect(() => {
-        if (isSDKLoaded && !map && mapContainer.current) {
-            const kakao = window.kakao;
+        if (!window.kakao) {
+            const script = document.createElement('script');
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&autoload=false`;
+            script.onload = () => {
+                window.kakao.maps.load(() => {
+                    setIsSDKLoaded(true);
+                });
+            };
+            document.head.appendChild(script);
+        }
+    }, []);
 
-            // 지도 생성
-            const mapInstance = new kakao.maps.Map(mapContainer.current, {
-                center: new kakao.maps.LatLng(coords.lat, coords.lng),
-                level: 3,
-            });
+    // 지도 생성
+    useEffect(() => {
+        if (!isSDKLoaded || !containerRef.current) return;
 
-            // 커스텀 마커 이미지 설정
-            const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
-            const imageSize = new kakao.maps.Size(40, 40);
-            const imageOption = { offset: new kakao.maps.Point(27, 69) };
+        const mapInstance = new window.kakao.maps.Map(containerRef.current, {
+            center: new window.kakao.maps.LatLng(coords.lat, coords.lng),
+            level: 3
+        });
 
-            // 마커 생성
-            markerRef.current = new kakao.maps.Marker({
-                map: mapInstance,
-                position: new kakao.maps.LatLng(coords.lat, coords.lng),
-                image: new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
-            });
-
+        // 지도 완전 초기화 감지
+        window.kakao.maps.event.addListener(mapInstance, 'tilesloaded', () => {
             setMap(mapInstance);
-        }
-    }, [isSDKLoaded, coords, map, setMap]);
+            setIsMapReady(true);
+        });
 
-    // 좌표 변경 시 지도 중심 및 마커 위치 업데이트
-    useEffect(() => {
-        if (map && markerRef.current) {
-            const newPosition = new window.kakao.maps.LatLng(coords.lat, coords.lng);
+    }, [isSDKLoaded, coords.lat, coords.lng]);
 
-            // 지도 중심 이동
-            map.setCenter(newPosition);
-
-            // 마커 위치 업데이트
-            markerRef.current.setPosition(newPosition);
-        }
-    }, [coords, map]);
-
-    return <div ref={mapContainer} style={{ width: "100vw", height: "100vh" }} />;
+    return <div ref={containerRef} style={{ width: '100vw', height: '100vh', zIndex: '1'}} />;
 };
 
 export default KakaoMapContainer;
