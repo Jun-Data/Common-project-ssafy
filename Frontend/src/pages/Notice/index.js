@@ -6,18 +6,16 @@ import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import { DummyNotices } from "../../dummydata/notice";
 
-// const email = "jun9048@naver.com"; 
+const email = "jun9048@naver.com"; 
 
 const Notice = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [noticeTitle, setNoticeTitle] = useState("");
     const [noticeContent, setNoticeContent] = useState("");
     const [noticeImage, setNoticeImage] = useState(null);
-    const [NoticeImagePreview, setNoticeImagePreview] = useState(null);
-    // const [announcements, setAnnouncements] = useState([]); // 공지사항 목록 상태 추가
-    const [announcements, setAnnouncements] = useState(DummyNotices[0]?.announcements || []); // 더미데이터 공지사항 목록 상태 추가
-    const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
-    const [editingNoticeId, setEditingNoticeId] = useState(null); // 수정할 공지사항 ID 추가
+    // const [announcements, setAnnouncements] = useState([]); // 공지사항 목록 상태
+    const [announcements, setAnnouncements] = useState(DummyNotices[0]?.announcements || []); // 더미데이터 공지사항 목록 상태 
+    const [editingNoticeId, setEditingNoticeId] = useState(null); // 수정할 공지사항 ID 
 
     const modalBackground = useRef();
 
@@ -26,7 +24,6 @@ const Notice = () => {
         setAnnouncements(DummyNotices[0]?.announcements || []);
     }, []);
     
-    // 공지사항 목록 가져오기
     // useEffect(() => {
     //     const fetchAnnouncements = async () => {
     //         try {
@@ -36,45 +33,23 @@ const Notice = () => {
     //             console.error("공지사항 목록을 가져오지 못했습니다", error);
     //         }
     //     };
-    //     fetchAnnouncements(); // 컴포넌트가 마운트되면 공지사항 목록을 요청
+    //     fetchAnnouncements();
     // }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        
         if (file) {
-            if (NoticeImagePreview) {
-                URL.revokeObjectURL(NoticeImagePreview); // 기존 URL 정리
-            }
-    
-            // 미리보기 URL을 설정하기 전에 유효한 파일인지 확인
-            const imageUrl = URL.createObjectURL(file);
-            setNoticeImagePreview(imageUrl); // 미리보기 URL 설정
-    
-            // Base64로 변환 후 noticeImage에 저장
-            convertFileToBase64(file, (base64Image) => {
-                setNoticeImage(base64Image);
-            });
+            const imageUrl = URL.createObjectURL(file); // 이미지 URL로 변환
+            setNoticeImage(imageUrl); // URL을 상태에 저장
         }
     };
-    
-    
-    // 메모리 정리
-    useEffect(() => {
-        return () => {
-            if (NoticeImagePreview) {
-                URL.revokeObjectURL(NoticeImagePreview);
-            }
-        };
-    }, [NoticeImagePreview]);
-    
 
     const handleAddNotice = async () => {
-        // const formData = new FormData();
-        // formData.append("userEmail", email);
-        // formData.append("title", noticeTitle);
-        // formData.append("content", noticeContent);
-        // formData.append("boardImageUrl", noticeImage ? noticeImage : null);            
+        const formData = new FormData();
+        formData.append("userEmail", email);
+        formData.append("title", noticeTitle);
+        formData.append("content", noticeContent);
+        formData.append("boardImageUrl", noticeImage ? noticeImage : null);            
 
         // 더미데이터 공지
         const newAnnouncement = {
@@ -93,7 +68,6 @@ const Notice = () => {
         setNoticeImage(null);
         setModalIsOpen(false);
         setEditingNoticeId(null);
-
         // try {
         //     const response = await axios.post("http://i12a506.p.ssafy.io:8000/api/store/board", formData, {
         //         headers: { 'Content-Type': 'application/json' }
@@ -134,21 +108,7 @@ const Notice = () => {
         setModalIsOpen(true); // 모달 열기
     };
 
-
-    // const handleEditNotice = (announcementId) => {
-    //     const announcement = announcements.find(item => item.boardId === announcementId); // 클릭된 공지사항 찾기
-    //     setSelectedAnnouncement(announcement); // 상태에 저장 (폼에 표시하기 위해)
-    
-    //     // 폼에 채울 데이터 설정
-    //     setNoticeTitle(announcement.title);
-    //     setNoticeContent(announcement.content);
-    //     setNoticeImage(announcement.boardImageUrl);
-    //     setModalIsOpen(true); // 모달 열기
-    // };
-
-
     const handleSaveNotice = async () => {
-
         // 수정된 공지사항을 더미 데이터에 반영
         const updatedAnnouncements = announcements.map((announcement) => {
             if (announcement.boardId === editingNoticeId) {
@@ -171,13 +131,6 @@ const Notice = () => {
         setEditingNoticeId(null); // 수정 상태 리셋
     };
 
-    const convertFileToBase64 = (file, callback) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => callback(reader.result);  // Base64 문자열 반환
-        reader.onerror = (error) => console.error("Error converting file to Base64:", error);
-    };
-    
     return (
         <div>
             <HeaderContainer />
@@ -237,9 +190,9 @@ const Notice = () => {
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
-                                {NoticeImagePreview && (
+                                {noticeImage && (
                                     <ImagePreview>
-                                        <img src={URL.createObjectURL(NoticeImagePreview)} alt="Preview" />
+                                        <img src={URL.createObjectURL(noticeImage)} alt="Preview" />
                                     </ImagePreview>
                                 )}
                             </UploadContainer>

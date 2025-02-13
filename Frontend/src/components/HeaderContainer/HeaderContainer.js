@@ -6,12 +6,12 @@ import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
 import "./HeaderContainer.css";
 
 function HeaderContainer() {
-    const locationNow = useLocation();
+    // const locationNow = useLocation();
     const navigate = useNavigate();
     const { logindata } = useAuth(); //로그인 정보 가져오기
     const [showDropdown, setShowDropdown] = useState(false);
 
-    const handleConnectBell = () => {
+    const handleDropdown = () => {
         setShowDropdown(!showDropdown);
     };
 
@@ -56,24 +56,26 @@ function HeaderContainer() {
 
     return (
         <header className="header">
+
             <Link to="/" className="link">
                 <img src="/logo.png" alt="Muin Logo" className="logo" />
             </Link>
 
             <div className="icons">
-                <div className="link" onClick={handleConnectBell}>
+                
+                {/* <div className="link" onClick={handleConnectBell}>
                     <div className="bell">
                         <FontAwesomeIcon
                             icon={faBell}
                             className={locationNow.pathname === "/notifications" ? "bell-icon active-bell-icon" : "bell"}
                         />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="login">
                     {logindata ? (
                         // 로그인된 유저: faUser 아이콘 + 클릭 시 마이페이지 이동
-                        <FontAwesomeIcon icon={faUser} className="login-icon" onClick={handleNavigateToMyPage} />
+                        <FontAwesomeIcon icon={faUser} className="login-icon" onClick={handleDropdown} />
                     ) : (
                         // 로그인되지 않은 유저: faRightToBracket 아이콘 + 로그인 페이지 이동
                         <Link to="https://i12a506.p.ssafy.io/api/users/login">

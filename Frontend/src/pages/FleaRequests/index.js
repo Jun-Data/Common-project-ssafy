@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
-import { DummyFleaRequests } from '../../dummydata/flearequests';
 import styled from 'styled-components';
-
-// const email = "jun9048@naver.com"; 
+import useAuth from '../../hooks/useAuth';
 
 const FleaRequests = () => {
+  const {logindata} = useAuth();
   const [requests, setRequests] = useState([]); // 요청 목록을 배열로 저장
 
   useEffect(() => {
-    // API 요청 대신 더미 데이터를 사용
-    setRequests(DummyFleaRequests);
-  }, []);
-
-
-
-  // useEffect(() => {
-  //   const fetchFleaMarketRequests = async () => {
-  //     try {
-  //       // API 요청 URL 수정
-  //       const response = await axios.get(`http://i12a506.p.ssafy.io:8000/api/fli/list?email=${email}`);
-  //       setRequests(response.data); // 배열 형태로 데이터 저장
-  //     } catch (error) {
-  //       console.error("플리마켓 요청 목록 가져오기 실패", error);
-  //     }
-  //   };
-  //   fetchFleaMarketRequests();
-  // }, []);
+    const fetchFleaMarketRequests = async () => {
+      try {
+        if (logindata && logindata.email) {
+          // API 요청 URL 수정
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}fli/list?email=${logindata.email}`);
+          setRequests(response.data); // API 응답 데이터를 requests 상태에 저장
+        }
+      } catch (error) {
+        console.error("플리마켓 요청 목록 가져오기 실패", error);
+      }
+    };
+    fetchFleaMarketRequests();
+  }, [logindata]); // logindata가 변경될 때마다 API를 다시 호출
 
   return (
     <div>
