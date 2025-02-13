@@ -27,7 +27,7 @@
     background-color: #3f72af;
     align-items: center;
     position: relative;
-    z-index: 100;
+    z-index: 99;
 }
 
 .mainpageaddressdetail {
@@ -41,7 +41,7 @@
 .mainpagesearchbar {
     grid-row: 3;
     position: relative;
-    z-index: 100;
+    z-index: 99;
     width: 85%;
     height: 100%;
     margin-top: 20px;

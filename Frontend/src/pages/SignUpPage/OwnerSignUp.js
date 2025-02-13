@@ -101,24 +101,16 @@ function OwnerSignUp() {
                 }));
             }
         } else if (name === "fliMarketSectionCount") {
-            let newValue = value.replace(/[^0-9]/g, '');  // 숫자만 남기기
-            if (newValue > 4) {
-                newValue = 4; // 최대 4까지 입력 가능
-            }
-            if (newValue <= 0) {
-                newValue = 1; // 음수 값은 입력하지 않도록 처리
-            }
             setFormData((prevData) => ({
                 ...prevData,
-                [name]: newValue
+                [name]: value, // 입력값을 그대로 상태에 반영
             }));
         } else {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
             }));
-        }
-    };
+        }};
     
     const handleCheckboxChange = () => {
         setFormData((prevData) => ({
@@ -171,6 +163,19 @@ function OwnerSignUp() {
             return formErrors;
         }
         switch (name) {
+            case "userName":
+                // 이름은 한글 또는 영문으로만 입력을 허용
+                const nameRegex = /^[a-zA-Z가-힣]{2,20}$/;  // 2~20자 범위, 영문 또는 한글만
+                formErrors.userName = !value || !nameRegex.test(value)
+                    ? "이름은 한글 또는 영문으로 2~20자만 입력 가능합니다."
+                    : "";
+                break;
+            case "userEmail":
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                formErrors.userEmail = !value || !emailRegex.test(value)
+                    ? "이메일 형식이 올바르지 않습니다. (예: lee@ssafy.com)"
+                    : "";
+                break;
             case "userTelephone":
                 const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
                 formErrors.userTelephone = !value || !phoneRegex.test(value)
@@ -186,6 +191,15 @@ function OwnerSignUp() {
             case "storeAddress":
                 formErrors.storeAddress = !value ? "매장 주소는 필수 입력입니다." : "";
                 break;
+            case "fliMarketSectionCount":
+                const sectionCount = parseInt(value, 10);
+                if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 4) {
+                    formErrors.fliMarketSectionCount = "플리마켓 섹션 개수는 1부터 4까지 입력 가능합니다.";
+                } else {
+                    formErrors.fliMarketSectionCount = ""; // 에러 메시지 초기화
+                }
+                break;
+
             default:
                 break;
         }
@@ -341,8 +355,8 @@ function OwnerSignUp() {
                 </InputGroup>
 
                 <InputGroup>
-                    <label>사업자등록번호 <span>*</span></label>
-                    <input
+                    <label>사업자 등록번호 <span>*</span></label>
+                    <RegistrationNumberInput
                         type="text"
                         name="registrationNumber"
                         value={formData.registrationNumber}
@@ -357,7 +371,7 @@ function OwnerSignUp() {
                 </InputGroup>
 
                 <CheckboxWrapper>
-                    <label>플리마켓 허용여부</label>
+                    <FleaAllow>플리마켓 허용여부</FleaAllow>
                     <input
                         type="checkbox"
                         checked={formData.isFliMarketAllowed === "Y"}
@@ -388,6 +402,7 @@ function OwnerSignUp() {
                 <RegisterButtonsWrapper>
                     <RegisterButtons />
                 </RegisterButtonsWrapper>
+                <br/>
             </form>
             <BottomNavWrapper>
                 <BottomNav />
@@ -398,23 +413,28 @@ function OwnerSignUp() {
 
 const InputGroup = styled.div`
   margin-top: 15px;
+  margin-left: 15px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: ;
+  flex-direction: column;
+  gap: 10px;
   
   label {
     font-weight: bold;
+    display: flex;
+    gap: 5px;
+    width: 200px;
     
     span {
       color: red;
-      font-size: 18px;
+      font-size: 17px;
     }
   }
 
   input {
-    width: 60%;
+    width: 80%;
     padding: 9px;
-    font-size: 14px;
+    font-size: 13px;
     border: 1px solid #ccc;
     border-radius: 4px;
     &:focus {
@@ -423,8 +443,8 @@ const InputGroup = styled.div`
   }
 
   button {
-    width:30%;
-    margin-left: 10px;
+    width:25%;
+    margin-left: 5px;
   }
 `;
 
@@ -436,17 +456,15 @@ const CheckboxWrapper = styled.div`
   font-weight: bold;
 `;
 
-
 const RegisterButtonsWrapper = styled.div`
-    margin-bottom: 90px; /* 하단 버튼과 구분을 위한 간격 */
-    padding: 10px;
+    margin-bottom: 50px; /* 하단 버튼과 구분을 위한 간격 */
+    padding: 15px;
     display: flex;
     justify-content: center;
 `;
 
 const BottomNavWrapper = styled.div`
-    margin-top: 20px;
-    
+    margin-top: 20px;    
 `;
 
 const ErrorMessage = styled.div`
@@ -455,6 +473,14 @@ const ErrorMessage = styled.div`
   margin-top: 5px;
 `;
 
+const RegistrationNumberInput = styled.input`
+  width: 1px; /* 사업자 등록번호 입력창의 너비를 줄이기 */
+`;
 
+const FleaAllow = styled.label`
+    margin-left: 15px; /* 원하는 만큼 조절 가능 */
+    font-weight: bold;
+
+`;
 
 export default OwnerSignUp;

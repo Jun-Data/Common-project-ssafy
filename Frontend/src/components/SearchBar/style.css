@@ -6,6 +6,7 @@
     display: flex;
     align-content: center;
     justify-content: center;
+    z-index: 99;
 }
 
 /* 검색 입력창 스타일 */

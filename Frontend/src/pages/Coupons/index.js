@@ -1,256 +1,219 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Modal from "react-modal";
+import React, { useEffect, useState, useRef } from "react";
+// import axios from "axios";
+import styled from "styled-components";
+import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+import BottomNav from "../../components/BottomNav/BottomNav";
+import MyPageHeader from "../../components/MyPageHeader";
+import { CouponsDatas } from "../../dummydata/coupons";
+import { barcode } from "../../dummydata/barcode";
 
-Modal.setAppElement("#root"); // 모달 접근성 설정
-
-function CouponList() {
-    const [coupons, setCoupons] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+function Coupons() {
+    const [coupons, setCoupons] = useState([]); // 쿠폰 데이터 상태
+    const [loading, setLoading] = useState(true); // 로딩 상태
+    const [error, setError] = useState(null); // 에러 상태
+    // const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
+    const [selectedBarcode, setSelectedBarcode] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [barcode, setBarcode] = useState(null);
-    const [selectedCoupon, setSelectedCoupon] = useState(null);
+    const modalBackground = useRef();
 
     useEffect(() => {
         const fetchCoupons = async () => {
+            // try {
+            //     const response = await axios.get("http://i12a506.p.ssafy.io:8000/api/coupon/receive/list", {
+            //         withCredentials: true,
+            //     });
+            //     console.log("응답 데이터:", response.data);
+            //     setCoupons(response.data);
+
             try {
-                const response = await axios.get("https://i12a506.p.ssafy.io/api/coupon/receive/list", {
-                    withCredentials: true,
-                });
-                console.log("응답 데이터:", response.data);
-                setCoupons(response.data);
+                const response = CouponsDatas[0]; // 더미 데이터 사용
+
+                setCoupons(response);
             } catch (err) {
-                console.error("쿠폰 데이터를 불러오는 중 오류 발생:", err);
-                setError("쿠폰 데이터를 불러올 수 없습니다.");
+                setError("쿠폰 데이터를 가져오는데 실패했습니다.");
             } finally {
                 setLoading(false);
             }
         };
-        fetchCoupons();
+
+        fetchCoupons(); // 컴포넌트가 마운트될 때 데이터 로드
     }, []);
 
-    const openModal = async (coupon) => {
-        setSelectedCoupon(coupon);
-        setModalIsOpen(true);
+    const handleCouponClick = async (coupon) => {
         try {
-            const response = await axios.post("https://i12a506.p.ssafy.io/api/coupon/barcode", {
-                couponId: coupon.couponId,
-                storeNo: coupon.storeNo,
-                userNo: coupon.userNo,
-            }, {
-                withCredentials: true,
-            });
-            setBarcode(response.data.barcode);
-        } catch (error) {
-            console.error("바코드 요청 실패:", error);
-            setBarcode(null);
+            // 쿠폰 클릭 시 쿠폰 ID, storeNo, userNo를 포함한 데이터 전송
+            // const couponData = {
+            //     couponId: coupon.couponId, // 쿠폰 ID
+            //     storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
+            //     userNo: coupon.userNo, // userNo 
+            // };
+            // const response = await axios.post("http://i12a506.p.ssafy.io:8000/api/coupon/barcode", couponData); // API 요청
+
+            const selectedBarcode = barcode[0].barcode; // barcode 배열에 barcode 값을 가져옴
+
+            // setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
+            setModalIsOpen(true);
+            setSelectedBarcode(selectedBarcode);
+
+        } catch (err) {
+            setError("쿠폰 데이터를 가져오는데 실패했습니다.");
         }
     };
-
-    const closeModal = () => {
+    const handleCloseModal = ()=>{
         setModalIsOpen(false);
-        setBarcode(null);
-    };
+    }
+    if (loading) {
+        return <p>로딩 중...</p>;
+    }
 
-    if (loading) return <p>쿠폰을 불러오는 중...</p>;
-    if (error) return <p>{error}</p>;
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <div>
-            <h2>받은 쿠폰 목록</h2>
-            <ul>
-                {coupons.map((coupon) => (
-                    <li key={coupon.couponId} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px", cursor: "pointer" }}
-                        onClick={() => openModal(coupon)}>
-                        <h3>{coupon.couponName}</h3>
-                        <p>{coupon.content}</p>
-                        <p><strong>가게:</strong> {coupon.storeName}</p>
-                        <p><strong>할인율:</strong> {coupon.discountRate}%</p>
-                        <p><strong>유효기간:</strong> {new Date(coupon.expirationDate).toLocaleDateString()}</p>
-                        {coupon.usedAt ? (
-                            <p style={{ color: "red" }}><strong>사용됨:</strong> {new Date(coupon.usedAt).toLocaleDateString()}</p>
-                        ) : (
-                            <p style={{ color: "green" }}>사용 가능</p>
-                        )}
-                    </li>
-                ))}
-            </ul>
-            
-            {/* 모달 */}
-            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={{ content: { width: "50%", margin: "auto", textAlign: "center" } }}>
-                <h2>바코드</h2>
-                {barcode ? (
-                    <img src={`data:image/png;base64,${barcode}`} alt="쿠폰 바코드" style={{ width: "100%" }} />
+            <HeaderContainer />
+            <MyPageHeader />
+
+            <CouponsContainer>
+                {coupons.length === 0 ? (
+                    <p>현재 보유한 쿠폰이 없습니다.</p>
                 ) : (
-                    <p>바코드를 불러오는 중...</p>
+                    <CouponList>
+                        {coupons.map((coupon, index) => (
+                            <CouponCard
+                                key={index}
+                                onClick={() => handleCouponClick(coupon)} // 쿠폰 클릭 시 모달창 바코드드
+                            >
+                                <CouponContent>
+                                    <StoreInfo>
+                                        <h3>{coupon.storeName} {coupon.discountRate}%</h3>
+                                    </StoreInfo>
+                                    <CouponText>{coupon.content}</CouponText>
+                                    <ExpirationDate>
+                                        유효기간: {new Date(coupon.expirationDate).toLocaleDateString()}
+                                    </ExpirationDate>
+                                </CouponContent>
+                            </CouponCard>
+                        ))}
+                    </CouponList>
                 )}
-                <button onClick={closeModal} style={{ marginTop: "10px" }}>닫기</button>
-            </Modal>
+
+                {/* 모달 창 */}
+                {modalIsOpen && (
+                    <ModalBackground
+                        ref={modalBackground}
+                        onClick={(e) => {
+                            if (e.target === modalBackground.current) {
+                                setModalIsOpen(false);
+                            }
+                        }}
+                    >
+                        <ModalContent>
+                            <h2>쿠폰 바코드</h2>
+                            {/* Base64 인코딩된 바코드 문자열을 이미지로 변환 */}
+                            <BarcodeImage src={`data:image/png;base64,${selectedBarcode}`} alt="쿠폰 바코드" />
+                                <Button onClick={handleCloseModal}>닫기</Button>
+                        </ModalContent>
+                    </ModalBackground>
+                )}
+
+            </CouponsContainer>
+
+            <BottomNav />
         </div>
     );
-}
-
-export default CouponList;
+};
 
 
+const CouponsContainer = styled.div`
+  padding: 16px;
+`;
 
-// // function Coupons() {
-// //     const [coupons, setCoupons] = useState([]); // 쿠폰 데이터 상태
-// //     const [loading, setLoading] = useState(true); // 로딩 상태
-// //     const [error, setError] = useState(null); // 에러 상태
-// //     const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
-// //     const [barcode, setBarcode] = useState(null); // 바코드 상태
+const CouponList = styled.div`
+  margin-top: 16px;
+`;
 
-// //     useEffect(() => {
-// //         // 더미 데이터로 API처럼 처리
-// //         const fetchCoupons = async () => {
-// //             try {
-// //                 const response = couponsData; // 더미 데이터 사용
-// //                 setCoupons(response);
-// //             } catch (err) {
-// //                 setError("쿠폰 데이터를 가져오는데 실패했습니다.");
-// //             } finally {
-// //                 setLoading(false);
-// //             }
-// //         };
+const CouponCard = styled.div`
+  background: linear-gradient(135deg, #f6f9fc,rgb(226, 236, 249));
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+`;
 
-// //         fetchCoupons(); // 컴포넌트가 마운트될 때 데이터 로드
-// //     }, []);
+const CouponContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+`;
 
-// //     const handleCouponClick = async (coupon) => {
-// //         try {
-// //             // 쿠폰 클릭 시 쿠폰 ID, storeNo, userNo를 포함한 데이터 전송
-// //             const requestDto = {
-// //                 couponId: coupon.id, // 쿠폰 ID
-// //                 storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
-// //                 userNo: 1, // userNo (임의로 1로 설정, 실제로는 로그인한 유저의 ID로 대체해야 함)
-// //             };
+const StoreInfo = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`;
 
-// //             const response = await axios.post("/api/coupon/use", requestDto); // API 요청
+const CouponText = styled.p`
+  font-size: 14px;
+  color: #333;
+  margin: 10px 0;
+`;
 
-// //             // 응답에서 바코드 정보를 받아와 상태 업데이트
-// //             setBarcode(response.data.barcode);
-// //             setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
-// //         } catch (err) {
-// //             setError("쿠폰 데이터를 가져오는데 실패했습니다.");
-// //         }
-// //     };
+const ExpirationDate = styled.p`
+  font-size: 12px;
+  color: #ff6347;
+  margin-top: 5px;
+`;
 
-// //     if (loading) {
-// //         return <p>로딩 중...</p>;
-// //     }
+const ModalBackground = styled.div`
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+`;
 
-// //     if (error) {
-// //         return <p>{error}</p>;
-// //     }
+const ModalContent = styled.div`
+    background-color: #ffffff;
+    width: 90%;
+    height: 42%;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    justify-content: center; /* 세로축 가운데 정렬 */
+    align-items: center; /* 가로축 가운데 정렬 */
+    text-align: center;
+    gap: 50px;
+    padding: 5px;
+`;
+const Button = styled.button`
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #3f72af;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    &:hover {
+        background-color: #3f72af;
+    }
+`;
 
-// //     return (
-// //         <div>
-// //             <HeaderContainer />
-// //             <MyPageHeader />
+const BarcodeImage = styled.img`
+  max-width:90%;  /* 이미지가 container 크기에 맞게 조절됨 */
+  max-height: 100px;  /* 이미지 최대 높이 설정 */
+  object-fit: contain;  /* 이미지 비율을 유지하며 크기를 맞춤 */
+`;
 
-// //             <CouponsContainer>
-// //                 {coupons.length === 0 ? (
-// //                     <p>현재 보유한 쿠폰이 없습니다.</p>
-// //                 ) : (
-// //                     <CouponList>
-// //                         {coupons.map((coupon, index) => (
-// //                             <CouponCard
-// //                                 key={index}
-// //                                 onClick={() => handleCouponClick(coupon)} // 쿠폰 클릭 시 바코드 요청
-// //                             >
-// //                                 <CouponContent>
-// //                                     <StoreInfo>
-// //                                         <h3>{coupon.storeName} {coupon.discountRate}%</h3>
-// //                                     </StoreInfo>
-// //                                     <CouponText>{coupon.content}</CouponText>
-// //                                     <ExpirationDate>
-// //                                         유효기간: {new Date(coupon.expirationDate).toLocaleDateString()}
-// //                                     </ExpirationDate>
-// //                                 </CouponContent>
-// //                             </CouponCard>
-// //                         ))}
-// //                     </CouponList>
-// //                 )}
-
-// //                 {selectedCoupon && barcode && (
-// //                     <CouponDetails>
-// //                         <h3>{selectedCoupon.couponName} 바코드</h3>
-// //                         <Barcode>
-// //                             <img
-// //                                 src={`data:image/png;base64,${barcode}`} // base64 바코드 이미지 표시
-// //                                 alt="Coupon Barcode"
-// //                             />
-// //                             <p>쿠폰 바코드</p>
-// //                         </Barcode>
-// //                     </CouponDetails>
-// //                 )}
-// //             </CouponsContainer>
-
-// //             <BottomNav />
-// //         </div>
-// //     );
-// // }
-
-// // const CouponsContainer = styled.div`
-// //   padding: 16px;
-// // `;
-
-// // const CouponList = styled.div`
-// //   margin-top: 16px;
-// // `;
-
-// // const CouponCard = styled.div`
-// //   background: linear-gradient(135deg, #f6f9fc, #e3efff);
-// //   padding: 20px;
-// //   border-radius: 12px;
-// //   margin-bottom: 16px;
-// //   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-// //   cursor: pointer;
-// //   transition: transform 0.3s ease, box-shadow 0.3s ease;
-// // `;
-
-// // const CouponContent = styled.div`
-// //   display: flex;
-// //   flex-direction: column;
-// //   justify-content: center;
-// //   align-items: flex-start;
-// // `;
-
-// // const StoreInfo = styled.div`
-// //   display: flex;
-// //   align-items: center;
-// //   margin-bottom: 8px;
-// // `;
-
-// // const CouponText = styled.p`
-// //   font-size: 14px;
-// //   color: #333;
-// //   margin: 10px 0;
-// // `;
-
-// // const ExpirationDate = styled.p`
-// //   font-size: 12px;
-// //   color: #ff6347;
-// //   margin-top: 5px;
-// // `;
-
-// // const CouponDetails = styled.div`
-// //   margin-top: 20px;
-// //   padding: 20px;
-// //   background-color: white;
-// //   border-radius: 8px;
-// //   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-// // `;
-
-// // const Barcode = styled.div`
-// //   margin-top: 16px;
-// //   text-align: center;
-// //   img {
-// //     max-width: 150px;
-// //     max-height: 150px;
-// //   }
-// // `;
-
-// // export default Coupons;
+export default Coupons;

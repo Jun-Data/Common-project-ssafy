@@ -50,7 +50,7 @@ export const PRIMARY = {
       HOVER: {
         COLOR: '#dce2ee',
         BACKGROUND: '#FFFFFF',
-        BORDER: '#9982F4',
+        BORDER: '#4b71ac',
       },
       PRESSED: {
         COLOR: '#4B31B0',

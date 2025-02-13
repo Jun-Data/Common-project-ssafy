@@ -148,7 +148,7 @@ function MakeCoupons() {
 
             {/* 쿠폰 입력 폼 */}
             <Form>
-                <CountWrapper>
+                <InputWrapper>
                     <Input
                         type="date"
                         placeholder="만료일"
@@ -165,7 +165,7 @@ function MakeCoupons() {
                     />
                     <Button onClick={decreaseCount}>-</Button>
                     <Button onClick={increaseCount}>+</Button>
-                </CountWrapper>
+                </InputWrapper>
 
                 <Button onClick={handleAddCoupon}>쿠폰 등록</Button>
             </Form>
@@ -175,7 +175,7 @@ function MakeCoupons() {
                 <thead>
                     <tr>
                         <th>쿠폰 유형</th>
-                        <th>발급 매수</th>
+                        <th>매수</th>
                         <th>만료일</th>
                     </tr>
                 </thead>
@@ -184,9 +184,9 @@ function MakeCoupons() {
                         issuedCoupons.map((coupon, index) => (
                             <tr key={index}>
                                 <td>{coupon.content}</td>
-                                <td>{coupon.count}%</td>
-                                <td>{new Date(coupon.expirationDate).toLocaleString()}</td>
-                            </tr>
+                                <td>{coupon.count}</td>
+                                <td>{new Date(coupon.expirationDate).toLocaleDateString('ko-KR')}</td>
+                                </tr>
                         ))
                     ) : (
                         <tr>
@@ -214,19 +214,22 @@ const Form = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 `;
 
 const Input = styled.input`
-    width: 80%;
-    padding: 15px;
-    margin: 10px;
+    width: 90%;
+    padding: 12px;
+    margin: 8px 0;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-     /* 기본 증감 버튼 숨기기 */
-    -moz-appearance: textfield; /* Firefox */
-    appearance: textfield; /* 기본 브라우저 */
-    
+    box-sizing: border-box;
+
+    /* 기본 증감 버튼 숨기기 */
+    -moz-appearance: textfield;
+    appearance: textfield;
+
     /* Chrome, Safari, Edge에서 증감 버튼 제거 */
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
@@ -235,20 +238,23 @@ const Input = styled.input`
     }
 `;
 
-const CountWrapper = styled.div`
+const InputWrapper = styled.div`
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 90%;
 `;
 
 const Button = styled.button`
-    padding: 10px 20px;
+    padding: 10px 15px;
     font-size: 1rem;
     background-color: #3f72af;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    width: 100px;
 
     &:hover {
         background-color: #2c5aa0;
@@ -256,34 +262,45 @@ const Button = styled.button`
 `;
 
 const CouponTypeContainer = styled.div`
-    margin: 20px auto;
-    padding: 10px;
+    padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 80%;
-    text-align: left;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
 `;
 
 const Select = styled.select`
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
 `;
 
 const IssuedCouponTable = styled.table`
-    width: 95%;
+    width: 100%;
     border-collapse: collapse;
-    margin: 10px auto;
+    white-space: nowrap;  /* 텍스트 줄바꿈 방지 */
     th, td {
         border: 1px solid #ddd;
         padding: 10px;
+        font-size: 1rem;
     }
+
     th {
         background-color: #3f72af;
         color: white;
     }
+
+    td {
+        text-align: center;
+    }
 `;
+
+
+// Footer components like BottomNav can be styled and placed here based on their specific layout needs
+
 
 // ## 쿠폰 타입만 보여주는 테스트 페이지
 // import React, { useState, useEffect } from "react";

@@ -1,5 +1,5 @@
 export const barcode = [
 {
-	barcode: "base64-encoded-barcode-string"
+	barcode: "iVBORw0KGgoAAAANSUhEUgAAAY0AAABkAQAAAABS4FGCAAAAaUlEQVR4XmP4mV+VJ9q2xpyr6lr16Wrl1J5lJmaH7mgn+r62+bojcNOxYGle58y9G9Z8vvbQ7bSk7XKRHwyjWka1jGoZ1TKqZVTLqJZRLaNaRrWMahnVMqplVMuollEto1pGtYxqGXxaAOtC0vwYckRpAAAAAElFTkSuQmCC"
 }
 ]

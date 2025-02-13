@@ -197,8 +197,9 @@ function UserSignUp() {
                     />
                     {errors.userBirth && <ErrorMessage>{errors.userBirth}</ErrorMessage>}
                 </InputGroup>
-
-                <RegisterButtons />
+                <ButtonWrapper>
+                    <RegisterButtons />
+                </ButtonWrapper>
             </form>
             <BottomNav />
         </div>
@@ -206,8 +207,8 @@ function UserSignUp() {
 }
 
 const InputGroup = styled.div`
-  margin-bottom: 30px; /* 항목 간 간격 */
-  margin-top: 40px;
+  margin-bottom: 15px; /* 항목 간 간격 */
+  margin-top: 30px;
   label {
     display: block;
     margin-bottom: 8px; /* label과 input 간 간격 */
@@ -229,6 +230,10 @@ const InputGroup = styled.div`
       border-color: #007bff;
     }
   }
+`;
+
+const ButtonWrapper = styled.div`
+    margin-top: 30px;
 `;
 
 const ErrorMessage = styled.div`
