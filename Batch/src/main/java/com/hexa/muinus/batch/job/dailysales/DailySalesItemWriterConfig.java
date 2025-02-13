@@ -1,8 +1,8 @@
 package com.hexa.muinus.batch.job.dailysales;
 
 import com.hexa.muinus.batch.domain.DailySales;
-import com.hexa.muinus.batch.exeption.BatchErrorCode;
-import com.hexa.muinus.batch.exeption.BatchProcessingException;
+import com.hexa.muinus.batch.exception.BatchErrorCode;
+import com.hexa.muinus.batch.exception.BatchProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;

@@ -2,8 +2,8 @@ package com.hexa.muinus.batch.job.dailysales;
 
 import com.hexa.muinus.batch.domain.DailySales;
 import com.hexa.muinus.batch.domain.DailySalesId;
-import com.hexa.muinus.batch.exeption.BatchErrorCode;
-import com.hexa.muinus.batch.exeption.BatchProcessingException;
+import com.hexa.muinus.batch.exception.BatchErrorCode;
+import com.hexa.muinus.batch.exception.BatchProcessingException;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

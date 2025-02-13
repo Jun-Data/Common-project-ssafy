@@ -1,4 +1,4 @@
-package com.hexa.muinus.batch.exeption;
+package com.hexa.muinus.batch.exception;
 
 import lombok.Getter;
 

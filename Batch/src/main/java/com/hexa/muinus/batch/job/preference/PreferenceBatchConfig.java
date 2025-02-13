@@ -1,8 +1,8 @@
 package com.hexa.muinus.batch.job.preference;
 
 import com.hexa.muinus.batch.domain.Preference;
-import com.hexa.muinus.batch.exeption.BatchErrorCode;
-import com.hexa.muinus.batch.exeption.BatchProcessingException;
+import com.hexa.muinus.batch.exception.BatchErrorCode;
+import com.hexa.muinus.batch.exception.BatchProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableBatchProcessing(dataSourceRef = "metaDBSource", transactionManagerRef = "metaTransactionManager")
+@EnableBatchProcessing(dataSourceRef = "dataDBSource", transactionManagerRef = "metaTransactionManager")
 public class PreferenceBatchConfig {
 
     private final PlatformTransactionManager transactionManager;
