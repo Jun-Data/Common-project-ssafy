@@ -6,7 +6,7 @@ import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
 import "./HeaderContainer.css";
 
 function HeaderContainer() {
-    // const locationNow = useLocation();
+    const locationNow = useLocation();
     const navigate = useNavigate();
     const { logindata } = useAuth(); //로그인 정보 가져오기
     const [showDropdown, setShowDropdown] = useState(false);
@@ -63,14 +63,14 @@ function HeaderContainer() {
 
             <div className="icons">
                 
-                {/* <div className="link" onClick={handleConnectBell}>
+                <div className="link" onClick={handleDropdown}>
                     <div className="bell">
                         <FontAwesomeIcon
                             icon={faBell}
                             className={locationNow.pathname === "/notifications" ? "bell-icon active-bell-icon" : "bell"}
                         />
                     </div>
-                </div> */}
+                </div>
 
                 <div className="login">
                     {logindata ? (

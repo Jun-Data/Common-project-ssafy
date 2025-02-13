@@ -1,40 +1,42 @@
 import React, { useState, useEffect, useRef } from "react";
-// import axios from "axios";
+import axios from "axios";
 import styled from "styled-components";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import { DummyNotices } from "../../dummydata/notice";
+import useAuth from "../../hooks/useAuth";
 
 const email = "jun9048@naver.com"; 
 
 const Notice = () => {
+    const {logindata} = useAuth();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [noticeTitle, setNoticeTitle] = useState("");
     const [noticeContent, setNoticeContent] = useState("");
     const [noticeImage, setNoticeImage] = useState(null);
-    // const [announcements, setAnnouncements] = useState([]); // 공지사항 목록 상태
-    const [announcements, setAnnouncements] = useState(DummyNotices[0]?.announcements || []); // 더미데이터 공지사항 목록 상태 
+    const [announcements, setAnnouncements] = useState([]); // 공지사항 목록 상태
+    // const [announcements, setAnnouncements] = useState(DummyNotices[0]?.announcements || []); // 더미데이터 공지사항 목록 상태 
     const [editingNoticeId, setEditingNoticeId] = useState(null); // 수정할 공지사항 ID 
 
     const modalBackground = useRef();
 
-    // 서버에서 데이터를 받아오는 대신 더미 데이터 활용
-    useEffect(() => {
-        setAnnouncements(DummyNotices[0]?.announcements || []);
-    }, []);
-    
+    // // 서버에서 데이터를 받아오는 대신 더미 데이터 활용
     // useEffect(() => {
-    //     const fetchAnnouncements = async () => {
-    //         try {
-    //             const response = await axios.get(`http://i12a506.p.ssafy.io:8000/api/store/board/list?email=${email}`);
-    //             setAnnouncements(response.data.announcements || []); // 받은 공지사항 데이터를 상태에 저장, 없으면 빈 배열
-    //         } catch (error) {
-    //             console.error("공지사항 목록을 가져오지 못했습니다", error);
-    //         }
-    //     };
-    //     fetchAnnouncements();
+    //     setAnnouncements(DummyNotices[0]?.announcements || []);
     // }, []);
+    
+    useEffect(() => {
+        const fetchAnnouncements = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}store/board/list?email=${logindata.email}`);
+                setAnnouncements(response.data.announcements || []); // 받은 공지사항 데이터를 상태에 저장, 없으면 빈 배열
+            } catch (error) {
+                console.error("공지사항 목록을 가져오지 못했습니다", error);
+            }
+        };
+        fetchAnnouncements();
+    }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];

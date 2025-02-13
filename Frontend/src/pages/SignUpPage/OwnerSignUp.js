@@ -1,15 +1,19 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import RegisterButtons from "../../components/RegisterButtons";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import RegisterMap from "../../components/RegisterMap";
+import KakaoPostcodePopup from "../../components/KakaoPostcodePopup";
+import useGeocoding from "../../hooks/useGeocoding";
 
 function OwnerSignUp() {
     const navigate = useNavigate(); 
-
+    const [coords, setCoords] = useState({lat: 37.5015376, lng: 127.0397208});
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const { addressToCoord } = useGeocoding();
+    const [inputValue, setInputValue] = useState('');
     const [formData, setFormData] = useState({
         userName: '', 
         userEmail: '', 
@@ -37,6 +41,35 @@ function OwnerSignUp() {
         registrationNumber: '',
         fliMarketSectionCount: '',
     });
+
+    const handleAddressComplete = async (data) => {
+        try {
+            const newAddress = data.fullAddress;
+            
+            //주소 업데이트 
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                storeAddress: newAddress // storeAddress에 자동입력력
+            }))
+
+            // 좌표 업데이트트
+            const newCoords = await addressToCoord(newAddress);
+            if (newCoords) {
+                console.log('좌표:', newCoords)
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    locationX: newCoords.lat,
+                    locationY: newCoords.lng
+                }));
+                setCoords(prevCoords => ({ 
+                    ...prevCoords,
+                    ...newCoords
+                }));
+            }
+        } catch (error) {
+            console.error("지오코딩 실패:", error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -141,6 +174,12 @@ function OwnerSignUp() {
                 if (businessStatusCode === "01") {
                     // 성공적인 인증 후 처리
                     alert("✅ 사업자등록번호가 정상입니다.");
+
+                    // 사업자등록번호 유효성 검사를 통과한 후, 폼에 값 반영
+                    setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    registrationNumber: registrationNumberWithoutHyphens, // 폼에 사업자 등록번호 입력
+                }));
                     setErrors((prev) => ({
                         ...prev,
                         registrationNumber: "", // 에러 메시지 초기화
@@ -192,14 +231,18 @@ function OwnerSignUp() {
                 formErrors.storeAddress = !value ? "매장 주소는 필수 입력입니다." : "";
                 break;
             case "fliMarketSectionCount":
-                const sectionCount = parseInt(value, 10);
-                if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 4) {
-                    formErrors.fliMarketSectionCount = "플리마켓 섹션 개수는 1부터 4까지 입력 가능합니다.";
+                if (formData.isFliMarketAllowed === 'N') {
+                    formData.fliMarketSectionCount = 0;
+                    formErrors.fliMarketSectionCount="";
                 } else {
-                    formErrors.fliMarketSectionCount = ""; // 에러 메시지 초기화
+                    const sectionCount = parseInt(value, 10);
+                    if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 4) {
+                        formErrors.fliMarketSectionCount = "플리마켓 섹션 개수는 1부터 4까지 입력 가능합니다.";
+                    } else {
+                        formErrors.fliMarketSectionCount = ""; // 에러 메시지 초기화
+                    }
                 }
                 break;
-
             default:
                 break;
         }
@@ -211,17 +254,6 @@ function OwnerSignUp() {
     const handleBlur = (e) => {
         const { name, value } = e.target;
         validateField(name, value);
-    };
-
-    const handleLocationSelect = (lat, lng, storeName, storeAddress) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            locationX: lat,
-            locationY: lng,
-            storeName: storeName || prevData.storeName,  // 가게명 자동 입력
-            storeAddress: storeAddress || prevData.storeAddress, // 주소 자동 입력
-        }));
-        console.log(`선택한 위치 - 위도: ${lat}, 경도: ${lng}, 가게명: ${storeName}, 주소: ${storeAddress}`);
     };
 
     const handleSubmit = async (e) => {
@@ -259,9 +291,21 @@ function OwnerSignUp() {
             }
         } else {
             console.log("입력값에 오류가 있습니다.");
+                    // 각 필드에 대한 오류 메시지 확인
+        Object.keys(formErrors).forEach((key) => {
+            if (formErrors[key]) {
+                console.log(`${key} 필드 오류: ${formErrors[key]}`);
+            }
+        });
         }
     };
     
+    useEffect(() => {
+        console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
+    }, [formData]);  // formData가 변경될 때마다 실행
+    
+
+
     return (
         <div>
             <HeaderContainer />
@@ -347,11 +391,21 @@ function OwnerSignUp() {
                         value={formData.storeAddress}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        placeholder="예: 서울시 강남구 역삼동 123-45"
+                        placeholder="예: 서울 강남구 테헤란로 212"
                         required
                         style={{ borderColor: errors.storeAddress ? 'red' : '#ccc' }}
                     />
                     {errors.storeAddress && <ErrorMessage>{errors.storeAddress}</ErrorMessage>}
+
+                    <button onClick={() => setIsPopupOpen(true)}>
+                        주소 찾기
+                    </button>
+                    {isPopupOpen && (
+                    <KakaoPostcodePopup
+                        onClose={() => setIsPopupOpen(false)}
+                        onComplete={handleAddressComplete}
+                    />
+                )}
                 </InputGroup>
 
                 <InputGroup>
@@ -395,9 +449,6 @@ function OwnerSignUp() {
                         {errors.fliMarketSectionCount && <ErrorMessage>{errors.fliMarketSectionCount}</ErrorMessage>}
                     </InputGroup>
                 )}
-                    <RegisterMap
-                        onLocationSelect={handleLocationSelect}
-                    />
 
                 <RegisterButtonsWrapper>
                     <RegisterButtons />
