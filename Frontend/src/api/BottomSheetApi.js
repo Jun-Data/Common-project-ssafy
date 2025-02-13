@@ -6,6 +6,7 @@ const BottomSheetApi = async ({ coords, receivedData }) => {
     try {
         // API 호출
         const response = await axios.get(`${apiUrl}/api/store/list/near`, {
+            withCredentials: true,
             params: { x: coords.lat,
                       y: coords.lng },
         });

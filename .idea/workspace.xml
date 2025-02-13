@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 배포 테스트 (#68)">
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkersResult/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +112,7 @@
       <workItem from="1739308289993" duration="36322000" />
       <workItem from="1739350559470" duration="19822000" />
       <workItem from="1739426375278" duration="2000" />
-      <workItem from="1739426451033" duration="1882000" />
+      <workItem from="1739426451033" duration="5350000" />
     </task>
     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
       <option name="closed" value="true" />
@@ -116,7 +122,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739427567928</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="[FE/FIX] 배포 테스트 (#68)">
+      <option name="closed" value="true" />
+      <created>1739428785456</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739428785456</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

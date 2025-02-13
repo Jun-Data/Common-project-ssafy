@@ -1,0 +1,300 @@
+Index: Frontend/src/api/BottomSheetApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import axios from 'axios';\n\nconst apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\nconst BottomSheetApi = async ({ coords, receivedData }) => {\n    try {\n        // API 호출\n        const response = await axios.get(`${apiUrl}/api/store/list/near`, {\n            params: { x: coords.lat,\n                      y: coords.lng },\n        });\n\n        const nearStorelist = response.data;\n\n        if (response.status === 200) {\n            receivedData(nearStorelist); // 데이터를 부모 컴포넌트로 전달\n        } else {\n            console.error('API 요청 실패:', nearStorelist.message || '알 수 없는 오류');\n        }\n    } catch (error) {\n        if (axios.isCancel(error)) {\n            console.log('요청이 취소되었습니다:', error.message);\n        } else if (error.response) {\n            console.error('API 호출 중 오류 발생:', error.response.data);\n        } else if (error.request) {\n            console.error('응답을 받지 못했습니다:', error.request);\n        } else {\n            console.error('요청 설정 중 오류 발생:', error.message);\n        }\n\n    }\n};\n\nexport default BottomSheetApi\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/BottomSheetApi.js b/Frontend/src/api/BottomSheetApi.js
+--- a/Frontend/src/api/BottomSheetApi.js	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/Frontend/src/api/BottomSheetApi.js	(date 1739429941383)
+@@ -6,6 +6,7 @@
+     try {
+         // API 호출
+         const response = await axios.get(`${apiUrl}/api/store/list/near`, {
++            withCredentials: true,
+             params: { x: coords.lat,
+                       y: coords.lng },
+         });
+Index: Frontend/src/components/KakaoMapContainer/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useEffect, useRef } from \"react\";\nimport { useKakaoMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapContainer = ({ coords }) => {\n    const { map, setMap, isSDKLoaded } = useKakaoMap();\n    const mapContainer = useRef(null);\n\n    console.log('롤에서',coords)\n\n    // 지도 초기화\n    useEffect(() => {\n        if (isSDKLoaded && !map && mapContainer.current) {\n            const kakao = window.kakao;\n            const mapInstance = new kakao.maps.Map(mapContainer.current, {\n                center: new kakao.maps.LatLng(coords.lat, coords.lng),\n                level: 3,\n            });\n            setMap(mapInstance);\n        }\n    }, [isSDKLoaded, coords, map, setMap]);\n\n    // 좌표 변경 시 지도 중심 업데이트\n    useEffect(() => {\n        if (map) {\n            map.setCenter(new window.kakao.maps.LatLng(coords.lat, coords.lng));\n        }\n    }, [coords, map]);\n\n    return <div ref={mapContainer} style={{ width: \"100vw\", height: \"100vh\" }} />;\n};\n\nexport default KakaoMapContainer;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapContainer/index.js b/Frontend/src/components/KakaoMapContainer/index.js
+--- a/Frontend/src/components/KakaoMapContainer/index.js	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/Frontend/src/components/KakaoMapContainer/index.js	(date 1739430886319)
+@@ -4,25 +4,45 @@
+ const KakaoMapContainer = ({ coords }) => {
+     const { map, setMap, isSDKLoaded } = useKakaoMap();
+     const mapContainer = useRef(null);
++    const markerRef = useRef(null); // 마커 참조 저장
+ 
+-    console.log('롤에서',coords)
+-
+-    // 지도 초기화
++    // 지도 초기화 및 마커 생성
+     useEffect(() => {
+         if (isSDKLoaded && !map && mapContainer.current) {
+             const kakao = window.kakao;
++
++            // 지도 생성
+             const mapInstance = new kakao.maps.Map(mapContainer.current, {
+                 center: new kakao.maps.LatLng(coords.lat, coords.lng),
+                 level: 3,
+             });
++
++            // 커스텀 마커 이미지 설정
++            const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
++            const imageSize = new kakao.maps.Size(40, 40);
++            const imageOption = { offset: new kakao.maps.Point(27, 69) };
++
++            // 마커 생성
++            markerRef.current = new kakao.maps.Marker({
++                map: mapInstance,
++                position: new kakao.maps.LatLng(coords.lat, coords.lng),
++                image: new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
++            });
++
+             setMap(mapInstance);
+         }
+     }, [isSDKLoaded, coords, map, setMap]);
+ 
+-    // 좌표 변경 시 지도 중심 업데이트
++    // 좌표 변경 시 지도 중심 및 마커 위치 업데이트
+     useEffect(() => {
+-        if (map) {
+-            map.setCenter(new window.kakao.maps.LatLng(coords.lat, coords.lng));
++        if (map && markerRef.current) {
++            const newPosition = new window.kakao.maps.LatLng(coords.lat, coords.lng);
++
++            // 지도 중심 이동
++            map.setCenter(newPosition);
++
++            // 마커 위치 업데이트
++            markerRef.current.setPosition(newPosition);
+         }
+     }, [coords, map]);
+ 
+Index: Frontend/src/components/KakaoMapMarkers/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect } from \"react\";\nimport { useKakaoMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n    const { map } = useKakaoMap();\n\n    useEffect(() => {\n        if (!map || !storelist) return;\n\n        // 마커 생성 함수\n        const createMarker = (store) => {\n            const kakao = window.kakao;\n            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);\n\n            const marker = new kakao.maps.Marker({\n                position: markerPosition,\n                map: map,\n            });\n\n            // 마커 클릭 이벤트\n            kakao.maps.event.addListener(marker, \"click\", () => {\n                alert(`${store.name} 클릭!`);\n            });\n\n            return marker;\n        };\n\n        // 기존 마커 제거 후 새로 생성\n        const markers = storelist.map((store) => createMarker(store));\n\n        // 컴포넌트 언마운트 시 마커 제거\n        return () => {\n            markers.forEach((marker) => marker.setMap(null));\n        };\n    }, [map, storelist]);\n\n    return null; // UI를 렌더링하지 않음 (마커만 지도에 표시)\n};\n\nexport default KakaoMapMarkers;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
+--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739431890594)
+@@ -2,14 +2,21 @@
+ import { useKakaoMap } from "../../contexts/ KakaoMapContext";
+ 
+ const KakaoMapMarkers = ({ storelist }) => {
+-    const { map } = useKakaoMap();
++    const { map, isSDKLoaded } = useKakaoMap();
++    const markersRef = useRef([]); // 마커 참조 저장용
+ 
+     useEffect(() => {
+-        if (!map || !storelist) return;
++        if (!isSDKLoaded || !map || !storelist?.length) return;
+ 
+-        // 마커 생성 함수
+-        const createMarker = (store) => {
+-            const kakao = window.kakao;
++        const kakao = window.kakao;
++        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용
++
++        // 기존 마커 제거
++        markersRef.current.forEach(marker => marker.setMap(null));
++        markersRef.current = [];
++
++        // 신규 마커 생성
++        storelist.forEach(store => {
+             const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
+ 
+             const marker = new kakao.maps.Marker({
+@@ -17,24 +24,21 @@
+                 map: map,
+             });
+ 
+-            // 마커 클릭 이벤트
+-            kakao.maps.event.addListener(marker, "click", () => {
+-                alert(`${store.name} 클릭!`);
++            // 이벤트 리스너 추가
++            kakao.maps.event.addListener(marker, 'click', () => {
++                alert(`${store.storeName} 클릭!`);
+             });
+ 
+-            return marker;
+-        };
++            markersRef.current.push(marker);
++            bounds.extend(markerPosition); // 범위 확장
++        });
+ 
+-        // 기존 마커 제거 후 새로 생성
+-        const markers = storelist.map((store) => createMarker(store));
++        // 지도 범위 조정
++        map.setBounds(bounds);
+ 
+-        // 컴포넌트 언마운트 시 마커 제거
+-        return () => {
+-            markers.forEach((marker) => marker.setMap(null));
+-        };
+-    }, [map, storelist]);
++    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가
+ 
+-    return null; // UI를 렌더링하지 않음 (마커만 지도에 표시)
++    return null;
+ };
+ 
+ export default KakaoMapMarkers;
+Index: Frontend/src/components/KakaoMapMarkersResult/index.js
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkersResult/index.js b/Frontend/src/components/KakaoMapMarkersResult/index.js
+deleted file mode 100644
+--- a/Frontend/src/components/KakaoMapMarkersResult/index.js	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ /dev/null	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
+@@ -1,37 +0,0 @@
+-import React, { useEffect } from "react";
+-
+-const KakaoMapMarkersResult = ({ map, storelist }) => {
+-    useEffect(() => {
+-        if (!map || !storelist) return;
+-
+-        // 마커 생성 함수
+-        const createMarker = (store) => {
+-            const kakao = window.kakao;
+-            const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
+-
+-            const marker = new kakao.maps.Marker({
+-                position: markerPosition,
+-                map: map,
+-            });
+-
+-            // 마커 클릭 이벤트
+-            kakao.maps.event.addListener(marker, "click", () => {
+-                alert(`${store.name} 클릭!`);
+-            });
+-
+-            return marker;
+-        };
+-
+-        // 기존 마커 제거 후 새로 생성
+-        const markers = storelist.map((store) => createMarker(store));
+-
+-        // 컴포넌트 언마운트 시 마커 제거
+-        return () => {
+-            markers.forEach((marker) => marker.setMap(null));
+-        };
+-    }, [map, storelist]);
+-
+-    return null; // UI를 렌더링하지 않음 (마커만 지도에 표시)
+-};
+-
+-export default KakaoMapMarkersResult;
+Index: Frontend/src/pages/MainPage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect } from \"react\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchBar from \"../../components/SearchBar\";\nimport KakaoPostcodePopup from \"../../components/KakaoPostcodePopup\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport useGeolocation from \"../../hooks/UseGeolocation\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport {useKakaoMap} from \"../../contexts/ KakaoMapContext\";\n\nimport \"./style.css\";\n\nconst MainPage = () => {\n\n    const { isSDKLoaded } = useKakaoMap();\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const { geoCoords, error } = useGeolocation()\n\n    const [coords, setCoords] = useState({lat: 37.5015376, lng: 127.0397208});\n    const [address, setAddress] = useState(\"인재의 산실 멀티캠퍼스\");\n    const [isPopupOpen, setIsPopupOpen] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n    const [isManualAddress, setIsManualAddress] = useState(false);\n\n\n    useEffect(() => {\n        if (isSDKLoaded && !isManualAddress && geoCoords) { // ✅ SDK 로드 확인 추가\n            (async () => {\n                try {\n                    const newAddress = await coordToAddress(geoCoords);\n                    setCoords(geoCoords);\n                    setAddress(newAddress);\n                } catch (error) {\n                    console.error(\"역지오코딩 실패:\", error);\n                    setAddress(\"위치 정보를 가져올 수 없음\"); // ✅ 오류 처리 추가\n                }\n            })();\n        }\n    }, [geoCoords, isSDKLoaded, isManualAddress]); // ✅ 종속성 수정\n\n    const handleAddressComplete = async (data) => {\n        try {\n            const newAddress = data.fullAddress;\n            setAddress(prev => { // 함수형 업데이트\n                console.log('주소 업데이트:', prev, '→', newAddress);\n                return newAddress;\n            });\n\n            const newCoords = await addressToCoord(newAddress);\n            if (newCoords) {\n                setCoords(prevCoords => ({ // 함수형 업데이트\n                    ...prevCoords,\n                    ...newCoords\n                }));\n                setIsManualAddress(true);\n            }\n        } catch (error) {\n            console.error(\"지오코딩 실패:\", error);\n        }\n    };\n\n    return (\n        <div className=\"mainpagebackground\">\n            <div className=\"mainpagecontents\">\n                <div className=\"mainpageheader\">\n                    <HeaderContainer />\n                </div>\n                <div className=\"mainpagecurrentaddress\">\n                    <div className=\"mainpageaddressdetail\">내 위치: {address}</div>\n                    <button onClick={() => setIsPopupOpen(true)} className=\"addressSearchButton\">\n                        주소 찾기\n                    </button>\n                </div>\n                <div className=\"mainpagesearchbar\">\n                    <SearchBar coords={coords} />\n                </div>\n\n                <div className=\"mainpagebottomsheet\">\n                    <DraggableBottomSheet coords={coords} setStorelist={setStorelist} />\n                </div>\n\n                <div className=\"mainpagemap\">\n                    <KakaoMapContainer coords={coords} />\n                    <KakaoMapMarkers storelist={storelist} />\n                </div>\n\n                {isPopupOpen && (\n                    <KakaoPostcodePopup\n                        onClose={() => setIsPopupOpen(false)}\n                        onComplete={handleAddressComplete}\n                    />\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default MainPage;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/index.js b/Frontend/src/pages/MainPage/index.js
+--- a/Frontend/src/pages/MainPage/index.js	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/Frontend/src/pages/MainPage/index.js	(date 1739431314488)
+@@ -62,6 +62,8 @@
+         }
+     };
+ 
++    console.log(storelist);
++
+     return (
+         <div className="mainpagebackground">
+             <div className="mainpagecontents">
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 배포 테스트 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#68&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"1882000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 배포 테스트 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/.idea/workspace.xml	(date 1739431890621)
+@@ -5,7 +5,13 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 배포 테스트 (#68)">
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/BottomSheetApi.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkersResult/index.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -106,7 +112,7 @@
+       <workItem from="1739308289993" duration="36322000" />
+       <workItem from="1739350559470" duration="19822000" />
+       <workItem from="1739426375278" duration="2000" />
+-      <workItem from="1739426451033" duration="1882000" />
++      <workItem from="1739426451033" duration="5350000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -116,7 +122,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739427567928</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="[FE/FIX] 배포 테스트 (#68)">
++      <option name="closed" value="true" />
++      <created>1739428785456</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1739428785456</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+Index: .idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml b/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml
+new file mode 100644
+--- /dev/null	(date 1739429941391)
++++ b/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml	(date 1739429941391)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_rebase_[Changes]1" date="1739428698960" recycled="false" toDelete="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: Frontend/src/pages/SearchResult/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.result-page {\n    width: 100%;\n    height: 100%;\n}\n\n.resultpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh 6vh auto auto 6vh;\n    position: relative;\n    z-index: 100;\n}\n\n.resultpageheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.resultpagenotice {\n    grid-row: 2;\n    width: 100%;\n}\n\n\n.resultpagemap {\n    position: fixed;\n    z-index: 1;\n    top: 0;\n}\n\n.resultpagemarker {\n    width: 100vw;\n    height: 100vh;\n    position: fixed;\n    top: 0;\n    z-index: 10;\n    pointer-events: none;\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/style.css b/Frontend/src/pages/SearchResult/style.css
+--- a/Frontend/src/pages/SearchResult/style.css	(revision d6961811f16d73391682d52df731ca7a6e3c7b05)
++++ b/Frontend/src/pages/SearchResult/style.css	(date 1739430155664)
+@@ -13,7 +13,7 @@
+     z-index: 100;
+ }
+ 
+-.resultpageheader {
++.resultheader {
+     grid-row: 1;
+     width: 100%;
+ }

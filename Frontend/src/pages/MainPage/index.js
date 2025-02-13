@@ -62,6 +62,8 @@ const MainPage = () => {
         }
     };
 
+    console.log(storelist);
+
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">

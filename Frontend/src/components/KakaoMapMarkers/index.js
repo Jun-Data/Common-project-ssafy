@@ -2,14 +2,21 @@ import { useEffect } from "react";
 import { useKakaoMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {
-    const { map } = useKakaoMap();
+    const { map, isSDKLoaded } = useKakaoMap();
+    const markersRef = useRef([]); // 마커 참조 저장용
 
     useEffect(() => {
-        if (!map || !storelist) return;
+        if (!isSDKLoaded || !map || !storelist?.length) return;
 
-        // 마커 생성 함수
-        const createMarker = (store) => {
-            const kakao = window.kakao;
+        const kakao = window.kakao;
+        const bounds = new kakao.maps.LatLngBounds(); // 지도 범위 조절용
+
+        // 기존 마커 제거
+        markersRef.current.forEach(marker => marker.setMap(null));
+        markersRef.current = [];
+
+        // 신규 마커 생성
+        storelist.forEach(store => {
             const markerPosition = new kakao.maps.LatLng(store.lat, store.lon);
 
             const marker = new kakao.maps.Marker({
@@ -17,24 +24,21 @@ const KakaoMapMarkers = ({ storelist }) => {
                 map: map,
             });
 
-            // 마커 클릭 이벤트
-            kakao.maps.event.addListener(marker, "click", () => {
-                alert(`${store.name} 클릭!`);
+            // 이벤트 리스너 추가
+            kakao.maps.event.addListener(marker, 'click', () => {
+                alert(`${store.storeName} 클릭!`);
             });
 
-            return marker;
-        };
+            markersRef.current.push(marker);
+            bounds.extend(markerPosition); // 범위 확장
+        });
 
-        // 기존 마커 제거 후 새로 생성
-        const markers = storelist.map((store) => createMarker(store));
+        // 지도 범위 조정
+        map.setBounds(bounds);
 
-        // 컴포넌트 언마운트 시 마커 제거
-        return () => {
-            markers.forEach((marker) => marker.setMap(null));
-        };
-    }, [map, storelist]);
+    }, [map, storelist, isSDKLoaded]); // isSDKLoaded 종속성 추가
 
-    return null; // UI를 렌더링하지 않음 (마커만 지도에 표시)
+    return null;
 };
 
 export default KakaoMapMarkers;

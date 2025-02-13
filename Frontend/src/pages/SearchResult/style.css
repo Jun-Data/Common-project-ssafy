@@ -13,7 +13,7 @@
     z-index: 100;
 }
 
-.resultpageheader {
+.resultheader {
     grid-row: 1;
     width: 100%;
 }
