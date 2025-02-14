@@ -21,7 +21,7 @@ function MakeCoupons() {
         try {
             const response = await axios.post(
                 `${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/create`,
-                {   couponId: selectedCouponType, // 선택한 쿠폰 타입의 ID
+                {   couponId: selectedCouponType.couponId, // 선택한 쿠폰 타입의 ID
                     count: count, 
                     expirationDate: expirationDate
                 },
@@ -65,6 +65,7 @@ function MakeCoupons() {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/type`);
                 setCouponTypes(response.data);  // 받아온 데이터를 상태에 저장
+                console.log(couponTypes);
             } catch (error) {
                 console.error("쿠폰 유형 데이터를 가져오는 데 실패했습니다", error);
             }
@@ -100,12 +101,15 @@ function MakeCoupons() {
                 <h3>쿠폰 유형</h3>
                 {couponTypes.length > 0 ? (
                     <Select 
-                        value={selectedCouponType} 
-                        onChange={(e) => setSelectedCouponType(e.target.value)}
+                        value={selectedCouponType?.couponId || ""} 
+                        onChange={(e) => {
+                            const selectedType = couponTypes.find(type => type.couponId === parseInt(e.target.value, 10));
+                            setSelectedCouponType(selectedType);  // 쿠폰 객체로 저장
+                        }}
                     >
                         <option value="">쿠폰 유형 선택</option>
                         {couponTypes.map((type) => (
-                            <option key={type.couponId} value={type.content}>
+                            <option key={type.couponId} value={type.couponId}>
                                 {type.content}
                             </option>
                         ))}
