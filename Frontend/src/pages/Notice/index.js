@@ -21,7 +21,7 @@ const Notice = () => {
         // 내 매장 공지사항 목록
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`);
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`);
                 setAnnouncements(response.data.announcements || []); // 받은 공지사항 데이터를 상태에 저장, 없으면 빈 배열
             } catch (error) {
                 console.error("공지사항 목록을 가져오지 못했습니다", error);
@@ -65,7 +65,7 @@ const Notice = () => {
 
                 // 등록 후 목록 새로고침
                 const updatedAnnouncements = await axios.get(
-                   `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`);
+                   `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`);
                 setAnnouncements(updatedAnnouncements.data.announcements || []);
                 
             }

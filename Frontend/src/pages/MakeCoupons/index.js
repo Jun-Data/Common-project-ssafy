@@ -28,7 +28,11 @@ function MakeCoupons() {
                 {
                 withCredentials: true,}
             );
-
+                // response 출력
+                console.log("response:", response); // 전체 response 출력
+                console.log("response status:", response.status); // status 코드 출력
+                console.log("response data:", response.data); // 응답 데이터 출력
+                
             if (response.status === 201) {
                 alert("쿠폰이 성공적으로 등록되었습니다!");
                 fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
