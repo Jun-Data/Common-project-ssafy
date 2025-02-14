@@ -3,7 +3,10 @@ package com.hexa.muinus.common.security;
 import com.hexa.muinus.common.jwt.JwtAuthenticationFilter;
 import com.hexa.muinus.common.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
@@ -30,9 +34,13 @@ public class SecurityConfig {
                                 .requestMatchers("/api/kiosk/**").permitAll()  // 키오스크 관련
                                 .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
                 )
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
+                .csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .headers(headers ->
+                        headers.defaultsDisabled()
+                                .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL))
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
