@@ -1,34 +1,28 @@
 import React, { useEffect, useState, useRef } from "react";
-// import axios from "axios";
+import axios from "axios";
 import styled from "styled-components";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
-import { CouponsDatas } from "../../dummydata/coupons";
-import { barcode } from "../../dummydata/barcode";
 
 function Coupons() {
     const [coupons, setCoupons] = useState([]); // 쿠폰 데이터 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 상태
-    // const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
+    const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
     const [selectedBarcode, setSelectedBarcode] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const modalBackground = useRef();
 
     useEffect(() => {
         const fetchCoupons = async () => {
-            // try {
-            //     const response = await axios.get("http://i12a506.p.ssafy.io:8000/api/coupon/receive/list", {
-            //         withCredentials: true,
-            //     });
-            //     console.log("응답 데이터:", response.data);
-            //     setCoupons(response.data);
-
             try {
-                const response = CouponsDatas[0]; // 더미 데이터 사용
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/receive/list`, {
+                    withCredentials: true,
+                });
+                console.log("응답 데이터:", response.data);
+                setCoupons(response.data);
 
-                setCoupons(response);
             } catch (err) {
                 setError("쿠폰 데이터를 가져오는데 실패했습니다.");
             } finally {
@@ -42,32 +36,26 @@ function Coupons() {
     const handleCouponClick = async (coupon) => {
         try {
             // 쿠폰 클릭 시 쿠폰 ID, storeNo, userNo를 포함한 데이터 전송
-            // const couponData = {
-            //     couponId: coupon.couponId, // 쿠폰 ID
-            //     storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
-            //     userNo: coupon.userNo, // userNo 
-            // };
-            // const response = await axios.post("http://i12a506.p.ssafy.io:8000/api/coupon/barcode", couponData); // API 요청
-
-            const selectedBarcode = barcode[0].barcode; // barcode 배열에 barcode 값을 가져옴
-
-            // setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
+            const couponData = {
+                couponId: coupon.couponId, // 쿠폰 ID
+                storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
+                userNo: coupon.userNo, // userNo 
+            };
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/barcode`, couponData); // API 요청
+            
+            setSelectedBarcode(response.data.barcode); // 클릭한 쿠폰 바코드 
+            setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
             setModalIsOpen(true);
-            setSelectedBarcode(selectedBarcode);
 
         } catch (err) {
             setError("쿠폰 데이터를 가져오는데 실패했습니다.");
         }
     };
+
     const handleCloseModal = ()=>{
         setModalIsOpen(false);
-    }
-    if (loading) {
-        return <p>로딩 중...</p>;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
+        setSelectedCoupon(null);
+        setSelectedBarcode(null);
     }
 
     return (
@@ -83,7 +71,11 @@ function Coupons() {
                         {coupons.map((coupon, index) => (
                             <CouponCard
                                 key={index}
-                                onClick={() => handleCouponClick(coupon)} // 쿠폰 클릭 시 모달창 바코드드
+                                onClick={() => coupon.usedAt ? null : handleCouponClick(coupon)} // 쿠폰 클릭 시 모달창 바코드
+                                style={{
+                                    opacity: coupon.usedAt ? 0.5 : 1,
+                                    pointerEvents: coupon.usedAt ? "none" : "auto",
+                                }}
                             >
                                 <CouponContent>
                                     <StoreInfo>
@@ -91,7 +83,7 @@ function Coupons() {
                                     </StoreInfo>
                                     <CouponText>{coupon.content}</CouponText>
                                     <ExpirationDate>
-                                        유효기간: {new Date(coupon.expirationDate).toLocaleDateString()}
+                                     {coupon.usedAt && <UsedText>이미 사용한 쿠폰</UsedText>}
                                     </ExpirationDate>
                                 </CouponContent>
                             </CouponCard>
@@ -214,6 +206,13 @@ const BarcodeImage = styled.img`
   max-width:90%;  /* 이미지가 container 크기에 맞게 조절됨 */
   max-height: 100px;  /* 이미지 최대 높이 설정 */
   object-fit: contain;  /* 이미지 비율을 유지하며 크기를 맞춤 */
+`;
+
+const UsedText = styled.p`
+  font-size: 12px;
+  color: gray;
+  font-weight: bold;
+  margin-top: 5px;
 `;
 
 export default Coupons;

@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
+import axios from "axios";
 import "./HeaderContainer.css";
 
 function HeaderContainer() {
-    // const locationNow = useLocation();
     const navigate = useNavigate();
     const { logindata } = useAuth(); //로그인 정보 가져오기
     const [showDropdown, setShowDropdown] = useState(false);
@@ -14,6 +14,22 @@ function HeaderContainer() {
     const handleDropdown = () => {
         setShowDropdown(!showDropdown);
     };
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`,
+                {userId: logindata.userId}
+            );
+        if (response.status === 200) {
+            alert("로그아웃 되었습니다");
+            navigate("/"); //메인페이지로 이동
+        } else {
+            alert("로그아웃 실패! 다시 시도해주세요.");
+        }
+    } catch (error) {
+        console.error("로그아웃 요청 중 오류 발생:", error);
+        alert("서버 오류로 로그아웃에 실패했습니다.");
+    }};
 
     // userType에 따라 마이페이지 이동 경로 설정
     const handleNavigateToMyPage = () => {
@@ -89,7 +105,7 @@ function HeaderContainer() {
             {showDropdown && (
                 <div className="dropdown">
                 {renderDropdownMenu()}
-                <button className="logout">로그아웃</button>
+                <button className="logout" onClick={handleLogout}>로그아웃</button>
             </div>
             )}
         </header>
