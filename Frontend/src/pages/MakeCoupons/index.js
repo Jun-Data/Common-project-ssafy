@@ -28,11 +28,7 @@ function MakeCoupons() {
                 {
                 withCredentials: true,}
             );
-                // response 출력
-                console.log("response:", response); // 전체 response 출력
-                console.log("response status:", response.status); // status 코드 출력
-                console.log("response data:", response.data); // 응답 데이터 출력
-                
+
             if (response.status === 201) {
                 alert("쿠폰이 성공적으로 등록되었습니다!");
                 fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
@@ -127,12 +123,12 @@ function MakeCoupons() {
             <Form>
                 <InputWrapper>
                     <Input
-                        type="date"
+                        type="datetime-local"                        
                         placeholder="만료일"
                         value={expirationDate}
                         onChange={(e) => setExpirationDate(e.target.value)}
-                        max="9999-12-31"
-                        min="1900-01-01"
+                        max="9999-12-31T23:59"
+                        min="1900-01-01T00:00"
                     />
                     <Input
                         type="number"
