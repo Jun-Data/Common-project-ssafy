@@ -43,7 +43,7 @@ function Coupons() {
             };
             console.log("전송할 쿠폰 데이터:", couponData); 
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/qrcode`, couponData); // API 요청
-            
+            console.log(response);
             setSelectedBarcode(response.data.QR); // 클릭한 쿠폰 바코드 
             setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
             setModalIsOpen(true);

@@ -31,6 +31,7 @@ const FleaRequests = () => {
         storeId: selectedRequest.id,
         itemName: selectedRequest.itemName,
       });
+      console.log(selectedRequest);
       alert("요청을 승인하였습니다");
       setSelectedRequest(null);
     } catch (error) {
@@ -44,6 +45,7 @@ const FleaRequests = () => {
         storeId: selectedRequest.id,
         itemName: selectedRequest.itemName,
       });
+      console.log(selectedRequest);
       alert("요청을 거절하였습니다");
       setSelectedRequest(null);
     } catch (error) {
