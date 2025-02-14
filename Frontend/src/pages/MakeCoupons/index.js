@@ -212,7 +212,6 @@ const Input = styled.input`
 `;
 
 const InputWrapper = styled.div`
-    display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
