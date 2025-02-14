@@ -271,7 +271,7 @@ function OwnerSignUp() {
             try {
                 // JSON 형식으로 데이터를 변환
                 const response = await axios.post(
-                    `${process.env.REACT_APP_BACKEND_API_URL}users/store-owner`,
+                    `${process.env.REACT_APP_BACKEND_API_URL}/api/users/store-owner`,
                     formData, // JSON 데이터 전달
                     {
                         headers: {
@@ -388,6 +388,7 @@ function OwnerSignUp() {
                     <input
                         type="text"
                         name="storeAddress"
+                        readOnly
                         value={formData.storeAddress}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -397,9 +398,9 @@ function OwnerSignUp() {
                     />
                     {errors.storeAddress && <ErrorMessage>{errors.storeAddress}</ErrorMessage>}
 
-                    <button onClick={() => setIsPopupOpen(true)}>
+                    <FindButton onClick={() => setIsPopupOpen(true)}>
                         주소 찾기
-                    </button>
+                    </FindButton>
                     {isPopupOpen && (
                     <KakaoPostcodePopup
                         onClose={() => setIsPopupOpen(false)}
@@ -421,7 +422,7 @@ function OwnerSignUp() {
                         style={{ borderColor: errors.registrationNumber ? 'red' : '#ccc' }}
                     />
                     {errors.registrationNumber && <ErrorMessage>{errors.registrationNumber}</ErrorMessage>}
-                    <button type="button" onClick={checkregistrationNumber}>인증하기</button>
+                    <FindButton type="button" onClick={checkregistrationNumber}>인증하기</FindButton>
                 </InputGroup>
 
                 <CheckboxWrapper>
@@ -532,6 +533,14 @@ const FleaAllow = styled.label`
     margin-left: 15px; /* 원하는 만큼 조절 가능 */
     font-weight: bold;
 
+`;
+
+const FindButton = styled.button`
+    border-radius: 5px;
+    background-color:rgb(217, 217, 217);
+    font-size: 13px; 
+    width: 85px !important;
+    padding: 3px;
 `;
 
 export default OwnerSignUp;
