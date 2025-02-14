@@ -241,7 +241,7 @@ public class CouponService {
     public CouponQRCodeResponseDto createCouponQR(CouponQRCodeRequestDto couponQRCodeRequestDto) {
 
         // 사용 가능한 쿠폰 조회
-        UserCouponHistoryId userCouponHistoryId = new UserCouponHistoryId(couponQRCodeRequestDto.getUserNo(), couponQRCodeRequestDto.getUserNo(), couponQRCodeRequestDto.getStoreNo());
+        UserCouponHistoryId userCouponHistoryId = new UserCouponHistoryId(couponQRCodeRequestDto.getCouponId(), couponQRCodeRequestDto.getStoreNo(), couponQRCodeRequestDto.getUserNo());
         boolean exists = userCouponHistoryRepository.existsByIdAndUsedAtIsNull(userCouponHistoryId);
         if(!exists){
             throw new AvailableCouponNotFoundException();
