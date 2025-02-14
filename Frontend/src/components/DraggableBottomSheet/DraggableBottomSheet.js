@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BottomSheetApi from "../../api/BottomSheetApi";
 import resultBottomSheetApi from "../../api/resultBottomsheetApi";
 import "./DraggableBottomSheet.css";
 
-const DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {
+const DraggableBottomSheet = ({ coords, setStorelist, itemId=null }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [panelHeight, setPanelHeight] = useState(10); // 기본 높이 10%
@@ -89,7 +89,7 @@ const DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {
         if (location.pathname.startsWith('/search/')) {
           await resultBottomSheetApi({
             coords,
-            itemId: itemID,  // 검색 결과 페이지에선 itemID 전달
+            itemId: itemId,
             receivedData: (data) => {
               if (isMounted) {
                 setLocalStorelist(data);
@@ -118,7 +118,7 @@ const DraggableBottomSheet = ({ coords, itemID, setStorelist }) => {
     return () => {
       isMounted = false;
     };
-  }, [coords, itemID, setStorelist, location.pathname]); // itemID와 경로 변경 감지
+  }, [coords, itemId, setStorelist, location.pathname]); // itemID와 경로 변경 감지
 
   return (
       <div

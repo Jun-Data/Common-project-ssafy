@@ -54,9 +54,6 @@ const MainPage = () => {
         }
     };
 
-    console.log(coords)
-    console.log(address)
-
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">
@@ -84,7 +81,6 @@ const MainPage = () => {
                     <DraggableBottomSheet
                         coords={coords}
                         setStorelist={setStorelist}
-                        mapLoaded={isSDKLoaded}
                     />
                 </div>
 
