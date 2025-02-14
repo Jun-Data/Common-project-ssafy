@@ -52,6 +52,7 @@ public enum APIErrorCode implements ErrorCode {
     STORE_ALREADY_REGISTERED(40922, "이미 매장이 등록된 사용자입니다."),
     COUPON_ALREADY_CLAIMED(40930, "이미 쿠폰을 수령하였습니다."),
     COUPON_ALREADY_USED(40931, "이미 사용된 쿠폰입니다."),
+    USER_ALREADY_REQUESTED_ITEM(40932, "하루 1회만 입고 요청이 가능합니다."),
 
 
     // 410 Gone
