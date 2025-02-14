@@ -25,8 +25,12 @@ public class OauthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
 
+    // 어느 페이지에서 로그인을 시도했는지 확인용
+    private String loginTrialURL;
+
     @GetMapping("/api/users/login")
-    public void kakaoLogin(HttpServletResponse response) {
+    public void kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
+        loginTrialURL = request.getHeader("Referer");
         oauthService.getAuthorizationCode(response);
     }
 
@@ -36,7 +40,7 @@ public class OauthController {
         String userEmail = oauthService.getUserKakaoProfile(accessToken);
         Users user = oauthService.findUser(userEmail, response);
         jwtProvider.issueTokens(user, response);
-        oauthService.redirectToMainPage(response);
+        oauthService.redirectToMainPage(response, loginTrialURL);
     }
 
     @GetMapping("/api/users/logout")

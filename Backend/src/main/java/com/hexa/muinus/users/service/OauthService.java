@@ -142,8 +142,8 @@ public class OauthService {
         return userService.findUserByEmail(userEmail);
     }
 
-    public void redirectToMainPage(HttpServletResponse response) throws Exception{
-        response.sendRedirect(frontUrl);
+    public void redirectToMainPage(HttpServletResponse response, String loginTrialURL) throws Exception{
+        response.sendRedirect(loginTrialURL);
     }
 
     /**
