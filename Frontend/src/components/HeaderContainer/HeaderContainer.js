@@ -24,8 +24,10 @@ function HeaderContainer() {
       );
       if (response.status === 200) {
         alert("로그아웃 되었습니다");
-        navigate("/"); //메인페이지로 이동
-        window.location.reload(); // 페이지 새로고침
+        window.location.href = "https://i12a506.p.ssafy.io";
+
+        // navigate("/"); //메인페이지로 이동
+        // window.location.reload(); // 페이지 새로고침
       } else {
         alert("로그아웃 실패! 다시 시도해주세요.");
       }
