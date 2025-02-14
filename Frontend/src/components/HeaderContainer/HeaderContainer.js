@@ -88,15 +88,13 @@ function HeaderContainer() {
         setShowDropdown(false);
       }
     };
-
-    if (showDropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
+  
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showDropdown]);
+  }, [dropdownRef, setShowDropdown]); // 의존성 배열 추가
+  
 
 
   return (
@@ -148,7 +146,7 @@ function HeaderContainer() {
 
       {/* 드롭다운 메뉴 */}
       {showDropdown && (
-        <div className="dropdown">
+        <div className="dropdown" ref={dropdownRef}> 
           {renderDropdownMenu()}
           <button className="logout" onClick={handleLogout}>
             로그아웃

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
@@ -59,7 +60,12 @@ const Notice = () => {
             console.log(response);
 
             if (response.status === 200) {
-                alert("공지사항이 등록되었습니다.");
+                Swal.fire({
+                    icon: 'success',
+                    title: '공지사항 등록',
+                    text: '공지사항이 성공적으로 등록되었습니다.',
+                    confirmButtonText: '확인'
+                });
                 setNoticeTitle(""); // 입력 데이터 초기화
                 setNoticeContent("");
                 setNoticeImage(null); 
@@ -74,8 +80,12 @@ const Notice = () => {
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.message;
             console.error("공지사항 등록 실패:", errorMessage);
-            alert(`공지사항 등록에 실패했습니다. (${errorMessage})`);
-        }
+            Swal.fire({
+                icon: 'error',
+                title: '등록 실패',
+                text: `공지사항 등록에 실패했습니다. (${errorMessage})`,
+                confirmButtonText: '확인'
+            });        }
     };
 
     const handleCloseModal = () => {
@@ -111,7 +121,12 @@ const Notice = () => {
             });
 
         if (response.status === 200) {
-            alert("공지사항이 수정되었습니다.");
+            Swal.fire({
+                icon: 'success',
+                title: '공지사항 수정',
+                text: '공지사항이 성공적으로 수정되었습니다.',
+                confirmButtonText: '확인'
+            });            
             // 서버에서 변경된 데이터 다시 불러오기
             const updatedAnnouncements = await axios.get(
                 `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`
@@ -121,8 +136,12 @@ const Notice = () => {
         }
         } catch (error) {
             console.error("공지사항 수정 실패:", error);
-            alert("공지사항 수정에 실패했습니다.");
-        }
+            Swal.fire({
+                icon: 'error',
+                title: '수정 실패',
+                text: '공지사항 수정에 실패했습니다.',
+                confirmButtonText: '확인'
+            });        }
     };
 
     return (

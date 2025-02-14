@@ -4,6 +4,7 @@ import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from "styled-components";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function MakeCoupons() {
     const [count, setCount] = useState(0);
@@ -15,7 +16,11 @@ function MakeCoupons() {
     // 쿠폰 등록 함수
     const handleAddCoupon = async () => {
         if (!selectedCouponType || !count || !expirationDate) {
-            alert("모든 항목을 입력하세요."); // 필수항목 입력되지 않으면 등록불가 alert
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '모든 항목을 입력하세요.',
+            });            
             return;
         }
         try {
@@ -30,7 +35,11 @@ function MakeCoupons() {
             );
 
             if (response.status === 201) {
-                alert("쿠폰이 성공적으로 등록되었습니다!");
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공!',
+                    text: '쿠폰이 성공적으로 등록되었습니다!',  // 성공 메시지
+                });                
                 fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
 
                 // 입력 필드 초기화
@@ -40,8 +49,11 @@ function MakeCoupons() {
             }
         } catch (error) {
             console.error("쿠폰 등록 실패:", error);
-            alert("쿠폰 등록에 실패했습니다.");
-        }
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '쿠폰 등록에 실패했습니다.',  // 실패 메시지
+            });        }
     };
 
     // 쿠폰 개수 증감
