@@ -102,6 +102,7 @@ public class FliRequestService {
         if(fliItem.isPresent()) {
             item = fliItem.get();
             item.setStatus(FliItemStatus.APPROVED);
+            fliItemRepository.save(item);
         }
     }
 
@@ -118,6 +119,7 @@ public class FliRequestService {
         if(fliItem.isPresent()) {
             item = fliItem.get();
             item.setStatus(FliItemStatus.REJECTED);
+            fliItemRepository.save(item);
         }
     }
 
