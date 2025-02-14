@@ -26,12 +26,12 @@ public class OauthController {
     private final JwtProvider jwtProvider;
 
     // 어느 페이지에서 로그인을 시도했는지 확인용
-    private static String loginTrialURL = "";
+    private String loginTrialURL;
 
     @GetMapping("/api/users/login")
-    public void kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
-        log.info("로그인을 시도한 url : {}", request.getHeader("Referer"));
-        loginTrialURL = request.getHeader("Referer");
+    public void getAuthCodeFromKakao(@RequestParam(value = "redirect", required = false) String redirectUrl, HttpServletResponse response) {
+        log.info("로그인을 시도한 url : {}", redirectUrl);
+        loginTrialURL = redirectUrl != null ? redirectUrl : "/";
         oauthService.getAuthorizationCode(response);
     }
 
