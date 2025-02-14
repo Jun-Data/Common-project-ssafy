@@ -205,7 +205,8 @@ const ButtonContainer = styled.div`
 
 const ActionButtons = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 77px;
   width: 100%;
   max-width: 300px; /* 버튼 최대 너비 설정 */
   margin-bottom: 10px; /* 닫기 버튼과 간격 */
@@ -246,13 +247,14 @@ const RejectButton = styled.button`
 `;
 
 const CloseButton = styled.button`
-  background: #ccc;
+  background: #f8f9fa;
   color: black;
-  padding: 10px 20px;
+  padding: 7px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
+  margin-top: 10px;
 
   &:hover {
     background: #b0b0b0;

@@ -55,8 +55,8 @@ const Notice = () => {
             const response = await axios.post(
                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
                 headers: { 'Content-Type': 'application/json' }
-                
             });
+            console.log(response);
 
             if (response.status === 200) {
                 alert("공지사항이 등록되었습니다.");
