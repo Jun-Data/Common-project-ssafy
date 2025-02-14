@@ -22,6 +22,7 @@ import com.hexa.muinus.users.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class FliRequestService {
 
     private final FliUserRepository fliUserRepository;
@@ -97,7 +99,8 @@ public class FliRequestService {
         String email = jwtProvider.getUserEmailFromAccessToken(request);
         Users users = usersRepository.findByEmail(email);
         Store store = storeRepository.findByUser(users);
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), users.getUserNo(), dto.getItemName());
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), dto.getUserId(), dto.getItemName());
+
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
@@ -114,7 +117,8 @@ public class FliRequestService {
         String email = jwtProvider.getUserEmailFromAccessToken(request);
         Users users = usersRepository.findByEmail(email);
         Store store = storeRepository.findByUser(users);
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), users.getUserNo(), dto.getItemName());
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), dto.getUserId(), dto.getItemName());
+        log.info("fliItem: {}", fliItem.get());
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();

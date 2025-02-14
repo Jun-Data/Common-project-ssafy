@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FliCheckDTO {
+    private int userId;
     private String itemName;
 }
 
