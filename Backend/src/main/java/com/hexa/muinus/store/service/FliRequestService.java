@@ -3,6 +3,7 @@ package com.hexa.muinus.store.service;
 
 import com.hexa.muinus.common.exception.store.StoreNotFoundException;
 import com.hexa.muinus.common.exception.user.UserNotFoundException;
+import com.hexa.muinus.common.jwt.JwtProvider;
 import com.hexa.muinus.common.s3.service.S3ImageService;
 import com.hexa.muinus.store.domain.item.FliItem;
 import com.hexa.muinus.store.domain.item.FliItem.FliItemStatus;
@@ -18,6 +19,7 @@ import com.hexa.muinus.users.domain.user.Users;
 
 import com.hexa.muinus.users.domain.user.repository.FliUserRepository;
 import com.hexa.muinus.users.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,14 +38,18 @@ public class FliRequestService {
     private final StoreRepository storeRepository;
     private final UserRepository usersRepository;
     private final S3ImageService s3ImageService;
+    private final JwtProvider jwtProvider;
 
     /**
      * fliItem 등록 요청 시 처리 로직
      * @param dto
      */
-    public void registerFli(FliRequestDTO dto) {
+    public void registerFli(HttpServletRequest request, FliRequestDTO dto) {
+
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+        Users users = usersRepository.findByEmail(email);
         // --- fli_user 처리 ---
-        Optional<FliUser> fliUserOptional = fliUserRepository.findById(dto.getUserId());
+        Optional<FliUser> fliUserOptional = fliUserRepository.findById(users.getUserNo());
         FliUser fliUser;
         if (fliUserOptional.isPresent()) {
             // 존재하면 정보 업데이트 (은행, 계좌번호, 계좌 소유자)
@@ -52,14 +58,11 @@ public class FliRequestService {
             fliUser.setAccountNumber(dto.getUserAccount());
             fliUser.setAccountName(dto.getAccountName());
         } else {
-            // 없으면 Users 엔티티를 조회하여 새 fli_user 생성
-            Users user = usersRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
             fliUser = FliUser.builder()
                     .bank(dto.getUserBank())
                     .accountNumber(dto.getUserAccount())
                     .accountName(dto.getAccountName())
-                    .user(user)
+                    .user(users)
                     .build();
             fliUserRepository.save(fliUser);
         }
@@ -67,14 +70,12 @@ public class FliRequestService {
         // --- fli_item 처리 ---
         Store store = storeRepository.findById(dto.getStoreId())
                 .orElseThrow(() -> new StoreNotFoundException(dto.getStoreId()));
-        Users user = usersRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
         // FliItem 엔티티 생성
         String imageUrl = s3ImageService.Base64toImageUrl(dto.getImageUrl());
         FliItem fliItem = FliItem.builder()
                 .store(store)
-                .users(user)
+                .users(users)
                 .fliItemName(dto.getItemName())
                 .price(dto.getPrice())
                 .quantity(dto.getQuantity())

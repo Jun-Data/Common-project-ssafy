@@ -4,6 +4,7 @@ import com.hexa.muinus.store.dto.fli.FliCheckDTO;
 import com.hexa.muinus.store.dto.fli.FliRequestDTO;
 import com.hexa.muinus.store.dto.fli.FliResponseDTO;
 import com.hexa.muinus.store.service.FliRequestService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,8 @@ public class FliController {
     private final FliRequestService fliService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerFli(@RequestBody FliRequestDTO dto) {
-        fliService.registerFli(dto);
+    public ResponseEntity<String> registerFli(HttpServletRequest request, @RequestBody FliRequestDTO dto) {
+        fliService.registerFli(request, dto);
         return ResponseEntity.ok("Fli registration successful");
     }
 
