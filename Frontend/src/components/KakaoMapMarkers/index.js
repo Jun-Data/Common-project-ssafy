@@ -13,7 +13,7 @@ const KakaoMapMarkers = ({ storelist }) => {
         // storelist 기반으로 마커 생성
         const markers = storelist.map((store) => {
             const marker = new window.kakao.maps.Marker({
-                position: new window.kakao.maps.LatLng(store.lat, store.lon),
+                position: new window.kakao.maps.LatLng(store.locationX, store.locationY),
                 map: baseMap
             });
 
