@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AnnouncementWriteDTO {
 
-    @NotNull(message = "유효한 email을 입력해주세요.")
-    @Email
-    private String userEmail;
+//    @NotNull(message = "유효한 email을 입력해주세요.")
+//    @Email
+//    private String userEmail;
 
     @NotBlank(message = "제목을 입력해주세요")
     private String title;

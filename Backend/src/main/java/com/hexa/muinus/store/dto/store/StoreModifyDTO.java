@@ -15,14 +15,6 @@ import lombok.NoArgsConstructor;
 @StoreFlimarketValidator
 public class StoreModifyDTO {
 
-//    // email로 store 찾기 user - store 1:1 매칭
-//    @NotNull
-//    private Integer storeNo;
-
-    @NotBlank(message = "유효하지 않은 email입니다.")
-    @Email
-    private String userEmail;
-
     @NotBlank(message = "매장 이름을 입력해주세요.")
     private String name;
 

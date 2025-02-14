@@ -17,9 +17,9 @@ import java.math.BigDecimal;
 @StoreFlimarketValidator
 public class StoreRegisterDTO {
 
-    @NotBlank(message = "유효하지 않은 email입니다.")
-    @Email
-    private String userEmail;
+//    @NotBlank(message = "유효하지 않은 email입니다.")
+//    @Email
+//    private String userEmail;
 
     @NotBlank(message = "매장 이름을 입력해주세요.")
     private String name;

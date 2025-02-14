@@ -1,7 +1,7 @@
 package com.hexa.muinus.store.controller;
 
+import com.hexa.muinus.common.security.Authorization;
 import com.hexa.muinus.store.dto.information.AnnouncementDTO;
-import com.hexa.muinus.store.dto.information.AnnouncementDeleteDTO;
 import com.hexa.muinus.store.dto.information.AnnouncementModifyDTO;
 import com.hexa.muinus.store.dto.information.AnnouncementWriteDTO;
 import com.hexa.muinus.store.dto.store.*;
@@ -32,9 +32,9 @@ public class StoreController {
      * - 실패 : Exception
      */
     @PostMapping("/register")
-    public ResponseEntity<Void> registerStore(@Valid @RequestBody StoreRegisterDTO storeRegisterDTO){
-        log.info("StoreController > registerStore: {}", storeRegisterDTO);
-        storeService.registerStore(storeRegisterDTO);
+    public ResponseEntity<Void> registerStore(@Authorization String userEmail, @Valid @RequestBody StoreRegisterDTO storeRegisterDTO){
+        log.info("Registering store {} of userEmail : {}", storeRegisterDTO, userEmail);
+        storeService.registerStore(userEmail, storeRegisterDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -60,9 +60,9 @@ public class StoreController {
      * - 실패 : Exception
      */
     @PutMapping("/update")
-    public ResponseEntity<Void> modifyStore(@Valid @RequestBody StoreModifyDTO storeModifyDTO){
-        log.info("StoreController > modifyStore: {}", storeModifyDTO);
-        storeService.modifyStore(storeModifyDTO);
+    public ResponseEntity<Void> modifyStore(@Authorization String userEmail, @Valid @RequestBody StoreModifyDTO storeModifyDTO){
+        log.info("Modifying store {} of userEmail : {}", storeModifyDTO, userEmail);
+        storeService.modifyStore(userEmail, storeModifyDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -119,9 +119,9 @@ public class StoreController {
      * - 실패 : Exception
      */
     @PostMapping("/board")
-    public ResponseEntity<Void> writeAnnouncement(@Valid @RequestBody AnnouncementWriteDTO announcementWriteDTO){
-        log.info("StoreController > writeAnnouncement: {}", announcementWriteDTO);
-        storeService.writeAnnouncement(announcementWriteDTO);
+    public ResponseEntity<Void> writeAnnouncement(@Authorization String userEmail, @Valid @RequestBody AnnouncementWriteDTO announcementWriteDTO){
+        log.info("Write Announcement {}", announcementWriteDTO);
+        storeService.writeAnnouncement(userEmail, announcementWriteDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -132,36 +132,37 @@ public class StoreController {
      * - 실패 : Exception
      */
     @PutMapping("/board")
-    public ResponseEntity<Void> modifyAnnouncement(@Valid @RequestBody AnnouncementModifyDTO announcementModifyDTO){
-        log.info("StoreController > modifyAnnouncement: {}", announcementModifyDTO);
-        storeService.modifyAnnouncement(announcementModifyDTO);
+    public ResponseEntity<Void> modifyAnnouncement(@Authorization String userEmail,@Valid @RequestBody AnnouncementModifyDTO announcementModifyDTO){
+        log.info("Modify Announcement {}", announcementModifyDTO);
+        storeService.modifyAnnouncement(userEmail, announcementModifyDTO);
         return ResponseEntity.ok().build();
     }
 
     /**
      * 공지사항 삭제
-     * @param announcementDeleteDTO 삭제할 공지사항 정보
+     * @param boardId 삭제할 공지사항 정보
      * @return
      * - 성공 : 200(OK)
      * - 실패 : Exception
      */
-    @DeleteMapping("/board")
-    public ResponseEntity<Void> deleteAnnouncement(@Valid @RequestBody AnnouncementDeleteDTO announcementDeleteDTO){
-        log.info("StoreController > deleteAnnouncement: {}", announcementDeleteDTO);
-        storeService.removeAnnouncement(announcementDeleteDTO);
+    @DeleteMapping("/board/{boardId}")
+    public ResponseEntity<Void> deleteAnnouncement(@Authorization String userEmail, @PathVariable int boardId){
+        log.info("Delete Announcement {}", boardId);
+        storeService.removeAnnouncement(userEmail, boardId);
         return ResponseEntity.ok().build();
     }
 
     /**
-     * 공지사항 목록
+     * 내 매장 공지사항 목록
      * @param userEmail 이메일
      * @return List<AnnouncementDTO>
      * - 성공 : 200(OK)
      * - 실패 : Exception
      */
     @GetMapping("/board/list")
-    public ResponseEntity<List<AnnouncementDTO>> getAnnouncements(@RequestParam("email") String userEmail){
+    public ResponseEntity<List<AnnouncementDTO>> getAnnouncements(@Authorization String userEmail){
         log.info("StoreController > getAnnouncementList: {}", userEmail);
+        storeService.getAnnouncements(userEmail);
         return ResponseEntity.ok().build();
     }
 
@@ -171,9 +172,9 @@ public class StoreController {
      * @return
      */
     @PutMapping("/section_regist")
-    public ResponseEntity<Void> modifyflimarketState(FlimarketModifyDTO flimarketModifyDTO) {
-        log.info("StoreController > modifyflimarketState: {}", flimarketModifyDTO);
-        storeService.modifyFlimarketState(flimarketModifyDTO);
+    public ResponseEntity<Void> modifyflimarketState(@Authorization String userEmail, FlimarketModifyDTO flimarketModifyDTO) {
+        log.info("Modify flimarketState {}", flimarketModifyDTO);
+        storeService.modifyFlimarketState(userEmail, flimarketModifyDTO);
         return ResponseEntity.ok().build();
     }
 

@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @StoreFlimarketValidator
 public class FlimarketModifyDTO {
 
-    @NotBlank(message = "유효하지 않은 email입니다.")
-    @Email
-    private String userEmail;
+//    @NotBlank(message = "유효하지 않은 email입니다.")
+//    @Email
+//    private String userEmail;
 
     @NotNull(message = "플리마켓 허용 여부를 선택해주세요.")
     private YesNo flimarketYn;

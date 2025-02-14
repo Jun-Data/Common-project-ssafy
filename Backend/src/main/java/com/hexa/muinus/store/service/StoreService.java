@@ -8,7 +8,6 @@ import com.hexa.muinus.store.domain.information.Announcement;
 import com.hexa.muinus.store.domain.store.Store;
 import com.hexa.muinus.store.dto.fli.FliItemDTO;
 import com.hexa.muinus.store.dto.information.AnnouncementDTO;
-import com.hexa.muinus.store.dto.information.AnnouncementDeleteDTO;
 import com.hexa.muinus.store.dto.information.AnnouncementModifyDTO;
 import com.hexa.muinus.store.dto.information.AnnouncementWriteDTO;
 import com.hexa.muinus.store.dto.store.*;
@@ -41,10 +40,10 @@ public class StoreService {
      * @param storeRegisterDTO 매장 등록 정보
      */
     @Transactional
-    public void registerStore(StoreRegisterDTO storeRegisterDTO) {
+    public void registerStore(String userEmail, StoreRegisterDTO storeRegisterDTO) {
         log.info("Starting store registration for DTO: {}", storeRegisterDTO);
 
-        Users user = getUserByEmail(storeRegisterDTO.getUserEmail());
+        Users user = getUserByEmail(userEmail);
 
         validStoreByUser(user);
         validateStoreLocation(storeRegisterDTO.getLocationX(), storeRegisterDTO.getLocationY());
@@ -53,6 +52,7 @@ public class StoreService {
         String image = s3ImageService.Base64toImageUrl(storeRegisterDTO.getStoreImageUrl());
         storeRegisterDTO.setStoreImageUrl(image);
         Store store = storeRegisterDTO.toEntity(user);
+
         log.debug("Converted StoreRegistDTO to Store entity: {}", store);
         saveStore(store);
     }
@@ -167,10 +167,10 @@ public class StoreService {
      * @param storeModifyDTO 수정할 매장 정보
      */
     @Transactional
-    public void modifyStore(StoreModifyDTO storeModifyDTO) {
-        log.info("Modifying store with userEmail: {}", storeModifyDTO.getUserEmail());
+    public void modifyStore(String userEmail, StoreModifyDTO storeModifyDTO) {
+        log.info("Modifying store with userEmail: {}", userEmail);
         // 사용자 - 매장 조회
-        Store store = findStoreByEmail(storeModifyDTO.getUserEmail());
+        Store store = findStoreByEmail(userEmail);
         // 매장 정보 수정
         store.updateStoreInfo(storeModifyDTO);
         log.info("Store {} has been updated successfully ({})", store.getStoreNo(), store);
@@ -246,9 +246,9 @@ public class StoreService {
      * @param dto 플리마켓 정보
      */
     @Transactional
-    public void modifyFlimarketState(FlimarketModifyDTO dto){
+    public void modifyFlimarketState(String userEmail, FlimarketModifyDTO dto){
         log.info("Modifying flimarket state {}", dto);
-        Store store = findStoreByEmail(dto.getUserEmail());
+        Store store = findStoreByEmail(userEmail);
         store.modifyFlimarketState(dto);
         log.info("Flimarket state {} has been modified successfully", store);
     }
@@ -279,10 +279,10 @@ public class StoreService {
      * 공지사항 작성
      * @param announcementWriteDTO 등록할 공지사항 데이터
      */
-    public void writeAnnouncement(AnnouncementWriteDTO announcementWriteDTO) {
+    public void writeAnnouncement(String userEmail, AnnouncementWriteDTO announcementWriteDTO) {
         log.info("Writing announcement {}", announcementWriteDTO);
         // 매장 유효성 검사
-        Store store = findStoreByEmail(announcementWriteDTO.getUserEmail());
+        Store store = findStoreByEmail(userEmail);
         // 공지사항 작성
         Announcement announcement = announcementWriteDTO.toEntity(store);
         log.debug("Converted announcementWriteDTO to Announcement entity: {}", announcement);
@@ -296,10 +296,10 @@ public class StoreService {
      * @param dto 수정 내용
      */
     @Transactional
-    public void modifyAnnouncement(AnnouncementModifyDTO dto) {
+    public void modifyAnnouncement(String userEmail, AnnouncementModifyDTO dto) {
         log.info("Modifying announcement {}", dto);
         // 공지 사항 조회
-        Announcement announcement = getAnnouncement(dto.getUserEmail(), dto.getBoardId());
+        Announcement announcement = getAnnouncement(userEmail, dto.getBoardId());
         // 공지 사항 수정
         announcement.updateAnnouncement(dto);
         log.info("Announcement {} has been updated successfully", announcement);
@@ -308,12 +308,12 @@ public class StoreService {
     /**
      * 공지 사항 삭제
      * 수정은 로그인한 사장님이 -> storeNo 대신 user-email로
-     * @param dto 삭제할 공지 사항 정보
+     * @param boardId 삭제할 공지 사항
      */
     @Transactional
-    public void removeAnnouncement(AnnouncementDeleteDTO dto) {
-        log.info("Deleting announcement {}", dto);
-        Announcement announcement = getAnnouncement(dto.getUserEmail(), dto.getBoardId());
+    public void removeAnnouncement(String userEmail, int boardId) {
+        log.info("Removing announcement {}", boardId);
+        Announcement announcement = getAnnouncement(userEmail, boardId);
         announcementService.removeAnnouncement(announcement);
     }
 
