@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CouponBarcodeRequestDto {
+public class CouponQRCodeRequestDto {
 
     @NotNull(message = "쿠폰 ID는 필수 입력 항목입니다.")
     private Integer couponId;

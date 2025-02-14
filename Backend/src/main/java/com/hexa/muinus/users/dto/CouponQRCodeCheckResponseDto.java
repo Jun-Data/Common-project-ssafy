@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponBarcodeCheckResponseDto {
+public class CouponQRCodeCheckResponseDto {
     private Integer couponId;
     private Integer storeNo;
     private Integer userNo;

@@ -1,14 +1,11 @@
 package com.hexa.muinus.store.service;
 
 import com.google.zxing.WriterException;
+import com.hexa.muinus.common.exception.code.*;
 import com.hexa.muinus.common.exception.coupon.*;
-import com.hexa.muinus.common.exception.code.BarcodeGenerationFailedException;
-import com.hexa.muinus.common.exception.code.BarcodeParsingErrorException;
-import com.hexa.muinus.common.exception.code.InvalidBarcodeDataException;
 import com.hexa.muinus.common.exception.store.StoreNotFoundException;
-import com.hexa.muinus.common.exception.user.UserNotFoundException;
 import com.hexa.muinus.common.jwt.JwtProvider;
-import com.hexa.muinus.common.util.BarCodeGenerator;
+import com.hexa.muinus.common.util.QRGenerator;
 import com.hexa.muinus.store.domain.coupon.repository.CouponHistoryRepository;
 import com.hexa.muinus.store.domain.coupon.repository.CouponRepository;
 import com.hexa.muinus.store.domain.store.Store;
@@ -241,10 +238,10 @@ public class CouponService {
     }
 
     @Transactional
-    public CouponBarcodeResponseDto createCouponBarcode(CouponBarcodeRequestDto couponBarcodeRequestDto) {
+    public CouponQRCodeResponseDto createCouponQR(CouponQRCodeRequestDto couponQRCodeRequestDto) {
 
         // 사용 가능한 쿠폰 조회
-        UserCouponHistoryId userCouponHistoryId = new UserCouponHistoryId(couponBarcodeRequestDto.getUserNo(), couponBarcodeRequestDto.getUserNo(),couponBarcodeRequestDto.getStoreNo());
+        UserCouponHistoryId userCouponHistoryId = new UserCouponHistoryId(couponQRCodeRequestDto.getUserNo(), couponQRCodeRequestDto.getUserNo(), couponQRCodeRequestDto.getStoreNo());
         boolean exists = userCouponHistoryRepository.existsByIdAndUsedAtIsNull(userCouponHistoryId);
         if(!exists){
             throw new AvailableCouponNotFoundException();
@@ -252,8 +249,8 @@ public class CouponService {
 
         // 쿠폰 히스토리 ID 생성
         CouponHistoryId couponHistoryId = new CouponHistoryId(
-                couponBarcodeRequestDto.getStoreNo(),
-                couponBarcodeRequestDto.getCouponId()
+                couponQRCodeRequestDto.getStoreNo(),
+                couponQRCodeRequestDto.getCouponId()
         );
 
         // 쿠폰 히스토리 조회
@@ -266,38 +263,38 @@ public class CouponService {
             throw new CouponExpiredException(couponHistory.getExpirationDate());
         }
 
-        // 바코드 생성
-        String barcode;
+        // QR 생성
+        String QR;
         try {
-            String barcodeData = generateBarCodeData(couponBarcodeRequestDto);
-            barcode = BarCodeGenerator.generateBarCodeImage(barcodeData, 300, 100);//바코드 크기
+            String QRData = generateQRData(couponQRCodeRequestDto);
+            QR = QRGenerator.generateQRImage(QRData, 200, 200);//바코드 크기
         } catch (WriterException | IOException e){
-            throw new BarcodeGenerationFailedException();
+            throw new QRGenerationFailedException();
         }
 
-        return new CouponBarcodeResponseDto(barcode);
+        return new CouponQRCodeResponseDto(QR);
     }
 
     /**
-     * 바코드에 포함될 데이터를 생성하는 메서드.
+     * QR에 포함될 데이터를 생성하는 메서드.
      *
-     * @param couponBarcodeRequestDto 쿠폰 사용 요청 DTO
-     * @return 바코드 데이터 문자열
+     * @param couponQRCodeRequestDto 쿠폰 사용 요청 DTO
+     * @return QR 데이터 문자열
      */
-    private String generateBarCodeData(CouponBarcodeRequestDto couponBarcodeRequestDto){
+    private String generateQRData(CouponQRCodeRequestDto couponQRCodeRequestDto){
         return String.format("coupon_id:%d,store_no:%d,user_no:%d",
-                couponBarcodeRequestDto.getCouponId(),
-                couponBarcodeRequestDto.getStoreNo(),
-                couponBarcodeRequestDto.getUserNo()
+                couponQRCodeRequestDto.getCouponId(),
+                couponQRCodeRequestDto.getStoreNo(),
+                couponQRCodeRequestDto.getUserNo()
         );
     }
 
     @Transactional
-    public CouponBarcodeCheckResponseDto checkCouponBarcode(HttpServletRequest request, CouponBarcodeCheckRequestDto couponBarcodeCheckRequestDto){
+    public CouponQRCodeCheckResponseDto checkCouponBarcode(HttpServletRequest request, CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
 
-        String barcodeData = couponBarcodeCheckRequestDto.getBarcodeData();
+        String barcodeData = couponQRCodeCheckRequestDto.getQRData();
 
-        // 바코드 데이터 파싱
+        // QR 데이터 파싱
         String[] dataParts = barcodeData.split(",");
         Integer couponId = null;
         Integer storeNo = null;
@@ -322,10 +319,10 @@ public class CouponService {
                 }
             }
             if(couponId == null || storeNo == null || userNo == null) {
-                throw new InvalidBarcodeDataException();
+                throw new InvalidQRDataException();
             }
         } catch (Exception e){
-            throw new BarcodeParsingErrorException();
+            throw new QRParsingErrorException();
         }
 
         // 키오스크에 로그인된 email 추출
@@ -360,7 +357,7 @@ public class CouponService {
         //discountRate 추출
         Integer discountRate = couponHistory.getCoupon().getDiscountRate();
 
-        return new CouponBarcodeCheckResponseDto(couponId, storeNo, userNo, discountRate, "매장에 유효한 쿠폰입니다.");
+        return new CouponQRCodeCheckResponseDto(couponId, storeNo, userNo, discountRate, "매장에 유효한 쿠폰입니다.");
     }
 
     @Transactional

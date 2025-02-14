@@ -56,17 +56,17 @@ public class CouponController {
     }
 
     // 쿠폰 바코드 생성
-    @PostMapping("/barcode")
-    public ResponseEntity<CouponBarcodeResponseDto> createCouponBarcode(@Valid @RequestBody CouponBarcodeRequestDto couponBarcodeRequestDto){
-        CouponBarcodeResponseDto responseDto = couponService.createCouponBarcode(couponBarcodeRequestDto);
+    @PostMapping("/qrcode")
+    public ResponseEntity<CouponQRCodeResponseDto> createCouponQR(@Valid @RequestBody CouponQRCodeRequestDto couponQRCodeRequestDto){
+        CouponQRCodeResponseDto responseDto = couponService.createCouponQR(couponQRCodeRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responseDto);
     }
 
     // 쿠폰 바코드 인식
     @PostMapping("/check")
-        public ResponseEntity<CouponBarcodeCheckResponseDto> checkCouponBarcode(HttpServletRequest request, @Valid @RequestBody CouponBarcodeCheckRequestDto couponBarcodeCheckRequestDto){
-        CouponBarcodeCheckResponseDto responseDto = couponService.checkCouponBarcode(request, couponBarcodeCheckRequestDto);
+        public ResponseEntity<CouponQRCodeCheckResponseDto> checkCouponBarcode(HttpServletRequest request, @Valid @RequestBody CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
+        CouponQRCodeCheckResponseDto responseDto = couponService.checkCouponBarcode(request, couponQRCodeCheckRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }
