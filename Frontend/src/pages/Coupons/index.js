@@ -41,9 +41,9 @@ function Coupons() {
                 storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
                 userNo: coupon.userNo, // userNo 
             };
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/barcode`, couponData); // API 요청
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/qrcode`, couponData); // API 요청
             
-            setSelectedBarcode(response.data.barcode); // 클릭한 쿠폰 바코드 
+            setSelectedBarcode(response.data.QR); // 클릭한 쿠폰 바코드 
             setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
             setModalIsOpen(true);
 
@@ -102,7 +102,7 @@ function Coupons() {
                         }}
                     >
                         <ModalContent>
-                            <h2>쿠폰 바코드</h2>
+                            <h2>쿠폰 QR</h2>
                             {/* Base64 인코딩된 바코드 문자열을 이미지로 변환 */}
                             <BarcodeImage src={`data:image/png;base64,${selectedBarcode}`} alt="쿠폰 바코드" />
                                 <Button onClick={handleCloseModal}>닫기</Button>
