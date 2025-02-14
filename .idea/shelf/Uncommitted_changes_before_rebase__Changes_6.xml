@@ -1,0 +1,14 @@
+<changelist name="Uncommitted_changes_before_rebase_[Changes]6" date="1739466142132" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]6/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="Frontend/public/Description.png" />
+    <option name="AFTER_PATH" value="Frontend/public/Description.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]6/Description.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="Frontend/public/barcode_icon.png" />
+    <option name="AFTER_PATH" value="Frontend/public/barcode_icon.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]6/barcode_icon.png" />
+  </binary>
+</changelist>
