@@ -4,6 +4,7 @@ import com.hexa.muinus.store.domain.item.RequestReceiving;
 import com.hexa.muinus.store.dto.item.ItemRequestDTO;
 import com.hexa.muinus.store.dto.item.ItemResponseDTO;
 import com.hexa.muinus.store.service.RequestReceivingService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class ItemController {
     }
 
     @GetMapping("/regist_list")
-    public ResponseEntity<List<ItemResponseDTO>> getRegistList(@RequestParam("email") String email) {
-        List<ItemResponseDTO> result = requestReceivingService.getItemRequestCounts(email);
+    public ResponseEntity<List<ItemResponseDTO>> getRegistList(HttpServletRequest request) {
+        List<ItemResponseDTO> result = requestReceivingService.getItemRequestCounts(request);
         return ResponseEntity.ok(result);
     }
 }
