@@ -54,6 +54,8 @@ const MainPage = () => {
         }
     };
 
+    console.log('메인페이지에서', storelist)
+
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">

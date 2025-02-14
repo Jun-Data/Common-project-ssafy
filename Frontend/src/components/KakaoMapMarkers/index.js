@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { useBaseMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {
+
+    console.log('마커에서', storelist);
+
     const { baseMap, isSDKLoaded } = useBaseMap();
 
     useEffect(() => {

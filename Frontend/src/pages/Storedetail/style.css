@@ -4,7 +4,7 @@
     width: 100%;
     min-height: 100vh;
     background: #f5f5f5;
-    grid-template-rows: 64px 150px 50px 1fr;
+    grid-template-rows: 8vh 19vh 6vh auto;
     grid-template-areas:
         "detailheader"
         "photoinfo"
@@ -25,7 +25,7 @@
 .storedetailphotoinfo {
     grid-area: photoinfo;
     width: 100%;
-    max-width: 360px;
+    height: 100%;
     background: white;
     border-bottom: 1px solid #eee;
     display: grid;
@@ -108,7 +108,6 @@
 .storedetailnavbar {
     grid-area: storedetailnavbar;
     width: 100%;
-    max-width: 360px;
     background: white;
     border-bottom: 1px solid #eee;
 }
@@ -117,9 +116,7 @@
 .storedetailmarketinfo {
     grid-area: storedetailinfo;
     width: 100%;
-    height: 0;
     min-height: 100%;
-    max-height: 532px;
     overflow-y: auto;
     background: white;
     position: relative;
