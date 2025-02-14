@@ -3,32 +3,22 @@ import axios from 'axios';
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
-import { DummyStockRequests } from '../../dummydata/stockrequests';
 import styled from 'styled-components';
-
-// const email = "jun9048@naver.com";
 
 const StockRequests = () => { 
   const [items, setItems] = useState([]); // 요청 아이템들을 배열로 저장
 
   useEffect(() => {
-    // API 대신 더미 데이터를 사용
-    setItems(DummyStockRequests);
+    const fetchStockRequests = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/item/regist_list`);
+        setItems(response.data); 
+      } catch (error) {
+        console.error("데이터 가져오기 실패", error);
+      }
+    };
+    fetchStockRequests();
   }, []);
-
-
-  // useEffect(() => {
-  //   const fetchStockRequests = async () => {
-  //     try {
-  //       // 요청 URL을 직접 수정
-  //       const response = await axios.get(`http://i12a506.p.ssafy.io:8000/api/item/regist_list?email=${email}`);
-  //       setItems(response.data); // 배열로 저장
-  //     } catch (error) {
-  //       console.error("데이터 가져오기 실패", error);
-  //     }
-  //   };
-  //   fetchStockRequests();
-  // }, []);
 
   return (
     <div>

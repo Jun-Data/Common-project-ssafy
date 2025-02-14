@@ -41,6 +41,7 @@ function Coupons() {
                 storeNo: coupon.storeNo, // storeNo (쿠폰 데이터에 맞게 수정)
                 userNo: coupon.userNo, // userNo 
             };
+            console.log("전송할 쿠폰 데이터:", couponData); 
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/qrcode`, couponData); // API 요청
             
             setSelectedBarcode(response.data.QR); // 클릭한 쿠폰 바코드 

@@ -14,9 +14,8 @@ const FleaRequests = () => {
   useEffect(() => {
     const fetchFleaMarketRequests = async () => {
       try {
-        if (logindata && logindata.email) {
-          // API 요청 URL 수정
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/list?email=${logindata.email}`);
+        if (logindata) {
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/list`);
           setRequests(response.data); // API 응답 데이터를 requests 상태에 저장
         }
       } catch (error) {
@@ -30,7 +29,6 @@ const FleaRequests = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/check`,{
         storeId: selectedRequest.id,
-        userId: selectedRequest.userId,
         itemName: selectedRequest.itemName,
       });
       alert("요청을 승인하였습니다");
@@ -44,7 +42,6 @@ const FleaRequests = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/reject`,{
         storeId: selectedRequest.id,
-        userId: selectedRequest.userId,
         itemName: selectedRequest.itemName,
       });
       alert("요청을 거절하였습니다");

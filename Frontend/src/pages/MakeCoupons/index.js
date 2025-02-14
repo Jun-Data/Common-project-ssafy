@@ -3,18 +3,14 @@ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from "styled-components";
-// import axios from "axios";
-import { DummyCouponTypes } from "../../dummydata/coupontypes";
-// import { DummyMakeCoupons } from "../../dummydata/makecoupons";
-import { DummyMadeCoupons } from "../../dummydata/madecoupons";
+import axios from "axios";
 
 function MakeCoupons() {
     const [count, setCount] = useState(0);
     const [expirationDate, setExpirationDate] = useState("");
     const [couponTypes, setCouponTypes] = useState([]);  // API에서 가져온 쿠폰 유형 리스트
     const [selectedCouponType, setSelectedCouponType] = useState("");  // 선택한 쿠폰 유형
-    // const [issuedCoupons, setIssuedCoupons] = useState([]); // 발급된 쿠폰 목록 상태
-    const [issuedCoupons, setIssuedCoupons] = useState([...DummyMadeCoupons]); // 더미데이터 발급된 쿠폰 목록 상태
+    const [issuedCoupons, setIssuedCoupons] = useState([]); // 발급된 쿠폰 목록 상태
 
     // 쿠폰 등록 함수
     const handleAddCoupon = async () => {
@@ -22,45 +18,26 @@ function MakeCoupons() {
             alert("모든 항목을 입력하세요."); // 필수항목 입력되지 않으면 등록불가 alert
             return;
         }
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/create`,{
+                withCredentials: true,}
+            );
 
-        const newCoupon = {
-            // couponType: selectedCouponType,
-            content : selectedCouponType,
-            count: parseInt(count, 10),
-            expirationDate,
-        };
+            if (response.status === 201) {
+                alert("쿠폰이 성공적으로 등록되었습니다!");
+                fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
 
-        DummyMadeCoupons.push(newCoupon);
-
-        alert("쿠폰이 성공적으로 등록되었습니다!");
-        fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
-
-        // 입력 필드 초기화
-        setSelectedCouponType("");
-        setCount(0);
-        setExpirationDate("");
+                // 입력 필드 초기화
+                setSelectedCouponType("");
+                setCount(0);
+                setExpirationDate("");
+            }
+        } catch (error) {
+            console.error("쿠폰 등록 실패:", error);
+            alert("쿠폰 등록에 실패했습니다.");
+        }
     };
-
-    //     try {
-    //         const response = await axios.post(
-    //             "http://i12a506.p.ssafy.io:8000/api/coupon/create",
-    //             newCoupon
-    //         );
-
-    //         if (response.status === 201) {
-    //             alert("쿠폰이 성공적으로 등록되었습니다!");
-    //             fetchIssuedCoupons(); // 최신 쿠폰 목록 다시 불러오기
-
-    //             // 입력 필드 초기화
-    //             setSelectedCouponType("");
-    //             setCount(0);
-    //             setExpirationDate("");
-    //         }
-    //     } catch (error) {
-    //         console.error("쿠폰 등록 실패:", error);
-    //         alert("쿠폰 등록에 실패했습니다.");
-    //     }
-    // };
 
     // 쿠폰 개수 증감
     const increaseCount = () => {
@@ -72,48 +49,36 @@ function MakeCoupons() {
             setCount((prevCount) => prevCount - 1);
         }
     };
-
-    // 쿠폰 유형을 가져오는 함수 (더미 데이터 사용)
-    useEffect(() => {
-        setCouponTypes(DummyCouponTypes);  // 더미 데이터로 초기화
-    }, []);
-
-    // 발급된 쿠폰 목록을 가져오는 함수 (더미 데이터 사용)
-    const fetchIssuedCoupons = () => {
-        setIssuedCoupons([...DummyMadeCoupons]);  // 더미 데이터로 초기화
-    };
     
     useEffect(() => {
         fetchIssuedCoupons();
     }, []);
 
-    // // 쿠폰 유형을 가져오는 함수
-    // useEffect(() => {
-    //     const fetchCouponTypes = async () => {
-    //         try {
-    //             const response = await axios.get(
-    //                 "http://i12a506.p.ssafy.io:8000/api/coupon/type"
-    //             );
-    //             setCouponTypes(response.data);  // 받아온 데이터를 상태에 저장
-    //         } catch (error) {
-    //             console.error("쿠폰 유형 데이터를 가져오는 데 실패했습니다", error);
-    //         }
-    //     };
+    // 쿠폰 유형을 가져오는 함수
+    useEffect(() => {
+        const fetchCouponTypes = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/type`);
+                setCouponTypes(response.data);  // 받아온 데이터를 상태에 저장
+            } catch (error) {
+                console.error("쿠폰 유형 데이터를 가져오는 데 실패했습니다", error);
+            }
+        };
 
-    //     fetchCouponTypes();
-    // }, []);
+        fetchCouponTypes();
+    }, []);
 
-    // // 발급된 쿠폰 목록을 가져오는 함수
-    // const fetchIssuedCoupons = async () => {
-    //     try {
-    //         const response = await axios.get(
-    //             "http://i12a506.p.ssafy.io:8000/api/coupon/list"
-    //         );
-    //         setIssuedCoupons(response.data); // 받은 데이터를 발급된 쿠폰 상태에 저장
-    //     } catch (error) {
-    //         console.error("발급된 쿠폰 데이터를 가져오는 데 실패했습니다", error);
-    //     }
-    // };
+    // 발급된 쿠폰 목록을 가져오는 함수
+    const fetchIssuedCoupons = async () => {
+        try {
+            const response = await axios.get(
+                "http://i12a506.p.ssafy.io:8000/api/coupon/list"
+            );
+            setIssuedCoupons(response.data); // 받은 데이터를 발급된 쿠폰 상태에 저장
+        } catch (error) {
+            console.error("발급된 쿠폰 데이터를 가져오는 데 실패했습니다", error);
+        }
+    };
 
     useEffect(() => {
         fetchIssuedCoupons();
