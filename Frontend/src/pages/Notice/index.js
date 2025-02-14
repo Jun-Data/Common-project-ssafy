@@ -4,10 +4,7 @@ import styled from "styled-components";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
-import { DummyNotices } from "../../dummydata/notice";
 import useAuth from "../../hooks/useAuth";
-
-const email = "jun9048@naver.com"; 
 
 const Notice = () => {
     const {logindata} = useAuth();
@@ -16,20 +13,15 @@ const Notice = () => {
     const [noticeContent, setNoticeContent] = useState("");
     const [noticeImage, setNoticeImage] = useState(null);
     const [announcements, setAnnouncements] = useState([]); // 공지사항 목록 상태
-    // const [announcements, setAnnouncements] = useState(DummyNotices[0]?.announcements || []); // 더미데이터 공지사항 목록 상태 
     const [editingNoticeId, setEditingNoticeId] = useState(null); // 수정할 공지사항 ID 
 
     const modalBackground = useRef();
-
-    // // 서버에서 데이터를 받아오는 대신 더미 데이터 활용
-    // useEffect(() => {
-    //     setAnnouncements(DummyNotices[0]?.announcements || []);
-    // }, []);
     
     useEffect(() => {
+        // 내 매장 공지사항 목록
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}store/board/list?email=${logindata.email}`);
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`);
                 setAnnouncements(response.data.announcements || []); // 받은 공지사항 데이터를 상태에 저장, 없으면 빈 배열
             } catch (error) {
                 console.error("공지사항 목록을 가져오지 못했습니다", error);
@@ -41,55 +33,47 @@ const Notice = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file); // 이미지 URL로 변환
-            setNoticeImage(imageUrl); // URL을 상태에 저장
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Base64로 변환
+            reader.onloadend = () => {
+                setNoticeImage(reader.result); // 변환된 Base646 데이터 저장장
+            };
         }
     };
 
+    // 공지사항 등록
     const handleAddNotice = async () => {
+        console.log(logindata)
         const formData = new FormData();
-        formData.append("userEmail", email);
+        formData.append("userEmail", logindata.email);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
         formData.append("boardImageUrl", noticeImage ? noticeImage : null);            
 
-        // 더미데이터 공지
-        const newAnnouncement = {
-            boardId: announcements.length + 1,
-            title: noticeTitle,
-            content: noticeContent,
-            boardImageUrl: noticeImage ? URL.createObjectURL(noticeImage) : null, // 이미지 미리보기 URL 저장
-            createdAt: new Date().toISOString(),
-        };
+        try {
+            const response = await axios.post(
+               `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-        // 더미 데이터에 추가
-        setAnnouncements([...announcements, newAnnouncement]);
-        alert("공지사항이 등록되었습니다.");
-        setNoticeTitle("");
-        setNoticeContent("");
-        setNoticeImage(null);
-        setModalIsOpen(false);
-        setEditingNoticeId(null);
-        // try {
-        //     const response = await axios.post("http://i12a506.p.ssafy.io:8000/api/store/board", formData, {
-        //         headers: { 'Content-Type': 'application/json' }
-        //     });
+            if (response.status === 200) {
+                alert("공지사항이 등록되었습니다.");
+                setNoticeTitle(""); // 입력 데이터 초기화
+                setNoticeContent("");
+                setNoticeImage(null); 
+                setModalIsOpen(false);
 
-        //     if (response.status === 200) {
-        //         alert("공지사항이 등록되었습니다.");
-        //         setNoticeTitle(""); // 입력 데이터 초기화
-        //         setNoticeContent("");
-        //         setNoticeImage(null); 
-        //         setModalIsOpen(false);
-        //         // 공지사항 목록을 다시 불러옵니다.
-        //         const updatedAnnouncements = await axios.get(`http://i12a506.p.ssafy.io:8000/api/store/board/list?email=${email}`);
-        //         setAnnouncements(updatedAnnouncements.data.announcements || []);
-        //     }
-        // } catch (error) {
-        //     const errorMessage = error.response?.data?.message || error.message;
-        //     console.error("공지사항 등록 실패:", errorMessage);
-        //     alert(`공지사항 등록에 실패했습니다. (${errorMessage})`);
-        // }
+                // 등록 후 목록 새로고침
+                const updatedAnnouncements = await axios.get(
+                   `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`);
+                setAnnouncements(updatedAnnouncements.data.announcements || []);
+                
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("공지사항 등록 실패:", errorMessage);
+            alert(`공지사항 등록에 실패했습니다. (${errorMessage})`);
+        }
     };
 
     const handleCloseModal = () => {
@@ -101,7 +85,7 @@ const Notice = () => {
 
     };
     
-    // 공지사항 수정 처리
+    // 공지사항 수정 모달창
     const handleEditNotice = (announcement) => {
         setEditingNoticeId(announcement.boardId); // 수정할 공지사항 ID 설정
         setNoticeTitle(announcement.title);
@@ -110,27 +94,33 @@ const Notice = () => {
         setModalIsOpen(true); // 모달 열기
     };
 
+    // 공지사항 수정
     const handleSaveNotice = async () => {
-        // 수정된 공지사항을 더미 데이터에 반영
-        const updatedAnnouncements = announcements.map((announcement) => {
-            if (announcement.boardId === editingNoticeId) {
-                return {
-                    ...announcement,
-                    title: noticeTitle,
-                    content: noticeContent,
-                    boardImageUrl: noticeImage ? URL.createObjectURL(noticeImage) : null,
-                    createdAt: new Date().toISOString(),
-                };
-            }
-            return announcement;
-        });
-        setAnnouncements(updatedAnnouncements); // 상태 업데이트
-        alert("공지사항이 수정되었습니다.");
-        setNoticeTitle("");
-        setNoticeContent("");
-        setNoticeImage(null);
-        setModalIsOpen(false);
-        setEditingNoticeId(null); // 수정 상태 리셋
+        const formData = new FormData();
+        formData.append("boardId", editingNoticeId);
+        formData.append("title", noticeTitle);
+        formData.append("content", noticeContent);
+        formData.append("boardImageUrl", noticeImage ? noticeImage : null);                      
+        
+        try {
+            const response = await axios.put(
+               `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+        if (response.status === 200) {
+            alert("공지사항이 수정되었습니다.");
+            // 서버에서 변경된 데이터 다시 불러오기
+            const updatedAnnouncements = await axios.get(
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`
+            );
+            setAnnouncements(updatedAnnouncements.data.announcements || []);
+            handleCloseModal();
+        }
+        } catch (error) {
+            console.error("공지사항 수정 실패:", error);
+            alert("공지사항 수정에 실패했습니다.");
+        }
     };
 
     return (
@@ -194,7 +184,7 @@ const Notice = () => {
                                 />
                                 {noticeImage && (
                                     <ImagePreview>
-                                        <img src={URL.createObjectURL(noticeImage)} alt="Preview" />
+                                        <img src={noticeImage} alt="Preview" />
                                     </ImagePreview>
                                 )}
                             </UploadContainer>
@@ -215,7 +205,6 @@ const Notice = () => {
 
 export default Notice;
 
-// Styled Components
 const Title = styled.h2`
     margin: 12px;
 `;
