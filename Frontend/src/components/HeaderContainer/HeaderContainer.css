@@ -56,8 +56,8 @@
 .dropdown {
     position: fixed;
     top: 8%; /* 버튼 바로 아래에 드롭다운 위치 */
-    right: 20px;
-    width: 120px; /* 드롭다운의 너비 */
+    right: 10px;
+    width: 140px; /* 드롭다운의 너비 */
     padding: 10px;
     background-color: #ffffff; /* 배경색 */
     border: 1px solid #ddd; /* 테두리 색상 */
@@ -110,7 +110,7 @@
     content: "";
     position: absolute;
     bottom: 100%; /* 드롭다운 메뉴의 위쪽에 삼각형을 위치시킴 */
-    left: 85%;
+    left: 90%;
     transform: translateX(-50%); /* 삼각형을 가운데로 조정 */
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;

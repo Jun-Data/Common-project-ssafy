@@ -9,13 +9,14 @@ import useAuth from '../../hooks/useAuth';
 const FleaRequests = () => {
   const {logindata} = useAuth();
   const [requests, setRequests] = useState([]); // 요청 목록을 배열로 저장
+  const [selectedRequest, setSelectedRequest] = useState(null); //단일 요청 목록
 
   useEffect(() => {
     const fetchFleaMarketRequests = async () => {
       try {
         if (logindata && logindata.email) {
           // API 요청 URL 수정
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}fli/list?email=${logindata.email}`);
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/list?email=${logindata.email}`);
           setRequests(response.data); // API 응답 데이터를 requests 상태에 저장
         }
       } catch (error) {
@@ -25,6 +26,34 @@ const FleaRequests = () => {
     fetchFleaMarketRequests();
   }, [logindata]); // logindata가 변경될 때마다 API를 다시 호출
 
+  const handleAccept = async () => {
+    try {
+      await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/check`,{
+        storeId: selectedRequest.id,
+        userId: selectedRequest.userId,
+        itemName: selectedRequest.itemName,
+      });
+      alert("요청을 승인하였습니다");
+      setSelectedRequest(null);
+    } catch (error) {
+      console.error("요청 승인 실패",error);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/reject`,{
+        storeId: selectedRequest.id,
+        userId: selectedRequest.userId,
+        itemName: selectedRequest.itemName,
+      });
+      alert("요청을 거절하였습니다");
+      setSelectedRequest(null);
+    } catch (error) {
+      console.error("요청 거절 실패",error);
+    }
+  };
+
   return (
     <div>
       <HeaderContainer />
@@ -33,7 +62,7 @@ const FleaRequests = () => {
       <Container>
       {requests.length > 0 ? (
         requests.map((request, index) => ( // 요청 목록을 반복하여 출력
-          <RequestCard key={index}>
+          <RequestCard key={index} onClick={()=> setSelectedRequest(request)}>
             <RequestItem><strong>아이템 이름:</strong> {request.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {request.quantity}</RequestItem>
             <RequestItem><strong>가격:</strong> {request.price}원</RequestItem>
@@ -46,6 +75,21 @@ const FleaRequests = () => {
         <NoRequests>플리마켓 요청이 없습니다</NoRequests>
       )}
       </Container>
+      {selectedRequest && (
+        <ModalOverlay>
+          <ModalContent>
+            <h3>판매 요청 상세</h3>
+            <RequestItem><strong>아이템 이름:</strong> {selectedRequest.itemName}</RequestItem>
+            <RequestItem><strong>수량:</strong> {selectedRequest.quantity}</RequestItem>
+            <RequestItem><strong>가격:</strong> {selectedRequest.price}원</RequestItem>
+            <ButtonContainer>
+              <AcceptButton onClick={handleAccept}>수락</AcceptButton>
+              <RejectButton onClick={handleReject}>거절</RejectButton>
+              <CloseButton onClick={() => setSelectedRequest(null)}>닫기</CloseButton>
+            </ButtonContainer>
+          </ModalContent>
+        </ModalOverlay>
+      )}
       <BottomNav />
       </div>
   );
@@ -101,3 +145,75 @@ const NoRequests = styled.p`
   width: 100%;
   max-width: 600px;
 `;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+`;
+
+const AcceptButton = styled.button`
+  background: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background: #45a049;
+  }
+`;
+
+const RejectButton = styled.button`
+  background: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background: #e53935;
+  }
+`;
+
+const CloseButton = styled.button`
+  background: #ccc;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background: #b0b0b0;
+  }
+`;
+
+
