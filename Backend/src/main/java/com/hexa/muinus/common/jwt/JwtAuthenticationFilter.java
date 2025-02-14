@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("JWT Authentication Filter");
         String accessToken = jwtProvider.getCookieValue(request, "AccessToken");
         log.info("JWT Access Token: {}", accessToken);
+
         if (accessToken != null) {
             try {
                 // JWT 유효성 검사

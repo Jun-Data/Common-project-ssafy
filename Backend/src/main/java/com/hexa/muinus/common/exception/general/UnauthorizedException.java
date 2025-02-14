@@ -7,4 +7,8 @@ public class UnauthorizedException extends MuinusException {
     public UnauthorizedException() {
         super(APIErrorCode.UNAUTHORIZED);
     }
+
+    public UnauthorizedException(String message) {
+        super(APIErrorCode.UNAUTHORIZED, message);
+    }
 }
