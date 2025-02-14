@@ -28,7 +28,6 @@ const FleaRequests = () => {
   const handleAccept = async () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/check`,{
-        storeId: selectedRequest.id,
         itemName: selectedRequest.itemName,
       });
       console.log(selectedRequest);
@@ -42,7 +41,6 @@ const FleaRequests = () => {
   const handleReject = async () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/reject`,{
-        storeId: selectedRequest.id,
         itemName: selectedRequest.itemName,
       });
       console.log(selectedRequest);

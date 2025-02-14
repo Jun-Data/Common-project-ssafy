@@ -20,7 +20,12 @@ function MakeCoupons() {
         }
         try {
             const response = await axios.post(
-                `${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/create`,{
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/create`,
+                {   couponId: selectedCouponType, // 선택한 쿠폰 타입의 ID
+                    count: count, 
+                    expirationDate: expirationDate
+                },
+                {
                 withCredentials: true,}
             );
 
@@ -72,8 +77,7 @@ function MakeCoupons() {
     const fetchIssuedCoupons = async () => {
         try {
             const response = await axios.get(
-                "http://i12a506.p.ssafy.io:8000/api/coupon/list"
-            );
+            `${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/list`);
             setIssuedCoupons(response.data); // 받은 데이터를 발급된 쿠폰 상태에 저장
         } catch (error) {
             console.error("발급된 쿠폰 데이터를 가져오는 데 실패했습니다", error);
