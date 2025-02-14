@@ -25,20 +25,20 @@ public class FliController {
     }
 
     @PostMapping("/check")
-    public ResponseEntity<String> checkFli(@RequestBody FliCheckDTO dto) {
-        fliService.checkFli(dto);
+    public ResponseEntity<String> checkFli(HttpServletRequest request, @RequestBody FliCheckDTO dto) {
+        fliService.checkFli(request, dto);
         return ResponseEntity.ok("Fli check successful");
     }
 
     @PostMapping("/reject")
-    public ResponseEntity<String> rejectFli(@RequestBody FliCheckDTO dto) {
-        fliService.rejectFli(dto);
+    public ResponseEntity<String> rejectFli(HttpServletRequest request, @RequestBody FliCheckDTO dto) {
+        fliService.rejectFli(request, dto);
         return ResponseEntity.ok("Fli reject successful");
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<FliResponseDTO>> listFli(@RequestParam("email") String email) {
-        return ResponseEntity.ok(fliService.listFli(email));
+    public ResponseEntity<List<FliResponseDTO>> listFli(HttpServletRequest request) {
+        return ResponseEntity.ok(fliService.listFli(request));
     }
 }
 

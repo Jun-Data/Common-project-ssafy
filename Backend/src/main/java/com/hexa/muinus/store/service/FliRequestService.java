@@ -93,8 +93,10 @@ public class FliRequestService {
      * 플리 상품 승인 로직
      * @param dto
      */
-    public void checkFli(FliCheckDTO dto) {
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), dto.getUserId(), dto.getItemName());
+    public void checkFli(HttpServletRequest request, FliCheckDTO dto) {
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+        Users users = usersRepository.findByEmail(email);
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), users.getUserNo(), dto.getItemName());
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
@@ -106,8 +108,10 @@ public class FliRequestService {
      * 플리 상품 거절 로직
      * @param dto
      */
-    public void rejectFli(FliCheckDTO dto) {
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), dto.getUserId(), dto.getItemName());
+    public void rejectFli(HttpServletRequest request, FliCheckDTO dto) {
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+        Users users = usersRepository.findByEmail(email);
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), users.getUserNo(), dto.getItemName());
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
@@ -115,8 +119,10 @@ public class FliRequestService {
         }
     }
 
-    public List<FliResponseDTO> listFli(String userEmail) {
-        Store store = storeRepository.findStoreByUser_Email(userEmail);
+    public List<FliResponseDTO> listFli(HttpServletRequest request) {
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+        Store store = storeRepository.findStoreByUser_Email(email);
+
         if(store == null) {
             throw new StoreNotFoundException(store.getStoreNo());
         }
