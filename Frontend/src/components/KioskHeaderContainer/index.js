@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import "./style.css";
 
@@ -8,9 +9,25 @@ const KioskHeaderContainer = () => {
   const url = "https://i12a506.p.ssafy.io/kiosk/main";
   const { logindata } = useAuth();
 
-  useEffect(() => {
+  useEffect(async () => {
     if (logindata && logindata.usertype !== "A") {
-      window.location.href = `${apiUrl}/api/users/logout`;
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`
+        );
+        if (response.status === 200) {
+          alert("로그아웃 되었습니다");
+          window.location.href = "https://i12a506.p.ssafy.io";
+
+          // navigate("/"); //메인페이지로 이동
+          // window.location.reload(); // 페이지 새로고침
+        } else {
+          alert("로그아웃 실패! 다시 시도해주세요.");
+        }
+      } catch (error) {
+        console.error("로그아웃 요청 중 오류 발생:", error);
+        alert("서버 오류로 로그아웃에 실패했습니다.");
+      }
     }
   }, [logindata]);
 
