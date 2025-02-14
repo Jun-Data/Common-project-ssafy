@@ -1,20 +1,21 @@
 import { faRightToBracket, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useState, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
 import axios from "axios";
+import Swal from "sweetalert2";
 import "./HeaderContainer.css";
 
 function HeaderContainer() {
   const url = encodeURI(window.location.href);
-
   const navigate = useNavigate();
   const { logindata, isLoading } = useAuth(); //로그인 정보 가져오기
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleDropdown = () => {
-    setShowDropdown(!showDropdown);
+    setShowDropdown((prev) => !prev);
   };
 
   const handleLogout = async () => {
@@ -23,11 +24,13 @@ function HeaderContainer() {
         `${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`
       );
       if (response.status === 200) {
-        alert("로그아웃 되었습니다");
-        window.location.href = "https://i12a506.p.ssafy.io";
-
-        // navigate("/"); //메인페이지로 이동
-        // window.location.reload(); // 페이지 새로고침
+        Swal.fire({
+          icon: "success",
+          title: "로그아웃 완료",
+          text: "로그아웃 되었습니다.",
+        }).then(() => {
+          window.location.href = "https://i12a506.p.ssafy.io";
+        });
       } else {
         alert("로그아웃 실패! 다시 시도해주세요.");
       }
@@ -77,6 +80,24 @@ function HeaderContainer() {
       );
     }
   };
+
+  // 드롭다운 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
 
   return (
     <header className="header">

@@ -3,11 +3,12 @@ import axios from "axios";
 
 function useAuth() {
     const [logindata, setLogindata] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
-                const response = await axios.get("https://i12a506.p.ssafy.io/api/users/info", {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/users/info`, {
                     withCredentials: true, // 쿠키 포함
                 });
 
@@ -19,13 +20,15 @@ function useAuth() {
             } catch (error) {
                 console.error("로그인 상태 확인 오류:", error);
                 setLogindata(null);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         checkLoginStatus();
     }, []);
 
-    return { logindata };
+    return { logindata, isLoading };
 }
 
 export default useAuth;
