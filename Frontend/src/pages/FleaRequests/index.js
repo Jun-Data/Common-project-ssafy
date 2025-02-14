@@ -5,6 +5,7 @@ import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from 'styled-components';
 import useAuth from '../../hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const FleaRequests = () => {
   const {logindata} = useAuth();
@@ -29,12 +30,25 @@ const FleaRequests = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/check`,{
         itemName: selectedRequest.itemName,
+        userId : selectedRequest.userId,
       });
-      console.log(selectedRequest);
-      alert("요청을 승인하였습니다");
+      console.log("승인된 요청:", selectedRequest.itemName, selectedRequest.userId);
+
+      Swal.fire({
+        title: "승인 완료!",
+        text: `${selectedRequest.itemName} 요청이 승인되었습니다.`,
+        icon: "success",
+        confirmButtonText: "확인"
+      });
       setSelectedRequest(null);
     } catch (error) {
       console.error("요청 승인 실패",error);
+      Swal.fire({
+        title: "승인 실패!",
+        text: "요청 승인 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonText: "확인"
+      });
     }
   };
 
@@ -42,12 +56,25 @@ const FleaRequests = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/fli/reject`,{
         itemName: selectedRequest.itemName,
+        userId : selectedRequest.userId,
       });
-      console.log(selectedRequest);
-      alert("요청을 거절하였습니다");
+      console.log("거절된 요청:", selectedRequest.itemName, selectedRequest.userId);
+
+      Swal.fire({
+        title: "거절 완료!",
+        text: `${selectedRequest.itemName} 요청이 거절되었습니다.`,
+        icon: "warning",
+        confirmButtonText: "확인"
+      });
       setSelectedRequest(null);
     } catch (error) {
       console.error("요청 거절 실패",error);
+      Swal.fire({
+        title: "거절 실패!",
+        text: "요청 거절 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonText: "확인"
+      });
     }
   };
 
@@ -60,12 +87,9 @@ const FleaRequests = () => {
       {requests.length > 0 ? (
         requests.map((request, index) => ( // 요청 목록을 반복하여 출력
           <RequestCard key={index} onClick={()=> setSelectedRequest(request)}>
-            <RequestItem><strong>아이템 이름:</strong> {request.itemName}</RequestItem>
+            <RequestItem><strong>판매 물품:</strong> {request.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {request.quantity}</RequestItem>
-            <RequestItem><strong>가격:</strong> {request.price}원</RequestItem>
             <RequestItem><strong>섹션 번호:</strong> {request.sectionNumber}</RequestItem>
-            <RequestItem><strong>입고 날짜:</strong> {request.expirationDate}일</RequestItem>
-            <RequestItem><strong>판매자 계좌 정보:</strong> {request.userAccount} ({request.userBank}, {request.accountName})</RequestItem>
           </RequestCard>
         ))
       ) : (
@@ -79,10 +103,17 @@ const FleaRequests = () => {
             <RequestItem><strong>아이템 이름:</strong> {selectedRequest.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {selectedRequest.quantity}</RequestItem>
             <RequestItem><strong>가격:</strong> {selectedRequest.price}원</RequestItem>
+            <RequestItem><strong>입고 날짜:</strong> {selectedRequest.expirationDate}일</RequestItem>
+            <RequestItem><strong>판매자 계좌 정보:</strong> {selectedRequest.userAccount} ({selectedRequest.userBank}, {selectedRequest.accountName})</RequestItem>
+
             <ButtonContainer>
+            <ActionButtons>
               <AcceptButton onClick={handleAccept}>수락</AcceptButton>
               <RejectButton onClick={handleReject}>거절</RejectButton>
+            </ActionButtons>
+            <CloseButtonContainer>
               <CloseButton onClick={() => setSelectedRequest(null)}>닫기</CloseButton>
+            </CloseButtonContainer>
             </ButtonContainer>
           </ModalContent>
         </ModalOverlay>
@@ -114,7 +145,7 @@ const RequestCard = styled.div`
   background-color: white;
   padding: 15px;
   margin-bottom: 15px;
-  width: 100%;
+  width: 97%;
   max-width: 600px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -167,8 +198,23 @@ const ModalContent = styled.div`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px; /* 버튼 최대 너비 설정 */
+  margin-bottom: 10px; /* 닫기 버튼과 간격 */
+`;
+
+const CloseButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;
 
 const AcceptButton = styled.button`
