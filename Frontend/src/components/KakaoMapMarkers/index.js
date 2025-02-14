@@ -1,29 +1,32 @@
-import { useEffect, useRef } from 'react';
-import { useKakaoMap } from "../../contexts/ KakaoMapContext";
+import { useEffect } from 'react';
+import { useBaseMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {
-    const { map, isMapReady } = useKakaoMap();
-    const markers = useRef([]);
+    const { baseMap, isSDKLoaded } = useBaseMap();
 
-    // 마커 생성/제거
     useEffect(() => {
-        if (!isMapReady || !storelist?.length) return;
+        if (!baseMap || !storelist || !isSDKLoaded) return;
 
-        const kakao = window.kakao;
-
-        // 기존 마커 제거
-        markers.current.forEach(marker => marker.setMap(null));
-
-        // 신규 마커 생성
-        markers.current = storelist.map(store => {
-            return new kakao.maps.Marker({
-                position: new kakao.maps.LatLng(store.lat, store.lon),
-                map: map
+        // storelist 기반으로 마커 생성
+        const markers = storelist.map((store) => {
+            const marker = new window.kakao.maps.Marker({
+                position: new window.kakao.maps.LatLng(store.lat, store.lon),
+                map: baseMap
             });
+
+            // 클릭 시 해당 마커 위치로 지도 중심 이동
+            window.kakao.maps.event.addListener(marker, 'click', () => {
+                baseMap.panTo(marker.getPosition());
+            });
+
+            return marker;
         });
 
-        return () => markers.current.forEach(marker => marker.setMap(null));
-    }, [storelist, isMapReady]);
+        // 컴포넌트 언마운트 시 생성한 마커 제거
+        return () => {
+            markers.forEach((marker) => marker.setMap(null));
+        };
+    }, [storelist, baseMap, isSDKLoaded]);
 
     return null;
 };

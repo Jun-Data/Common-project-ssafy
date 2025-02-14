@@ -25,6 +25,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitLabMergeRequestFiltersHistory">{
   &quot;lastFilter&quot;: {
@@ -190,17 +191,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="[FE/FIX] 배포 테스트 (#68)" />
     <MESSAGE value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/Frontend/src/hooks/useAuth.js</url>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
+    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 키오스크 ui 수정 (#68)" />
   </component>
 </project>

@@ -1,9 +1,11 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import apiClient from "../../api/apiClient";
 import './style.css';
 
 const FleaProductList = ({ onAddToCart }) => {
-    const buttonclicksuccess = async (section) => {
+    const [fleaProducts, setFleaProducts] = useState([]);
+
+    const fetchFleaProduct = async (section) => {
         try {
             const storeNo = 1;
             const sectionId= 1;
@@ -12,18 +14,10 @@ const FleaProductList = ({ onAddToCart }) => {
                 params: { storeNo, sectionId },
             });
 
-            const product = response.data;
-
             if (response.status === 200) {
-                alert('API 호출 성공!');
-                onAddToCart({
-                    id: product.itemId,
-                    itemName: product.itemName,
-                    price: product.price,
-                });
+                setFleaProducts(response.data);
             } else {
                 console.error('API 요청 실패:', product.message || '알 수 없는 오류');
-                alert('API 호출 실패!');
             }
         } catch (error) {
             console.error('API 호출 중 오류 발생:', error);
@@ -36,19 +30,30 @@ const FleaProductList = ({ onAddToCart }) => {
         }
     };
 
+    useEffect(() => {
+        fetchFleaProduct();
+    }, []); // 빈 배열 사용
+
     return (
         <div className="kioskfleamarketsection">
-            {[1, 2, 3, 4].map((section) => (
-                <button
-                    className="kioskfleamarketbutton"
-                    key={section}
-                    onClick={() => buttonclicksuccess(section)}
-                >
-                    플리제품{section}<br/> 스캔
-                </button>
+            {fleaProducts.map((fleaProduct) => (
+                <div key={fleaProduct.id} className="fleaproduct-item">
+                    <div className="image-container">
+                        <img src={fleaProduct.imageUrl} alt={fleaProduct.itemName} />
+                    </div>
+                    <div className="fleaproduct-info">
+                        <div className="fleaproduct-name">{fleaProduct.itemName}</div>
+                        <div className="fleaproduct-price">{fleaProduct.price.toLocaleString()}원</div>
+                        <button
+                            className="add-to-cart-btn"
+                            onClick={() => buttonclicksuccess(fleaProduct.section)}
+                        >
+                            장바구니에 추가
+                        </button>
+                    </div>
+                </div>
             ))}
-        </div>
-    );
+        </div>    );
 };
 
 export default FleaProductList;

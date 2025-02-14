@@ -1,42 +1,46 @@
 import { useEffect, useRef } from 'react';
-import { useKakaoMap } from "../../contexts/ KakaoMapContext";
+import { useBaseMap } from "../../contexts/ KakaoMapContext";
 
 const KakaoMapContainer = ({ coords }) => {
-    const { map, setMap, isSDKLoaded, setIsSDKLoaded, setIsMapReady } = useKakaoMap();
-    const containerRef = useRef(null);
+    const { baseMap, isSDKLoaded } = useBaseMap();
+    const markerRef = useRef(null); // 마커 인스턴스 추적용 ref
 
-    // SDK 초기화
     useEffect(() => {
-        if (!window.kakao) {
-            const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&autoload=false`;
-            script.onload = () => {
-                window.kakao.maps.load(() => {
-                    setIsSDKLoaded(true);
-                });
-            };
-            document.head.appendChild(script);
+        if (!isSDKLoaded || !baseMap || !coords) return;
+
+        // 1. 기존 마커 제거
+        if (markerRef.current) {
+            markerRef.current.setMap(null);
         }
-    }, []);
 
-    // 지도 생성
-    useEffect(() => {
-        if (!isSDKLoaded || !containerRef.current) return;
+        // 2. 새 마커 생성
+        const markerImage = new window.kakao.maps.MarkerImage(
+            '/mylocation.jpg',
+            new window.kakao.maps.Size(30, 30),
+            { offset: new window.kakao.maps.Point(0, 0) }
+        );
 
-        const mapInstance = new window.kakao.maps.Map(containerRef.current, {
-            center: new window.kakao.maps.LatLng(coords.lat, coords.lng),
-            level: 3
+        const newMarker = new window.kakao.maps.Marker({
+            position: new window.kakao.maps.LatLng(coords.lat, coords.lng),
+            image: markerImage,
+            map: baseMap
         });
 
-        // 지도 완전 초기화 감지
-        window.kakao.maps.event.addListener(mapInstance, 'tilesloaded', () => {
-            setMap(mapInstance);
-            setIsMapReady(true);
-        });
+        // 3. 마커 참조 업데이트
+        markerRef.current = newMarker;
 
-    }, [isSDKLoaded, coords.lat, coords.lng]);
+        // 4. 지도 중심 이동
+        baseMap.setCenter(newMarker.getPosition());
 
-    return <div ref={containerRef} style={{ width: '100vw', height: '100vh', zIndex: '1'}} />;
+        // 클린업 함수
+        return () => {
+            if (markerRef.current) {
+                markerRef.current.setMap(null);
+            }
+        };
+    }, [coords, baseMap, isSDKLoaded]); // coords 변경 시 재실행
+
+    return null;
 };
 
 export default KakaoMapContainer;

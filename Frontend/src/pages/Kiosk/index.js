@@ -1,18 +1,23 @@
 import KioskHeaderContainer from "../../components/KioskHeaderContainer";
 import userInfoApi from "../../api/UserInfoApi";
 import "./style.css"
+import {useState} from "react";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 const Kiosk = () => {
-
+    const [kioskStoreNo, setKioskStoreNo] = useState(1);
     const getUserInfo = userInfoApi();
+
+    const handleStoreNo = (storeNo) => {
+        setKioskStoreNo(storeNo);
+    }
 
     return (
         <div className="kiosk">
 
             <div className="headercontainer1">
-                <KioskHeaderContainer/>
+                <KioskHeaderContainer onstoreNoReceived = {handleStoreNo} />
             </div>
 
             <div className="barcode_image">

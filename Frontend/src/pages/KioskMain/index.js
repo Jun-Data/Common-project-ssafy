@@ -101,11 +101,11 @@ const KioskMainScreen = () => {
                     onRemove={handleRemove}
                 />
             </div>
-            <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
             <div className="kioskpleaproductlist"><KioskFleaproductlist onAddToCart={handleAddToCart}/></div>
             <div className="barcodebuttoncontainer">
                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
                 <div className="buttonzone">
+                    <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
                     <button className="mainscreenpayment" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>
                     <button className="mainscreentohome" onClick={kioskhomeclick}>홈으로</button>
                 </div>

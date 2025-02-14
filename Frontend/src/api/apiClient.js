@@ -20,7 +20,7 @@ apiClient.interceptors.response.use(
 
             try {
                 // 리프레시 토큰으로 새 토큰 발급 요청
-                await apiClient.post('/auth/refresh-token');
+                await apiClient.post('/api/users/reissue');
                 return apiClient(originalRequest); // 원래 요청 재시도
             } catch (refreshError) {
                 console.error('리프레시 토큰 유효하지 않음:', refreshError);

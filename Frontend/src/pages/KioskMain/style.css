@@ -3,12 +3,11 @@
     max-width: 800px;
     width: 100%;
     height: 100%;
-    grid-template-rows: 8vh 6vh 48vh 4vh 9vh 25vh;
+    grid-template-rows: 8vh 6vh 29vh 28vh 25vh;
     grid-template-areas:
         "header"
         "notice"
         "cartpage"
-        "cartpagetotal"
         "kioskpleaproductlist"
         "scanner";
     place-items: center;
@@ -72,12 +71,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    gap: 8%;
 }
 
 .cartpagetotal {
-    grid-area: cartpagetotal;
+    display: grid;
+    align-items: center;
     width: 95%;
-    text-align: right;
+    height: 26%;
+    text-align: left;
     font-size: 40px;
     margin-right: 5%;
     color: black;
