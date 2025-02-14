@@ -5,7 +5,7 @@ import "./style.css";
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 const KioskHeaderContainer = () => {
-  const url = "https://i12a506.p.ssafy.io/kiosk-main";
+  const url = "https://i12a506.p.ssafy.io/kiosk/main";
   const { logindata } = useAuth();
 
   useEffect(() => {
