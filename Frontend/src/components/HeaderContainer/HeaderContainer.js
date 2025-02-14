@@ -8,7 +8,7 @@ import "./HeaderContainer.css";
 
 function HeaderContainer() {
     const navigate = useNavigate();
-    const { logindata } = useAuth(); //로그인 정보 가져오기
+    const { logindata, isLoading } = useAuth(); //로그인 정보 가져오기
     const [showDropdown, setShowDropdown] = useState(false);
 
     const handleDropdown = () => {
@@ -17,9 +17,7 @@ function HeaderContainer() {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`,
-                {userId: logindata.userId}
-            );
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`);
         if (response.status === 200) {
             alert("로그아웃 되었습니다");
             navigate("/"); //메인페이지로 이동
@@ -89,7 +87,7 @@ function HeaderContainer() {
                 </div> */}
 
                 <div className="login">
-                    {logindata ? (
+                    {isLoading ? null : logindata ? (
                         // 로그인된 유저: faUser 아이콘 + 클릭 시 마이페이지 이동
                         <FontAwesomeIcon icon={faUser} className="login-icon" onClick={handleDropdown} />
                     ) : (
