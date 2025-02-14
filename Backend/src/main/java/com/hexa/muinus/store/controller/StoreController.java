@@ -91,7 +91,7 @@ public class StoreController {
      *
      */
     @GetMapping("/list/near")
-    public ResponseEntity<List<StoreMapDTO>> getNearStores(BigDecimal x, BigDecimal y){
+    public ResponseEntity<List<StoreMapDTO>> getNearStores(@RequestParam("x") BigDecimal x, @RequestParam("y") BigDecimal y){
         log.info("StoreController > getNearStores");
         return ResponseEntity.ok().body(storeService.getNearStores(x, y));
     }
