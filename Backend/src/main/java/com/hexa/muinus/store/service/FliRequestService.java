@@ -96,7 +96,8 @@ public class FliRequestService {
     public void checkFli(HttpServletRequest request, FliCheckDTO dto) {
         String email = jwtProvider.getUserEmailFromAccessToken(request);
         Users users = usersRepository.findByEmail(email);
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), users.getUserNo(), dto.getItemName());
+        Store store = storeRepository.findByUser(users);
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), users.getUserNo(), dto.getItemName());
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
@@ -111,7 +112,8 @@ public class FliRequestService {
     public void rejectFli(HttpServletRequest request, FliCheckDTO dto) {
         String email = jwtProvider.getUserEmailFromAccessToken(request);
         Users users = usersRepository.findByEmail(email);
-        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(dto.getStoreId(), users.getUserNo(), dto.getItemName());
+        Store store = storeRepository.findByUser(users);
+        Optional<FliItem> fliItem = fliItemRepository.findByStore_StoreNoAndUsers_UserNoAndFliItemName(store.getStoreNo(), users.getUserNo(), dto.getItemName());
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
