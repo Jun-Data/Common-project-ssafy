@@ -57,7 +57,6 @@ const StoredetailRequestPopup = () => {
 
     const handleSubmit = async () => {
         const itemId = selectedItem;
-        const userId = 1;
         const storeId = 2;
         console.log(itemId)
 
@@ -71,7 +70,6 @@ const StoredetailRequestPopup = () => {
             const result = await RequestApi({
                 storeId,
                 itemId,
-                userId,
             });
 
             // API 응답 처리

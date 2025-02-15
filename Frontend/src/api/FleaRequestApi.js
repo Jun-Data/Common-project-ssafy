@@ -1,11 +1,10 @@
 import apiClient from "./apiClient";
 
-const FleaRequestApi = async (storeId, userId, userAccount, userBank, accountName, itemName,
+const FleaRequestApi = async (storeId, userAccount, userBank, accountName, itemName,
                             quantity, price, sectionNumber, StartDate, expireDate, imagePath) => {
     try {
         const response = await apiClient.post(`/api/fli/register`, {
             storeId : storeId,
-            userId : userId,
             userAccount : userAccount,
             userBank : userBank,
             accountName : accountName,

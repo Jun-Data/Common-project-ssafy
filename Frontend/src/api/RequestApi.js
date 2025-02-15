@@ -1,10 +1,9 @@
 import apiClient from "./apiClient";
 
-const RequestApi = async ({ storeId, itemId, userId }) => {
+const RequestApi = async ({ storeId, userId }) => {
     try {
         const response = await apiClient.post(`/api/item/register`, {
             storeId: storeId,
-            itemId: itemId,
             userId: userId
         });
 
