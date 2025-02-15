@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,24 +20,35 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private static final List<String> EXCLUDE_URLS = Collections.unmodifiableList(Arrays.asList(
+            "/favicon.ico",
+            "/",
+            // 로그인/회원가입 관련
+            "/api/users/kauth",
+            "/api/users/consumer",
+            "/api/users/store-owner",
+            "/api/users/logout",
+            "/api/users/login",
+            "/api/users/reissue",
+
+            // 검색 관련
+            "/api/items/autocomplete",
+            "/api/items/search",
+            "/api/items/store-items",
+            "/api/items/search-native",
+
+            // 매장 검색
+            "/api/store/list",
+
+            // 키오스크
+            "/api/kiosk/scan",
+            "/api/kiosk/payment",
+            "/api/kiosk/flea-item"
+    ));
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        List<String> excludePatterns = List.of(
-                "/favicon.ico",
-                "/api/users/kauth",
-                "/api/users/consumer",
-                "/api/users/store-owner",
-                "/api/users/logout",
-                "/api/users/login",
-                "/api/users/reissue",
-                "/api/store/list**",
-                "/api/store/detail**",
-                "/api/kiosk/**"
-        );
-        // 특정 경로를 무시하도록 설정
-        return excludePatterns.stream().anyMatch(pattern -> path.matches(pattern.replace("**", ".*")));
+        return EXCLUDE_URLS.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
     }
 
     @Override

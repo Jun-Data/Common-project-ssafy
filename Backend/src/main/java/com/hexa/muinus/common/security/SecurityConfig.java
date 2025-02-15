@@ -28,20 +28,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/", "/api/items/**").permitAll()
-                                .requestMatchers("/api/users/kauth**", "/api/users/consumer", "/api/users/store-owner", "/api/users/logout", "/api/users/login", "/api/users/reissue", "/oauth2/**").permitAll() // 회원 관리
-                                .requestMatchers( "/api/coupon/**", "/api/store/detail**").permitAll() // 매장 리스트 조회 및 상세 페이지 조회
-                                .requestMatchers("/api/store/list/near**").permitAll()
-                                .requestMatchers("/api/kiosk/**").permitAll()  // 키오스크 관련
+                                // 로그인/회원가입 관련
+                                .requestMatchers("/api/users/kauth","/api/users/store-owner", "/api/users/consumer", "/api/users/login", "/api/users/logout", "/api/users/reissue").permitAll()
+                                // 검색 관련
+                                .requestMatchers("/api/items/**", "/api/item", "/api/item/detail").permitAll() // 상품 검색
+                                .requestMatchers("/api/store/list/**").permitAll() // 매장 검색
+                                // 쿠폰
+                                .requestMatchers("/api/coupon/check").permitAll()
+                                // 매장 관련
+                                .requestMatchers("/api/store/detail").permitAll()
+                                // 키오스크
+                                .requestMatchers("/api/kiosk/**").permitAll()
                                 .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
                 )
                 .csrf(csrf -> csrf.disable())
                 .formLogin(formLogin -> formLogin.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .headers(headers ->
-                        headers.defaultsDisabled()
-                                .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL))
-                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
