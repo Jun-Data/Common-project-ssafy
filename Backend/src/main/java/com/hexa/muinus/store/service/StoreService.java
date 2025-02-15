@@ -285,6 +285,8 @@ public class StoreService {
         Store store = findStoreByEmail(userEmail);
         // 공지사항 작성
         Announcement announcement = announcementWriteDTO.toEntity(store);
+        String image = s3ImageService.Base64toImageUrl(announcement.getBoardImageUrl());
+        announcement.setBoardImageUrl(image);
         log.debug("Converted announcementWriteDTO to Announcement entity: {}", announcement);
 
         announcementService.saveAnnouncement(announcement);
