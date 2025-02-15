@@ -38,7 +38,7 @@ const Notice = () => {
             const reader = new FileReader();
             reader.readAsDataURL(file); // Base64로 변환
             reader.onloadend = () => {
-                setNoticeImage(reader.result); // 변환된 Base646 데이터 저장장
+                setNoticeImage(reader.result); // 변환된 Base646 데이터 저장
             };
         } else {
             setNoticeImage(null); // 파일 선택 취소 시 이미지 초기화
@@ -104,7 +104,7 @@ const Notice = () => {
         setEditingNoticeId(announcement.boardId); // 수정할 공지사항 ID 설정
         setNoticeTitle(announcement.title);
         setNoticeContent(announcement.content);
-        setNoticeImage(announcement.boardImageUrl ? announcement.boardImageUrl : null); // 이미지 미리보기 URL 설정
+        setNoticeImage(announcement.boardImageUrl || null); // 이미지 미리보기 URL 설정
         setModalIsOpen(true); // 모달 열기
     };
 
@@ -205,11 +205,14 @@ const Notice = () => {
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
-                                {noticeImage && (
-                                    <ImagePreview>
-                                        <img src={noticeImage} alt="Preview" />
-                                    </ImagePreview>
-                                )}
+                            {noticeImage && (
+                                <ImagePreview>
+                                    <img 
+                                        src={noticeImage.startsWith("data") ? noticeImage : noticeImage} 
+                                        alt="Preview" 
+                                    />
+                                </ImagePreview>
+                            )}
                             </UploadContainer>
                             <ButtonContainer>
                                 <CloseButton onClick={handleCloseModal}>닫기</CloseButton>
