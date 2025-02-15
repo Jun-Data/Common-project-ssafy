@@ -76,7 +76,7 @@ function OwnerSignUp() {
             if (formattedValue.length > 11) {
                 formattedValue = formattedValue.slice(0, 11);  // 11자리까지만 입력
              }
-            // 전화화번호 하이픈 추가 로직
+            // 전화번호 하이픈 추가 로직
             if (formattedValue.length <= 3) {
                 setFormData((prevData) => ({
                     ...prevData,
@@ -284,7 +284,6 @@ function OwnerSignUp() {
                         navigate("/");
                     });
                 }
-            
             } catch (error) {
                 console.error('가입 실패:', error);
                 Swal.fire({
@@ -456,7 +455,7 @@ function OwnerSignUp() {
                 )}
 
                 <RegisterButtonsWrapper>
-                    <RegisterButtons />
+                    <RegisterButtons onSubmit={handleSubmit} />
                 </RegisterButtonsWrapper>
                 <br/>
             </form>
