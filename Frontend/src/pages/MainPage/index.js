@@ -10,8 +10,10 @@ import useReverseGeocoding from "../../hooks/useReverseGeocoding";
 import useGeocoding from "../../hooks/useGeocoding";
 import { useBaseMap } from "../../contexts/ KakaoMapContext";
 import "./style.css";
+import {useLocation} from "react-router-dom";
 
 const MainPage = () => {
+    const location = useLocation();
     const { isSDKLoaded } = useBaseMap();
     const { coordToAddress } = useReverseGeocoding();
     const { addressToCoord } = useGeocoding();
@@ -22,6 +24,13 @@ const MainPage = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [storelist, setStorelist] = useState([]);
     const [isManualAddress, setIsManualAddress] = useState(false);
+
+    // 라우트 변경 시 지도 크기 재계산
+    useEffect(() => {
+        setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 500);
+    }, [location.pathname]);
 
     // 자동 위치 추적: geolocation 결과로 좌표와 주소 업데이트
     useEffect(() => {
