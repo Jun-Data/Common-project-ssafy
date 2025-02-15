@@ -14,8 +14,10 @@ function HeaderContainer() {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const handleDropdown = () => {
+  const handleDropdown = (event) => {
+    event.stopPropagation(); // 부모 요소로 이벤트 전파 방지
     setShowDropdown((prev) => !prev);
+    
   };
 
   const handleLogout = async () => {
@@ -93,7 +95,7 @@ function HeaderContainer() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef, setShowDropdown]); // 의존성 배열 추가
+  }, []);
   
 
 

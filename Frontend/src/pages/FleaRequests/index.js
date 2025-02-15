@@ -33,7 +33,10 @@ const FleaRequests = () => {
         userId : selectedRequest.userId,
       });
       console.log("승인된 요청:", selectedRequest.itemName, selectedRequest.userId);
-
+      // 요청 목록에서 승인된 요청 제거
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request.itemName !== selectedRequest.itemName || request.userId !== selectedRequest.userId)
+      );
       Swal.fire({
         title: "승인 완료!",
         text: `${selectedRequest.itemName} 요청이 승인되었습니다.`,
@@ -59,7 +62,10 @@ const FleaRequests = () => {
         userId : selectedRequest.userId,
       });
       console.log("거절된 요청:", selectedRequest.itemName, selectedRequest.userId);
-
+      // 요청 목록에서 거절된 요청 제거
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request.itemName !== selectedRequest.itemName || request.userId !== selectedRequest.userId)
+      );
       Swal.fire({
         title: "거절 완료!",
         text: `${selectedRequest.itemName} 요청이 거절되었습니다.`,

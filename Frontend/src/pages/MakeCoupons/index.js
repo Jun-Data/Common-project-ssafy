@@ -67,17 +67,12 @@ function MakeCoupons() {
         }
     };
     
-    useEffect(() => {
-        fetchIssuedCoupons();
-    }, []);
-
     // 쿠폰 유형을 가져오는 함수
     useEffect(() => {
         const fetchCouponTypes = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/type`);
                 setCouponTypes(response.data);  // 받아온 데이터를 상태에 저장
-                console.log(couponTypes);
             } catch (error) {
                 console.error("쿠폰 유형 데이터를 가져오는 데 실패했습니다", error);
             }
@@ -142,14 +137,16 @@ function MakeCoupons() {
                         max="9999-12-31T23:59"
                         min="1900-01-01T00:00"
                     />
+                    <CountContainer>
                     <Input
                         type="number"
                         placeholder="쿠폰 수량"
                         value={count}
                         onChange={(e) => setCount(parseInt(e.target.value, 10) || 0)}
                     />
-                    <Button onClick={decreaseCount}>-</Button>
-                    <Button onClick={increaseCount}>+</Button>
+                    <CountButton onClick={decreaseCount}>-</CountButton>
+                    <CountButton onClick={increaseCount}>+</CountButton>
+                    </CountContainer>
                 </InputWrapper>
 
                 <Button onClick={handleAddCoupon}>쿠폰 등록</Button>
@@ -174,9 +171,9 @@ function MakeCoupons() {
                                 </tr>
                         ))
                     ) : (
-                        <tr>
-                            <td colSpan="3">발급된 쿠폰이 없습니다.</td>
-                        </tr>
+                    <tr>
+                        <td colSpan={issuedCoupons.length > 0 ? 1 : 3}>발급된 쿠폰이 없습니다.</td>
+                    </tr>
                     )}
                 </tbody>
             </IssuedCouponTable>
@@ -245,6 +242,19 @@ const Button = styled.button`
     }
 `;
 
+const CountButton = styled.button`
+    padding: 10px;   
+    background-color: #3f72af;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius:7px;
+    &:hover {
+        background-color:rgb(136, 136, 136);
+    }
+`;
+const CountContainer = styled.div`
+    display:flex;
+`;
 const CouponTypeContainer = styled.div`
     padding: 20px;
     background-color: #fff;
@@ -281,123 +291,3 @@ const IssuedCouponTable = styled.table`
         text-align: center;
     }
 `;
-
-
-// Footer components like BottomNav can be styled and placed here based on their specific layout needs
-
-
-// ## 쿠폰 타입만 보여주는 테스트 페이지
-// import React, { useState, useEffect } from "react";
-// import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-// import BottomNav from "../../components/BottomNav/BottomNav";
-// import MyPageHeader from "../../components/MyPageHeader";
-// import styled from "styled-components";
-// import axios from "axios";
-
-// function MakeCoupons() {
-//     const [coupons, setCoupons] = useState([]);  // 쿠폰 목록 상태 관리
-
-//     // 쿠폰 목록을 가져오는 함수
-//     useEffect(() => {
-//         const fetchCoupons = async () => {
-//             try {
-//                 const response = await axios.get('http://i12a506.p.ssafy.io:8000/api/coupon/type');
-//                 setCoupons(response.data);  // 응답 받은 쿠폰 데이터 설정
-//             } catch (error) {
-//                 console.error('쿠폰 목록 가져오기 실패:', error);
-//             }
-//         };
-//         fetchCoupons();
-//     }, []);  // 컴포넌트가 처음 렌더링될 때만 호출
-
-//     return (
-//         <div>
-//             <HeaderContainer />
-//             <MyPageHeader />
-//             <h2>발급한 쿠폰 목록</h2>
-
-//             <ul>
-//                 {coupons.map((coupon) => (
-//                     <li key={coupon.couponId}>
-//                         <h3>{coupon.name}</h3>
-//                         <p>{coupon.content}</p>
-//                         <strong>{coupon.discountRate}% 할인</strong>
-//                     </li>
-//                 ))}
-//             </ul>
-
-//             <BottomNav />
-
-//         </div>
-//     );
-// }
-
-// export default MakeCoupons;
-
-// const Container = styled.div`
-//     background: #f8f9fa;
-//     text-align: center;
-// `;
-
-// const Form = styled.div`
-//     margin: 20px 0;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-// `;
-
-// const Input = styled.input`
-//     width: 80%;
-//     padding: 15px;
-//     margin: 10px;
-//     font-size: 1rem;
-//     border: 1px solid #ccc;
-//     border-radius: 8px;
-// `;
-
-// const CountWrapper = styled.div`
-//     display: flex;
-//     align-items: center;
-//     gap: 5px;
-// `;
-
-// const Button = styled.button`
-//     padding: 10px 20px;
-//     font-size: 1rem;
-//     background-color: #3f72af;
-//     color: white;
-//     border: none;
-//     border-radius: 8px;
-//     cursor: pointer;
-
-//     &:hover {
-//         background-color: #2c5aa0;
-//     }
-// `;
-
-// const couponTypeContainer = styled.div`
-//     margin: 20px 0;
-//     padding: 10px;
-//     background-color: #fff;
-//     border: 1px solid #ddd;
-//     border-radius: 8px;
-//     width: 80%;
-//     margin: 20px auto;
-//     text-align: left;
-// `;
-
-// const IssuedCouponTable = styled.table`
-//     width: 95%;
-//     border-collapse: collapse;
-//     margin: 10px auto;
-
-//     th, td {
-//         border: 1px solid #ddd;
-//         padding: 10px;
-//     }
-
-//     th {
-//         background-color: #3f72af;
-//         color: white;
-//     }
-// `;
