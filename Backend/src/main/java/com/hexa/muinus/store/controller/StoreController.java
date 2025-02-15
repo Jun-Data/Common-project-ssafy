@@ -162,8 +162,7 @@ public class StoreController {
     @GetMapping("/board/list")
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncements(@Authorization String userEmail){
         log.info("StoreController > getAnnouncementList: {}", userEmail);
-        storeService.getAnnouncements(userEmail);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(storeService.getAnnouncements(userEmail));
     }
 
     /**
