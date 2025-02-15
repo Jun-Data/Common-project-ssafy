@@ -1,5 +1,6 @@
 package com.hexa.muinus.store.service;
 
+import co.elastic.clients.elasticsearch.nodes.Http;
 import com.hexa.muinus.common.exception.MuinusException;
 import com.hexa.muinus.common.exception.item.ItemNotFoundException;
 import com.hexa.muinus.common.exception.store.StoreNotFoundException;
@@ -42,30 +43,30 @@ public class RequestReceivingService {
     private final JwtProvider jwtProvider;
 
 
-    public RequestReceiving createRequestReceiving(int userId, int storeId, int itemId) {
+    public RequestReceiving createRequestReceiving(HttpServletRequest request, int storeId, int itemId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException(storeId));
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        String email = jwtProvider.getUserEmailFromAccessToken(request);
+        Users users = usersRepository.findByEmail(email);
 
         // 아이템 입고 요청 1일 1회 검증.
-        checkUserAlreadyRequestedItemToday(user);
+        checkUserAlreadyRequestedItemToday(users);
 
         RequestReceivingId id = RequestReceivingId.builder()
                 .storeNo(storeId)
                 .itemId(itemId)
-                .userNo(userId)
+                .userNo(users.getUserNo())
                 .build();
 
         RequestReceiving requestReceiving = RequestReceiving.builder()
                 .id(id)
                 .store(store)
                 .item(item)
-                .user(user)
+                .user(users)
                 .build();
 
         return requestReceivingRepository.save(requestReceiving);

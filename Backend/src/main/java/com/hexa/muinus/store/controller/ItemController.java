@@ -19,8 +19,8 @@ public class ItemController {
     private final RequestReceivingService requestReceivingService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> createRequestReceiving(@RequestBody ItemRequestDTO dto) {
-        RequestReceiving savedRequest = requestReceivingService.createRequestReceiving(dto.getUserId(), dto.getStoreId(), dto.getItemId());
+    public ResponseEntity<?> createRequestReceiving(HttpServletRequest request, @RequestBody ItemRequestDTO dto) {
+        RequestReceiving savedRequest = requestReceivingService.createRequestReceiving(request, dto.getStoreId(), dto.getItemId());
         return ResponseEntity.ok("register is successful");
     }
 

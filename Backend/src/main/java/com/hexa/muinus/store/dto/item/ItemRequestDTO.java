@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ItemRequestDTO {
-    private int userId;
     private int storeId;
     private int itemId;
 }
