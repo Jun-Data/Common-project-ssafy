@@ -19,7 +19,7 @@
 }
 
 .mainpagecurrentaddress {
-    grid-row: 2;
+    grid-row: 3;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -39,12 +39,11 @@
 }
 
 .mainpagesearchbar {
-    grid-row: 3;
+    grid-row: 2;
     position: relative;
     z-index: 99;
-    width: 85%;
+    width: 100%;
     height: 100%;
-    margin-top: 20px;
 }
 
 

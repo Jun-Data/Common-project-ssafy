@@ -54,13 +54,15 @@ const MainPage = () => {
         }
     };
 
-    console.log(coords)
-
     return (
         <div className="mainpagebackground">
             <div className="mainpagecontents">
                 <div className="mainpageheader">
                     <HeaderContainer />
+                </div>
+
+                <div className="mainpagesearchbar">
+                    <SearchBar coords={coords} />
                 </div>
 
                 <div className="mainpagecurrentaddress">
@@ -75,9 +77,6 @@ const MainPage = () => {
                     </button>
                 </div>
 
-                <div className="mainpagesearchbar">
-                    <SearchBar coords={coords} />
-                </div>
 
                 <div className="mainpagebottomsheet">
                     <DraggableBottomSheet
@@ -87,7 +86,7 @@ const MainPage = () => {
                 </div>
 
                 {/* 지도 루트 컨테이너 (한 페이지에 단 하나만 존재해야 함) */}
-                <div id="map-root" className="mainpagemap" ></div>
+                {/*<div id="map-root" className="mainpagemap" ></div>*/}
 
                 {isSDKLoaded && (
                     <>

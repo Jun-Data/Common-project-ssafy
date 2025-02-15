@@ -5,3 +5,20 @@
     margin: 0;
     text-align: center;
   }
+
+.map-container {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+.map-container.visible {
+    display: block;
+    pointer-events: auto;
+}
+
+.map-container.hidden {
+    display: none;
+    pointer-events: none
+}

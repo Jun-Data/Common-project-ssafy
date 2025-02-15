@@ -1,0 +1,581 @@
+Index: Frontend/src/components/SearchDropdownList/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from \"react\";\nimport \"./style.css\";\n\nconst SearchDropdownList = ({ results, onItemClick }) => {\n    if (!results || results.length === 0) return null; // 결과가 없으면 렌더링하지 않음\n\n    return (\n        <div className=\"search-dropdown-list\">\n            {console.log(\"드롭다운 실행\")}\n        <ul>\n            {results.map((item, index) => (\n                <li key={index} onClick={() => onItemClick(item)}>\n                    {item.itemName}\n                </li>\n            ))}\n        </ul>\n        </div>\n    );\n};\n\nexport default SearchDropdownList;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchDropdownList/index.js b/Frontend/src/components/SearchDropdownList/index.js
+--- a/Frontend/src/components/SearchDropdownList/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/components/SearchDropdownList/index.js	(date 1739610408053)
+@@ -6,7 +6,6 @@
+ 
+     return (
+         <div className="search-dropdown-list">
+-            {console.log("드롭다운 실행")}
+         <ul>
+             {results.map((item, index) => (
+                 <li key={index} onClick={() => onItemClick(item)}>
+Index: Frontend/src/components/SearchBar/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from \"react\";\nimport { useNavigate, useLocation,  useMatch } from \"react-router-dom\";\nimport './style.css'\n\nconst SearchBar = ({ coords, setQuery }) => {\n    const [localQuery, setLocalQuery] = useState(\"\"); // 로컬 상태로 입력값 관리\n    const navigate = useNavigate();\n\n    const isStoreDetailPage = useMatch('/storedetail/*');\n    const isSearchPage = useLocation().pathname === '/search';\n\n    const handleSearch = () => {\n        if (coords) {\n            navigate(`/search?lat=${coords.lat}&lng=${coords.lng}`);\n        }\n    }\n\n\n    // 검색어 입력 처리\n    const handleInputChange = (e) => {\n        setLocalQuery(e.target.value);\n        setQuery(e.target.value); // 부모 컴포넌트에 검색어 전달\n        console.log(\"입력변화감지\")\n    };\n\n\n    return (\n        <div className=\"searchbar\">\n            {(isSearchPage || isStoreDetailPage) && (\n                <input\n                    type=\"text\"\n                    className=\"search-input-searchpage\"\n                    placeholder=\"검색어를 입력하세요\"\n                    value={localQuery}\n                    onChange={handleInputChange}\n                />\n            )}\n            {!isSearchPage && !isStoreDetailPage && (\n                <input\n                    type=\"text\"\n                    className=\"search-input-mainpage\"\n                    placeholder=\"제품 이름으로 검색해보세요!\"\n                    onClick={handleSearch}\n                />\n            )}\n        </div>\n    )\n};\n\nexport default SearchBar;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchBar/index.js b/Frontend/src/components/SearchBar/index.js
+--- a/Frontend/src/components/SearchBar/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/components/SearchBar/index.js	(date 1739601203852)
+@@ -19,8 +19,7 @@
+     // 검색어 입력 처리
+     const handleInputChange = (e) => {
+         setLocalQuery(e.target.value);
+-        setQuery(e.target.value); // 부모 컴포넌트에 검색어 전달
+-        console.log("입력변화감지")
++        setQuery(e.target.value);
+     };
+ 
+ 
+Index: Frontend/src/components/KakaoMapBackgroundResult/index.js
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapBackgroundResult/index.js b/Frontend/src/components/KakaoMapBackgroundResult/index.js
+deleted file mode 100644
+--- a/Frontend/src/components/KakaoMapBackgroundResult/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ /dev/null	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
+@@ -1,64 +0,0 @@
+-import { useEffect } from "react";
+-
+-const KakaoMapBackgroundResult = ({ coords, onMapLoad }) => {
+-    useEffect(() => {
+-        const script = document.createElement("script");
+-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_API_KEY}&libraries=services&autoload=false`;
+-        script.async = true;
+-
+-        script.onload = () => {
+-            if (window.kakao && window.kakao.maps) {
+-                window.kakao.maps.load(() => {
+-                    const kakao = window.kakao;
+-                    const mapContainer = document.getElementById("map");
+-                    const mapOption = {
+-                        center: new kakao.maps.LatLng(coords.lat, coords.lng),
+-                        level: 3,
+-                    };
+-                    const map = new kakao.maps.Map(mapContainer, mapOption);
+-
+-                    // 부모 컴포넌트로 지도 객체 전달
+-                    if (onMapLoad) onMapLoad(map);
+-
+-                    // 내 위치 마커 생성
+-                    createMyLocationMarker(map, coords);
+-                });
+-            }
+-        };
+-
+-        script.onerror = () => console.error("Kakao Maps SDK 로드 실패");
+-        document.head.appendChild(script);
+-
+-        return () => document.head.removeChild(script);
+-    }, [coords, onMapLoad]);
+-
+-    // 내 위치 마커 생성 함수
+-    const createMyLocationMarker = (map, coords) => {
+-        const kakao = window.kakao;
+-
+-        // 사용자 정의 이미지 URL
+-        const imageSrc =
+-            "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; // 커스텀 이미지 예제
+-        const imageSize = new kakao.maps.Size(40, 40); // 이미지 크기
+-        const imageOption = { offset: new kakao.maps.Point(20, 40) }; // 중심점 설정
+-
+-        // MarkerImage 객체 생성
+-        const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+-
+-        // 마커 위치 설정
+-        const markerPosition = new kakao.maps.LatLng(coords.lat, coords.lng);
+-
+-        // 마커 생성
+-        const marker = new kakao.maps.Marker({
+-            position: markerPosition,
+-            map: map,
+-            image: markerImage, // 커스텀 이미지 적용
+-        });
+-
+-        return marker;
+-    };
+-
+-    return <div id="map" style={{ width: "100vw", height: "100vh" }}></div>;
+-};
+-
+-export default KakaoMapBackgroundResult;
+\ No newline at end of file
+Index: Frontend/src/components/KakaoMapContainer/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useRef } from 'react';\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapContainer = ({ coords }) => {\n    const { baseMap, isSDKLoaded } = useBaseMap();\n    const markerRef = useRef(null); // 마커 인스턴스 추적용 ref\n\n    useEffect(() => {\n        if (!isSDKLoaded || !baseMap || !coords) return;\n\n        // 1. 기존 마커 제거\n        if (markerRef.current) {\n            markerRef.current.setMap(null);\n        }\n\n        // 2. 새 마커 생성\n        const markerImage = new window.kakao.maps.MarkerImage(\n            '/mylocation.jpg',\n            new window.kakao.maps.Size(30, 30),\n            { offset: new window.kakao.maps.Point(0, 0) }\n        );\n\n        const newMarker = new window.kakao.maps.Marker({\n            position: new window.kakao.maps.LatLng(coords.lat, coords.lng),\n            image: markerImage,\n            map: baseMap\n        });\n\n        // 3. 마커 참조 업데이트\n        markerRef.current = newMarker;\n\n        // 4. 지도 중심 이동\n        baseMap.setCenter(newMarker.getPosition());\n\n        // 클린업 함수\n        return () => {\n            if (markerRef.current) {\n                markerRef.current.setMap(null);\n            }\n        };\n    }, [coords, baseMap, isSDKLoaded]); // coords 변경 시 재실행\n\n    return null;\n};\n\nexport default KakaoMapContainer;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapContainer/index.js b/Frontend/src/components/KakaoMapContainer/index.js
+--- a/Frontend/src/components/KakaoMapContainer/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/components/KakaoMapContainer/index.js	(date 1739610127203)
+@@ -30,7 +30,9 @@
+         markerRef.current = newMarker;
+ 
+         // 4. 지도 중심 이동
+-        baseMap.setCenter(newMarker.getPosition());
++        const position = new window.kakao.maps.LatLng(coords.lat, coords.lng);
++        baseMap.setCenter(position);
++
+ 
+         // 클린업 함수
+         return () => {
+@@ -40,6 +42,7 @@
+         };
+     }, [coords, baseMap, isSDKLoaded]); // coords 변경 시 재실행
+ 
++
+     return null;
+ };
+ 
+Index: Frontend/src/components/SearchBar/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.searchbar {\n    width: 100%;\n    height: 100%;\n    margin: 0;\n    padding: 0;\n    display: flex;\n    align-content: center;\n    justify-content: center;\n    z-index: 99;\n}\n\n/* 검색 입력창 스타일 */\n.search-input-searchpage {\n    width: 100%; /* 가로 비율 설정 */\n    height: 100%; /* 부모 높이에 맞춤 */\n    font-size: 16px;\n    border: 2px solid #3f72af;\n    outline: none;\n    border-radius: 5px;\n    padding-left: 10px; /* 입력창 내부 여백 */\n}\n\n\n\n.search-input-mainpage {\n    width: 85%;\n    height: 85%;\n    overflow: hidden;\n    font-size: 16px;\n    border: 3px solid #3f72af;\n    outline: none;\n    border-radius: 30px;\n    background-color: white;\n    box-sizing: border-box;\n    padding-left: 40px; /* 버튼과의 간격 확보 */\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchBar/style.css b/Frontend/src/components/SearchBar/style.css
+--- a/Frontend/src/components/SearchBar/style.css	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/components/SearchBar/style.css	(date 1739601278342)
+@@ -16,20 +16,18 @@
+     font-size: 16px;
+     border: 2px solid #3f72af;
+     outline: none;
+-    border-radius: 5px;
+     padding-left: 10px; /* 입력창 내부 여백 */
+ }
+ 
+ 
+ 
+ .search-input-mainpage {
+-    width: 85%;
+-    height: 85%;
++    width: 100%;
++    height: 100%;
+     overflow: hidden;
+     font-size: 16px;
+-    border: 3px solid #3f72af;
++    border: 2px solid #3f72af;
+     outline: none;
+-    border-radius: 30px;
+     background-color: white;
+     box-sizing: border-box;
+     padding-left: 40px; /* 버튼과의 간격 확보 */
+Index: Frontend/src/components/KakaoMapMarkers/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect } from 'react';\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n\n    console.log('마커에서', storelist);\n\n    const { baseMap, isSDKLoaded } = useBaseMap();\n\n    useEffect(() => {\n        if (!baseMap || !storelist || !isSDKLoaded) return;\n\n        // storelist 기반으로 마커 생성\n        const markers = storelist.map((store) => {\n            const marker = new window.kakao.maps.Marker({\n                position: new window.kakao.maps.LatLng(store.locationX, store.locationY),\n                map: baseMap\n            });\n\n            // 클릭 시 해당 마커 위치로 지도 중심 이동\n            window.kakao.maps.event.addListener(marker, 'click', () => {\n                baseMap.panTo(marker.getPosition());\n            });\n\n            return marker;\n        });\n\n        // 컴포넌트 언마운트 시 생성한 마커 제거\n        return () => {\n            markers.forEach((marker) => marker.setMap(null));\n        };\n    }, [storelist, baseMap, isSDKLoaded]);\n\n    return null;\n};\n\nexport default KakaoMapMarkers;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
+--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739609086220)
+@@ -3,8 +3,6 @@
+ 
+ const KakaoMapMarkers = ({ storelist }) => {
+ 
+-    console.log('마커에서', storelist);
+-
+     const { baseMap, isSDKLoaded } = useBaseMap();
+ 
+     useEffect(() => {
+Index: Frontend/src/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.App {\n    width: 100%;\n    height: 100vh;\n    padding: 0;\n    margin: 0;\n    text-align: center;\n  }
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.css b/Frontend/src/App.css
+--- a/Frontend/src/App.css	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/App.css	(date 1739608433659)
+@@ -4,4 +4,21 @@
+     padding: 0;
+     margin: 0;
+     text-align: center;
+-  }
+\ No newline at end of file
++  }
++
++.map-container {
++    position: fixed;
++    width: 100vw;
++    height: 100vh;
++    z-index: 1;
++}
++
++.map-container.visible {
++    display: block;
++    pointer-events: auto;
++}
++
++.map-container.hidden {
++    display: none;
++    pointer-events: none
++}
+\ No newline at end of file
+Index: Frontend/src/pages/MainPage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect } from \"react\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchBar from \"../../components/SearchBar\";\nimport KakaoPostcodePopup from \"../../components/KakaoPostcodePopup\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport useGeolocation from \"../../hooks/UseGeolocation\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\nimport \"./style.css\";\n\nconst MainPage = () => {\n    const { isSDKLoaded } = useBaseMap();\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const { geoCoords, error } = useGeolocation();\n\n    const [coords, setCoords] = useState({ lat: 37.5015376, lng: 127.0397208 });\n    const [address, setAddress] = useState(\"인재의 산실 멀티캠퍼스\");\n    const [isPopupOpen, setIsPopupOpen] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n    const [isManualAddress, setIsManualAddress] = useState(false);\n\n    // 자동 위치 추적: geolocation 결과로 좌표와 주소 업데이트\n    useEffect(() => {\n        if (isSDKLoaded && !isManualAddress && geoCoords) {\n            (async () => {\n                try {\n                    const newAddress = await coordToAddress(geoCoords);\n                    setCoords(geoCoords);\n                    setAddress(newAddress);\n                } catch (err) {\n                    console.error(\"위치 업데이트 실패:\", err);\n                    setAddress(\"위치 정보 불러오기 실패\");\n                }\n            })();\n        }\n    }, [geoCoords, isSDKLoaded, isManualAddress, coordToAddress]);\n\n    // 주소 검색 완료 시 핸들러\n    const handleAddressComplete = async (data) => {\n        try {\n            const fullAddress = data.fullAddress;\n            setAddress(fullAddress);\n            setIsManualAddress(true);\n            const newCoords = await addressToCoord(fullAddress);\n            if (newCoords) {\n                setCoords(prev => ({ ...prev, ...newCoords }));\n            }\n        } catch (err) {\n            console.error(\"주소 변환 오류:\", err);\n        }\n    };\n\n    console.log(coords)\n\n    return (\n        <div className=\"mainpagebackground\">\n            <div className=\"mainpagecontents\">\n                <div className=\"mainpageheader\">\n                    <HeaderContainer />\n                </div>\n\n                <div className=\"mainpagecurrentaddress\">\n                    <div className=\"mainpageaddressdetail\">\n                        {error ? \"위치 찾는 중....\" : `내 위치: ${address}`}\n                    </div>\n                    <button\n                        onClick={() => setIsPopupOpen(true)}\n                        className=\"addressSearchButton\"\n                    >\n                        주소 찾기\n                    </button>\n                </div>\n\n                <div className=\"mainpagesearchbar\">\n                    <SearchBar coords={coords} />\n                </div>\n\n                <div className=\"mainpagebottomsheet\">\n                    <DraggableBottomSheet\n                        coords={coords}\n                        setStorelist={setStorelist}\n                    />\n                </div>\n\n                {/* 지도 루트 컨테이너 (한 페이지에 단 하나만 존재해야 함) */}\n                <div id=\"map-root\" className=\"mainpagemap\" ></div>\n\n                {isSDKLoaded && (\n                    <>\n                        <KakaoMapContainer coords={coords} />\n                        <KakaoMapMarkers storelist={storelist} />\n                    </>\n                )}\n\n                {isPopupOpen && (\n                    <KakaoPostcodePopup\n                        onClose={() => setIsPopupOpen(false)}\n                        onComplete={handleAddressComplete}\n                    />\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default MainPage;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/index.js b/Frontend/src/pages/MainPage/index.js
+--- a/Frontend/src/pages/MainPage/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/pages/MainPage/index.js	(date 1739610294144)
+@@ -54,14 +54,16 @@
+         }
+     };
+ 
+-    console.log(coords)
+-
+     return (
+         <div className="mainpagebackground">
+             <div className="mainpagecontents">
+                 <div className="mainpageheader">
+                     <HeaderContainer />
+                 </div>
++
++                <div className="mainpagesearchbar">
++                    <SearchBar coords={coords} />
++                </div>
+ 
+                 <div className="mainpagecurrentaddress">
+                     <div className="mainpageaddressdetail">
+@@ -75,9 +77,6 @@
+                     </button>
+                 </div>
+ 
+-                <div className="mainpagesearchbar">
+-                    <SearchBar coords={coords} />
+-                </div>
+ 
+                 <div className="mainpagebottomsheet">
+                     <DraggableBottomSheet
+@@ -87,7 +86,7 @@
+                 </div>
+ 
+                 {/* 지도 루트 컨테이너 (한 페이지에 단 하나만 존재해야 함) */}
+-                <div id="map-root" className="mainpagemap" ></div>
++                {/*<div id="map-root" className="mainpagemap" ></div>*/}
+ 
+                 {isSDKLoaded && (
+                     <>
+Index: Frontend/src/pages/MainPage/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.mainpagebackground {\n    width: 100%;\n    height: 100%;\n}\n\n.mainpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh 6vh auto;\n    position: relative;\n    z-index: 100;\n}\n\n.mainpageheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.mainpagecurrentaddress {\n    grid-row: 2;\n    display: flex;\n    justify-content: space-between;\n    width: 100%;\n    height: 100%;\n    background-color: #3f72af;\n    align-items: center;\n    position: relative;\n    z-index: 99;\n}\n\n.mainpageaddressdetail {\n    width: 80%;\n    text-align: left;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n}\n\n.mainpagesearchbar {\n    grid-row: 3;\n    position: relative;\n    z-index: 99;\n    width: 85%;\n    height: 100%;\n    margin-top: 20px;\n}\n\n\n.addressSearchButton {\n    width: 20%;\n    height: 100%;\n    font-size: 12px;\n}\n\n.mainpagemap {\n    position: fixed;\n    z-index: 1;\n    top: 0;\n}\n\n.mainpagemarker {\n    width: 100vw;\n    height: 100vh;\n    position: fixed;\n    top: 0;\n    z-index: 10;\n    pointer-events: none;\n\n}\n\n.mainpagebottomsheet {\n    width: 100%;\n    position: fixed;\n    bottom: 0 !important;\n    z-index: 101;\n}\n\n/* style.css */\n.mainpagemap {\n    position: fixed;\n    top: 0;\n    z-index: 1;\n    width: 100vw;\n    height: 100vh;\n}\n\n.base-map-container {\n    position: absolute;\n    z-index: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.marker-layer {\n    position: absolute;\n    z-index: 1;\n    width: 100%;\n    height: 100%;\n    pointer-events: none; /* 마커 클릭 이벤트 정상 작동을 위해 */\n}\n\n.marker-layer > div {\n    pointer-events: auto; /* 마커 영역만 이벤트 허용 */\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/style.css b/Frontend/src/pages/MainPage/style.css
+--- a/Frontend/src/pages/MainPage/style.css	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/pages/MainPage/style.css	(date 1739601172478)
+@@ -19,7 +19,7 @@
+ }
+ 
+ .mainpagecurrentaddress {
+-    grid-row: 2;
++    grid-row: 3;
+     display: flex;
+     justify-content: space-between;
+     width: 100%;
+@@ -39,12 +39,11 @@
+ }
+ 
+ .mainpagesearchbar {
+-    grid-row: 3;
++    grid-row: 2;
+     position: relative;
+     z-index: 99;
+-    width: 85%;
++    width: 100%;
+     height: 100%;
+-    margin-top: 20px;
+ }
+ 
+ 
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#90&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"5683000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"8\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/.idea/workspace.xml	(date 1739610408067)
+@@ -6,8 +6,18 @@
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 지도 호출 흐름 수정 (#68)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapBackgroundResult/index.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -58,22 +68,22 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#90&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "git-widget-placeholder": "FE/FIX/#93",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup" />
+@@ -115,7 +125,7 @@
+       <workItem from="1739426375278" duration="2000" />
+       <workItem from="1739426451033" duration="11909000" />
+       <workItem from="1739452113566" duration="11559000" />
+-      <workItem from="1739513711472" duration="5683000" />
++      <workItem from="1739513711472" duration="16256000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+Index: Frontend/src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import \"./App.css\";\nimport { useEffect } from \"react\";\nimport { Route, Routes } from \"react-router-dom\";\nimport MainPage from \"./pages/MainPage\";\nimport Kiosk from \"./pages/Kiosk\"\nimport KioskMainScreen from \"./pages/KioskMain\";\nimport SignUp from \"./pages/SignUpPage/SignUp\";\nimport OwnerSignUp from \"./pages/SignUpPage/OwnerSignUp\";\nimport UserSignUp from \"./pages/SignUpPage/UserSignUp\";\nimport MyPage from \"./pages/MyPage\";\nimport Coupons from \"./pages/Coupons\";\nimport Chats from \"./pages/Chats\";\nimport KakaoRedirect from \"./pages/KakaoRedirect\";\nimport SearchPage from \"./pages/Search\";\nimport StoreDetail from \"./pages/Storedetail\"\nimport MakeCoupons from \"./pages/MakeCoupons\";\nimport Notice from \"./pages/Notice\";\nimport StockRequests from \"./pages/StockRequests\";\nimport FleaRequests from \"./pages/FleaRequests\";\nimport SearchbyNurtrition from \"./pages/SearchbyNurtrition\";\nimport SearchResult from \"./pages/SearchResult\";\nimport StoredetailRequestPopup from \"./pages/StoredetailRequest\";\nimport StoreDetailFlearequest from \"./pages/StoredetailFlearequest\";\nimport {KakaoMapProvider} from \"./contexts/ KakaoMapContext\";\n\n\nfunction App() {\n\n  function setScreenSize() {\n    let vh = window.innerHeight * 0.01;\n    document.documentElement.style.setProperty(\"--vh\", `${vh}px`);\n  }\n  useEffect(() => {\n    setScreenSize();\n  });\n\n\n  return (\n    <div className=\"App\">\n\n      <KakaoMapProvider>\n    <Routes>\n      <Route path=\"/signup\" element={<SignUp/>}/>\n      <Route path=\"/owner-signup\" element={<OwnerSignUp/>}/>\n      <Route path=\"/user-signup\" element={<UserSignUp/>}/>\n      <Route path=\"/mypage/user\" element={<MyPage/>}/>\n      <Route path=\"/mypage/user/coupons\" element={<Coupons/>}/>\n      <Route path=\"/mypage/user/chats\" element={<Chats/>}/>\n      <Route path=\"/mypage/admin\" element={<MyPage/>}/>\n        <Route path=\"/mypage/admin/flea\" element={<FleaRequests/>}/>\n        <Route path=\"/mypage/admin/stock\" element={<StockRequests/>}/>\n        <Route path=\"/mypage/admin/coupon\" element={<MakeCoupons/>}/>\n        <Route path=\"/mypage/admin/notice\" element={<Notice/>}/>\n\n      <Route path=\"/oauth/kakao\" element={<KakaoRedirect />} />\n\n      <Route path=\"/kiosk\" element={<Kiosk/>}/>\n      <Route path=\"/kiosk/main\" element={<KioskMainScreen/>}/>\n      {/*<Route path=\"/kiosk/:storeNo\" element={<KioskMainScreen/>}/>*/}\n\n        <Route path=\"/\" element={<MainPage/>}/>\n        <Route path=\"/search/results\" element={<SearchResult/>}/>\n      <Route path=\"/search\" element={<SearchPage/>}/>\n      <Route path=\"/storedetail/:storeNo\" element={<StoreDetail/>}/>\n      <Route path=\"/storedetail/:storeNo/request\" element={<StoredetailRequestPopup/>}/>\n      <Route path=\"/storedetail/:storeNo/flearequest\" element={<StoreDetailFlearequest/>}/>\n      <Route path=\"/searchbynutrition\" element={<SearchbyNurtrition/>}/>\n\n    </Routes>\n      </KakaoMapProvider>\n\n    </div>\n  );\n}\n\nexport default App;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.js b/Frontend/src/App.js
+--- a/Frontend/src/App.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/App.js	(date 1739608994726)
+@@ -1,6 +1,6 @@
+ import "./App.css";
+ import { useEffect } from "react";
+-import { Route, Routes } from "react-router-dom";
++import { Route, Routes, useLocation } from "react-router-dom";
+ import MainPage from "./pages/MainPage";
+ import Kiosk from "./pages/Kiosk"
+ import KioskMainScreen from "./pages/KioskMain";
+@@ -26,6 +26,9 @@
+ 
+ function App() {
+ 
++  const location = useLocation();
++  const isMapPage = ['/', '/search/results'].includes(location.pathname);
++
+   function setScreenSize() {
+     let vh = window.innerHeight * 0.01;
+     document.documentElement.style.setProperty("--vh", `${vh}px`);
+@@ -37,39 +40,44 @@
+ 
+   return (
+     <div className="App">
+-
++      <div>
+       <KakaoMapProvider>
+-    <Routes>
+-      <Route path="/signup" element={<SignUp/>}/>
+-      <Route path="/owner-signup" element={<OwnerSignUp/>}/>
+-      <Route path="/user-signup" element={<UserSignUp/>}/>
+-      <Route path="/mypage/user" element={<MyPage/>}/>
+-      <Route path="/mypage/user/coupons" element={<Coupons/>}/>
+-      <Route path="/mypage/user/chats" element={<Chats/>}/>
+-      <Route path="/mypage/admin" element={<MyPage/>}/>
+-        <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
+-        <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
+-        <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
+-        <Route path="/mypage/admin/notice" element={<Notice/>}/>
++        <Routes>
++
++          <Route path="/signup" element={<SignUp/>}/>
++          <Route path="/owner-signup" element={<OwnerSignUp/>}/>
++          <Route path="/user-signup" element={<UserSignUp/>}/>
++          <Route path="/mypage/user" element={<MyPage/>}/>
++          <Route path="/mypage/user/coupons" element={<Coupons/>}/>
++          <Route path="/mypage/user/chats" element={<Chats/>}/>
++          <Route path="/mypage/admin" element={<MyPage/>}/>
++          <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
++          <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
++          <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
++          <Route path="/mypage/admin/notice" element={<Notice/>}/>
+ 
+-      <Route path="/oauth/kakao" element={<KakaoRedirect />} />
++          <Route path="/oauth/kakao" element={<KakaoRedirect />} />
+ 
+-      <Route path="/kiosk" element={<Kiosk/>}/>
+-      <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
+-      {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
++          <Route path="/kiosk" element={<Kiosk/>}/>
++          <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
++          {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
+ 
+-        <Route path="/" element={<MainPage/>}/>
+-        <Route path="/search/results" element={<SearchResult/>}/>
+-      <Route path="/search" element={<SearchPage/>}/>
+-      <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
+-      <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
+-      <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
+-      <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
++          <Route path="/" element={<MainPage />}/>
++          <Route path="/search/results" element={<SearchResult/>}/>
++          <Route path="/search" element={<SearchPage/>}/>
++          <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
++          <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
++          <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
++          <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
+ 
+-    </Routes>
+-      </KakaoMapProvider>
+-
++      </Routes>
++    </KakaoMapProvider>
+     </div>
++      <div
++          id="map-root"
++          className={`map-container ${isMapPage ? 'visible' : 'hidden'}`}
++      />
++  </div>
+   );
+ }
+ 
+Index: Frontend/src/pages/SearchResult/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from \"react\";\nimport { useLocation } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport './style.css'\n\nconst SearchResult = () => {\n    const [storelist, setStorelist] = useState([]);\n\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n\n    const coords = {lat: queryParams.get('lat'), lng: queryParams.get('lng')}\n    const itemId = queryParams.get('itemId');\n\n    return (\n        <div className=\"result-page\">\n            <div className=\"resultpagecontents\">\n                <div className=\"resultheader\"><HeaderContainer/></div>\n                <div className=\"resultpagenotice;\">검색 결과</div>\n                <DraggableBottomSheet coords={coords}\n                                   itemId={itemId}\n                                   setStorelist={setStorelist} />\n            </div>\n            <div className=\"resultpagemap\">\n                <KakaoMapContainer coords={coords} />\n            </div>\n            <div className=\"resultpagemarker\">\n                <KakaoMapMarkers storelist={storelist} />\n            </div>\n\n        </div>\n    )\n}\n\nexport default SearchResult;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/index.js b/Frontend/src/pages/SearchResult/index.js
+--- a/Frontend/src/pages/SearchResult/index.js	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/pages/SearchResult/index.js	(date 1739604195245)
+@@ -1,12 +1,15 @@
+-import React, { useState } from "react";
++import { useState } from "react";
+ import { useLocation } from "react-router-dom";
+ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+ import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
+ import KakaoMapMarkers from "../../components/KakaoMapMarkers";
+ import KakaoMapContainer from "../../components/KakaoMapContainer";
++import { useBaseMap } from "../../contexts/ KakaoMapContext";
+ import './style.css'
+ 
+ const SearchResult = () => {
++    const { isSDKLoaded } = useBaseMap()
++
+     const [storelist, setStorelist] = useState([]);
+ 
+     const location = useLocation();
+@@ -20,18 +23,19 @@
+         <div className="result-page">
+             <div className="resultpagecontents">
+                 <div className="resultheader"><HeaderContainer/></div>
+-                <div className="resultpagenotice;">검색 결과</div>
+                 <DraggableBottomSheet coords={coords}
+-                                   itemId={itemId}
+-                                   setStorelist={setStorelist} />
+-            </div>
+-            <div className="resultpagemap">
+-                <KakaoMapContainer coords={coords} />
+-            </div>
+-            <div className="resultpagemarker">
+-                <KakaoMapMarkers storelist={storelist} />
+-            </div>
+-
++                                   setStorelist={setStorelist}
++                                   itemId={itemId} />
++
++        </div>
++        {/* 지도 루트 컨테이너 (한 페이지에 단 하나만 존재해야 함) */}
++        {/*<div id="map-root" className="resultpagemap" ></div>*/}
++            {isSDKLoaded && (
++                <>
++                    <KakaoMapContainer coords={coords} />
++                    <KakaoMapMarkers storelist={storelist} />
++                </>
++            )}
+         </div>
+     )
+ }
+Index: Frontend/src/pages/SearchResult/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.result-page {\n    width: 100%;\n    height: 100%;\n}\n\n.resultpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh 6vh auto auto 6vh;\n    position: relative;\n    z-index: 100;\n}\n\n.resultheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.resultpagenotice {\n    grid-row: 2;\n    width: 100%;\n}\n\n\n.resultpagemap {\n    position: fixed;\n    z-index: 1;\n    top: 0;\n}\n\n.resultpagemarker {\n    width: 100vw;\n    height: 100vh;\n    position: fixed;\n    top: 0;\n    z-index: 10;\n    pointer-events: none;\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/style.css b/Frontend/src/pages/SearchResult/style.css
+--- a/Frontend/src/pages/SearchResult/style.css	(revision ae9e49e5a0ebd74048e13b448ce35e5aa3c58fff)
++++ b/Frontend/src/pages/SearchResult/style.css	(date 1739521903299)
+@@ -18,24 +18,10 @@
+     width: 100%;
+ }
+ 
+-.resultpagenotice {
+-    grid-row: 2;
+-    width: 100%;
+-}
+-
+-
+ .resultpagemap {
+-    position: fixed;
+-    z-index: 1;
+-    top: 0;
+-}
+-
+-.resultpagemarker {
+     width: 100vw;
+     height: 100vh;
+     position: fixed;
++    z-index: 1;
+     top: 0;
+-    z-index: 10;
+-    pointer-events: none;
+-
+-}
++}
+\ No newline at end of file

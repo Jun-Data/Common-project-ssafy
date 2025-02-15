@@ -30,7 +30,9 @@ const KakaoMapContainer = ({ coords }) => {
         markerRef.current = newMarker;
 
         // 4. 지도 중심 이동
-        baseMap.setCenter(newMarker.getPosition());
+        const position = new window.kakao.maps.LatLng(coords.lat, coords.lng);
+        baseMap.setCenter(position);
+
 
         // 클린업 함수
         return () => {
@@ -39,6 +41,7 @@ const KakaoMapContainer = ({ coords }) => {
             }
         };
     }, [coords, baseMap, isSDKLoaded]); // coords 변경 시 재실행
+
 
     return null;
 };

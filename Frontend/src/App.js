@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Kiosk from "./pages/Kiosk"
 import KioskMainScreen from "./pages/KioskMain";
@@ -26,6 +26,9 @@ import {KakaoMapProvider} from "./contexts/ KakaoMapContext";
 
 function App() {
 
+  const location = useLocation();
+  const isMapPage = ['/', '/search/results'].includes(location.pathname);
+
   function setScreenSize() {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -37,39 +40,44 @@ function App() {
 
   return (
     <div className="App">
-
+      <div>
       <KakaoMapProvider>
-    <Routes>
-      <Route path="/signup" element={<SignUp/>}/>
-      <Route path="/owner-signup" element={<OwnerSignUp/>}/>
-      <Route path="/user-signup" element={<UserSignUp/>}/>
-      <Route path="/mypage/user" element={<MyPage/>}/>
-      <Route path="/mypage/user/coupons" element={<Coupons/>}/>
-      <Route path="/mypage/user/chats" element={<Chats/>}/>
-      <Route path="/mypage/admin" element={<MyPage/>}/>
-        <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
-        <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
-        <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
-        <Route path="/mypage/admin/notice" element={<Notice/>}/>
+        <Routes>
 
-      <Route path="/oauth/kakao" element={<KakaoRedirect />} />
+          <Route path="/signup" element={<SignUp/>}/>
+          <Route path="/owner-signup" element={<OwnerSignUp/>}/>
+          <Route path="/user-signup" element={<UserSignUp/>}/>
+          <Route path="/mypage/user" element={<MyPage/>}/>
+          <Route path="/mypage/user/coupons" element={<Coupons/>}/>
+          <Route path="/mypage/user/chats" element={<Chats/>}/>
+          <Route path="/mypage/admin" element={<MyPage/>}/>
+          <Route path="/mypage/admin/flea" element={<FleaRequests/>}/>
+          <Route path="/mypage/admin/stock" element={<StockRequests/>}/>
+          <Route path="/mypage/admin/coupon" element={<MakeCoupons/>}/>
+          <Route path="/mypage/admin/notice" element={<Notice/>}/>
 
-      <Route path="/kiosk" element={<Kiosk/>}/>
-      <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
-      {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
+          <Route path="/oauth/kakao" element={<KakaoRedirect />} />
 
-        <Route path="/" element={<MainPage/>}/>
-        <Route path="/search/results" element={<SearchResult/>}/>
-      <Route path="/search" element={<SearchPage/>}/>
-      <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
-      <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
-      <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
-      <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
+          <Route path="/kiosk" element={<Kiosk/>}/>
+          <Route path="/kiosk/main" element={<KioskMainScreen/>}/>
+          {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
 
-    </Routes>
-      </KakaoMapProvider>
+          <Route path="/" element={<MainPage />}/>
+          <Route path="/search/results" element={<SearchResult/>}/>
+          <Route path="/search" element={<SearchPage/>}/>
+          <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
+          <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
+          <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
+          <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
 
+      </Routes>
+    </KakaoMapProvider>
     </div>
+      <div
+          id="map-root"
+          className={`map-container ${isMapPage ? 'visible' : 'hidden'}`}
+      />
+  </div>
   );
 }
 

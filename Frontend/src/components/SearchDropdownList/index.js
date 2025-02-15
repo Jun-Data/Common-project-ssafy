@@ -6,7 +6,6 @@ const SearchDropdownList = ({ results, onItemClick }) => {
 
     return (
         <div className="search-dropdown-list">
-            {console.log("드롭다운 실행")}
         <ul>
             {results.map((item, index) => (
                 <li key={index} onClick={() => onItemClick(item)}>

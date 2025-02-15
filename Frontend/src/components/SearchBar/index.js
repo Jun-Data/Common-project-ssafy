@@ -19,8 +19,7 @@ const SearchBar = ({ coords, setQuery }) => {
     // 검색어 입력 처리
     const handleInputChange = (e) => {
         setLocalQuery(e.target.value);
-        setQuery(e.target.value); // 부모 컴포넌트에 검색어 전달
-        console.log("입력변화감지")
+        setQuery(e.target.value);
     };
 
 
