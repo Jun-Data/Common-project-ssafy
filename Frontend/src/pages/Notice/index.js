@@ -68,6 +68,7 @@ const Notice = () => {
                     text: '공지사항이 성공적으로 등록되었습니다.',
                     confirmButtonText: '확인'
                 });
+                
                 setNoticeTitle(""); // 입력 데이터 초기화
                 setNoticeContent("");
                 setNoticeImage(null); 
@@ -76,7 +77,7 @@ const Notice = () => {
                 // 등록 후 목록 새로고침
                 const updatedAnnouncements = await axios.get(
                    `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`);
-                setAnnouncements(updatedAnnouncements.data.announcements || []);
+                setAnnouncements(updatedAnnouncements.data || []);
                 
             }
         } catch (error) {
@@ -133,7 +134,7 @@ const Notice = () => {
             const updatedAnnouncements = await axios.get(
                 `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`
             );
-            setAnnouncements(updatedAnnouncements.data.announcements || []);
+            setAnnouncements(updatedAnnouncements.data || []);
             handleCloseModal();
         }
         } catch (error) {
