@@ -7,13 +7,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import KakaoPostcodePopup from "../../components/KakaoPostcodePopup";
 import useGeocoding from "../../hooks/useGeocoding";
+import Swal from "sweetalert2";
 
 function OwnerSignUp() {
     const navigate = useNavigate(); 
-    const [coords, setCoords] = useState({lat: 37.5015376, lng: 127.0397208});
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const { addressToCoord } = useGeocoding();
-    const [inputValue, setInputValue] = useState('');
     const [formData, setFormData] = useState({
         userName: '', 
         userEmail: '', 
@@ -49,7 +48,7 @@ function OwnerSignUp() {
             //주소 업데이트 
             setFormData(prevFormData => ({
                 ...prevFormData,
-                storeAddress: newAddress // storeAddress에 자동입력력
+                storeAddress: newAddress // storeAddress에 자동입력
             }))
 
             // 좌표 업데이트트
@@ -60,10 +59,6 @@ function OwnerSignUp() {
                     ...prevFormData,
                     locationX: newCoords.lat,
                     locationY: newCoords.lng
-                }));
-                setCoords(prevCoords => ({ 
-                    ...prevCoords,
-                    ...newCoords
                 }));
             }
         } catch (error) {
@@ -230,25 +225,24 @@ function OwnerSignUp() {
             case "storeAddress":
                 formErrors.storeAddress = !value ? "매장 주소는 필수 입력입니다." : "";
                 break;
-            case "fliMarketSectionCount":
-                if (formData.isFliMarketAllowed === 'N') {
-                    formData.fliMarketSectionCount = 0;
-                    formErrors.fliMarketSectionCount="";
-                } else {
-                    const sectionCount = parseInt(value, 10);
-                    if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 4) {
-                        formErrors.fliMarketSectionCount = "플리마켓 섹션 개수는 1부터 4까지 입력 가능합니다.";
+                case "fliMarketSectionCount":
+                    if (formData.isFliMarketAllowed === "Y") {
+                        const sectionCount = parseInt(value, 10);
+                        if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 4) {
+                            formErrors.fliMarketSectionCount = "플리마켓 섹션 개수는 1부터 4까지 입력 가능합니다.";
+                        } else {
+                            formErrors.fliMarketSectionCount = ""; // 에러 메시지 초기화
+                        }
                     } else {
-                        formErrors.fliMarketSectionCount = ""; // 에러 메시지 초기화
+                        formErrors.fliMarketSectionCount = ""; // 플리마켓이 허용되지 않았으면 에러 제거
                     }
-                }
-                break;
-            default:
-                break;
-        }
-    
-        setErrors(formErrors);
-    };
+                    break;
+                default:
+                    break;
+            }
+        
+            setErrors(formErrors);
+        };
     
 
     const handleBlur = (e) => {
@@ -280,14 +274,25 @@ function OwnerSignUp() {
                     }
                 );
                 console.log('서버 응답:', response.data);
-            if (response.status ===200) {
-                alert("가입이 완료되었습니다!")
-                navigate("/")
-            }
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "가입 완료!",
+                        text: "가입이 성공적으로 완료되었습니다!",
+                        confirmButtonText: "확인",
+                    }).then(() => {
+                        navigate("/");
+                    });
+                }
             
             } catch (error) {
                 console.error('가입 실패:', error);
-                alert("가입 중 오류가 발생했습니다!")
+                Swal.fire({
+                    icon: "error",
+                    title: "가입 실패!",
+                    text: "가입 중 오류가 발생했습니다. 다시 시도해주세요!",
+                    confirmButtonText: "확인",
+                })            
             }
         } else {
             console.log("입력값에 오류가 있습니다.");
@@ -304,7 +309,6 @@ function OwnerSignUp() {
         console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
     }, [formData]);  // formData가 변경될 때마다 실행
     
-
 
     return (
         <div>
@@ -398,7 +402,7 @@ function OwnerSignUp() {
                     />
                     {errors.storeAddress && <ErrorMessage>{errors.storeAddress}</ErrorMessage>}
 
-                    <FindButton onClick={() => setIsPopupOpen(true)}>
+                    <FindButton type="button" onClick={() => setIsPopupOpen(true)}>
                         주소 찾기
                     </FindButton>
                     {isPopupOpen && (
