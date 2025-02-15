@@ -129,11 +129,9 @@ function HeaderContainer() {
               onClick={handleDropdown}
             />
           ) : (
-            <Link
-              to={`https://i12a506.p.ssafy.io/api/users/login?redirect=${url}`}
-            >
+            <a href={`https://i12a506.p.ssafy.io/api/users/login?redirect=${url}`}>
               <FontAwesomeIcon icon={faRightToBracket} className="login-icon" />
-            </Link>
+            </a>
           )}
         </div>
 

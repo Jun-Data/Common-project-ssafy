@@ -5,6 +5,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -74,6 +75,19 @@ function UserSignUp() {
         let formErrors = { ...errors };
 
         switch (name) {
+            case "userName":
+                // 이름은 한글 또는 영문으로만 입력을 허용
+                const nameRegex = /^[a-zA-Z가-힣]{2,20}$/;  // 2~20자 범위, 영문 또는 한글만
+                formErrors.userName = !value || !nameRegex.test(value)
+                    ? "이름은 한글 또는 영문으로 2~20자만 입력 가능합니다."
+                    : "";
+                break;
+            case "userEmail":
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                formErrors.userEmail = !value || !emailRegex.test(value)
+                    ? "이메일 형식이 올바르지 않습니다. (예: lee@ssafy.com)"
+                    : "";
+                break;
             case "phoneNumber":
                 const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
                 formErrors.userTelephone = !value || !phoneRegex.test(value)
@@ -104,36 +118,54 @@ function UserSignUp() {
         e.preventDefault();
         console.log("폼 제출 데이터:", formData);
     
-    // 데이터 유효성 검사
-    const formErrors = { ...errors };
-    Object.keys(formData).forEach((key) => {
-        validateField(key, formData[key]);
-    });
+        // 데이터 유효성 검사
+        const formErrors = { ...errors };
+        Object.keys(formData).forEach((key) => {
+            validateField(key, formData[key]);
+        });
 
-    // 유효성 검사에서 오류가 없다면
-    if (!Object.values(formErrors).some(error => error !== '')) {
-        try {
-            // JSON 형식으로 데이터를 변환
-            const response = await axios.post(
-                `${apiUrl}/api/users/consumer`,
-                formData, // JSON 데이터 전달
-                {
-                    headers: {
-                        'Content-Type': 'application/json', // JSON 형식으로 보내기 위해 설정
-                    },
+        // 유효성 검사에서 오류가 없다면
+        if (!Object.values(formErrors).some(error => error !== '')) {
+            try {
+                // JSON 형식으로 데이터를 변환
+                const response = await axios.post(
+                    `${apiUrl}/api/users/consumer`,
+                    formData, // JSON 데이터 전달
+                    {
+                        headers: {
+                            'Content-Type': 'application/json', // JSON 형식으로 보내기 위해 설정
+                        },
+                    }
+                );
+                    console.log('서버 응답:', response.data);
+                    if (response.status === 200) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "가입 완료!",
+                            text: "가입이 성공적으로 완료되었습니다!",
+                            confirmButtonText: "확인",
+                        }).then(() => {
+                            navigate("/");
+                        });
+                  }
+                } catch (error) {
+                    console.error('가입 실패:', error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "가입 실패!",
+                        text: "가입 중 오류가 발생했습니다. 다시 시도해주세요!",
+                        confirmButtonText: "확인",
+                    }) 
                 }
-            );
-                console.log('서버 응답:', response.data);
-            if (response.status ===200) {
-                alert("가입이 완료되었습니다!")
-                navigate("/")
+            } else {
+                console.log("입력값에 오류가 있습니다.");
+                Swal.fire({
+                    icon: "error",
+                    title: "가입 실패!",
+                    text: "가입 중 오류가 발생했습니다. 다시 시도해주세요!",
+                    confirmButtonText: "확인",
+                }) 
             }
-            } catch (error) {
-                console.error('가입 실패:', error);
-            }
-        } else {
-            console.log("입력값에 오류가 있습니다.");
-        }
     };
 
     return (
