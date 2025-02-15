@@ -34,7 +34,7 @@ function MakeCoupons() {
                 withCredentials: true,}
             );
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
                     title: '성공!',

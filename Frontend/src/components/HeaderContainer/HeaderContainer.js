@@ -15,10 +15,10 @@ function HeaderContainer() {
   const dropdownRef = useRef(null);
 
   const handleDropdown = (event) => {
-    event.stopPropagation(); // 부모 요소로 이벤트 전파 방지
+    event.stopPropagation();
     setShowDropdown((prev) => !prev);
-    
   };
+  
 
   const handleLogout = async () => {
     try {
@@ -83,10 +83,13 @@ function HeaderContainer() {
     }
   };
 
-  // 드롭다운 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !event.target.closest(".login-icon") // faUser 아이콘 클릭 예외 처리
+      ) {
         setShowDropdown(false);
       }
     };
@@ -96,6 +99,7 @@ function HeaderContainer() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  
   
 
 
