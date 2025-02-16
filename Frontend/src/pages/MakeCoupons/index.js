@@ -55,7 +55,7 @@ function MakeCoupons() {
                 Swal.fire({
                     icon: 'error',
                     title: '이미 생성된 쿠폰',
-                    text: '이미 해당 종류의 쿠폰을 만드셨습니다.',
+                    text: '이미 해당 유형의 쿠폰을 만드셨습니다! 다른 유형을 선택해주세요.',
                 });
             } else {
                 // 기타 에러 처리

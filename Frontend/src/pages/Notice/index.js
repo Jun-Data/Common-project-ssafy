@@ -193,14 +193,18 @@ const Notice = () => {
                 <NoticeList>
                     {announcements && announcements.length > 0 ? (
                         announcements.map((announcement) => (
-                            <NoticeItem key={announcement.boardId} onClick={()=>handleEditNotice(announcement)}>
-                                <h3>{announcement.title}</h3>
-                                <p>{announcement.content}</p>
-                                {announcement.boardImageUrl && (
-                                    <img src={announcement.boardImageUrl} alt="공지사항 이미지" />
-                                )}
-
-                                <p><strong>작성일:</strong> {new Date(announcement.createdAt).toLocaleDateString()}</p>
+                            <NoticeItem key={announcement.boardId}>
+                                <div>
+                                    <h3>{announcement.title}</h3>
+                                    <p>{announcement.content}</p>
+                                    {announcement.boardImageUrl && (
+                                        <img src={announcement.boardImageUrl} alt="공지사항 이미지" />
+                                    )}
+                                    <p><strong>작성일:</strong> {new Date(announcement.createdAt).toLocaleDateString()}</p>
+                                </div>
+                                <EditButtonSmall onClick={() => handleEditNotice(announcement)}>
+                                    수정
+                                </EditButtonSmall>
                             </NoticeItem>
                         ))
                     ) : (
@@ -401,6 +405,9 @@ const NoticeItem = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:hover {
     transform: translateY(-5px);
@@ -419,9 +426,25 @@ const NoticeItem = styled.div`
   }
 
   img {
-    max-width: 100%;
+    max-width: 100px;
     height: auto;
     border-radius: 8px;
     margin-top: 10px;
   }
 `;
+
+const EditButtonSmall = styled.button`
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #e68900;
+    }
+`;
+
