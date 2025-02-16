@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 // 키오스크
                                 .requestMatchers("/api/kiosk/**").permitAll()
                                 // openvidu
-                                .requestMatchers("/api/sessions/**", "/api/sessions").permitAll()
+//                                .requestMatchers("/api/sessions/**", "/api/sessions").permitAll()
                                 .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
                 )
                 .csrf(csrf -> csrf.disable())

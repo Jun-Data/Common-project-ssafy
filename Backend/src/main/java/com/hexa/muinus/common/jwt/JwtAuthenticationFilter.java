@@ -45,14 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/kiosk/payment",
             "/api/kiosk/flea-item",
 
-            "/api/sessions",
-            "/api/sessions/"
+            "/api/sessions"
     ));
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        return EXCLUDE_URLS.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-        return EXCLUDE_URLS.stream().anyMatch(exclude -> request.getServletPath().startsWith(exclude));
+        return EXCLUDE_URLS.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
     }
 
     @Override
