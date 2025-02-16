@@ -23,8 +23,8 @@
     box-sizing: inherit;
     width: 85%; /* 가로 비율 설정 */
     font-size: 16px;
-    padding-left: 40px; /* 입력창 내부 여백 */
     border: none;
+    padding: 10px;
 }
 
 .search-input-searchpage:focus {
@@ -47,5 +47,5 @@
     outline: none;
     background-color: white;
     box-sizing: border-box;
-    padding-left: 40px; /* 버튼과의 간격 확보 */
+    padding-left: 10px;
 }

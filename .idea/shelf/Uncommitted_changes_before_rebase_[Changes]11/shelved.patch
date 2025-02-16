@@ -1,0 +1,784 @@
+Index: Frontend/src/pages/StoredetailRequest/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from \"react\";\nimport { useNavigate } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchApi from \"../../api/searchApi\";\nimport RequestApi from \"../../api/RequestApi\";\nimport SearchBar from \"../../components/SearchBar\";\nimport SearchDropdownList from \"../../components/SearchDropdownList\";\nimport './style.css';\n\n\n// 디바운스 함수 정의\nconst debounce = (func, delay) => {\n    let timeoutId;\n    return (...args) => {\n        if (timeoutId) clearTimeout(timeoutId);\n        timeoutId = setTimeout(() => {\n            func(...args);\n        }, delay);\n    };\n};\n\nconst StoredetailRequestPopup = () => {\n    const [query, setQuery] = useState(\"\"); // 검색어 상태\n    const [results, setResults] = useState([]); // API 결과 상태\n    const [selectedItem, setSelectedItem] = useState(0);\n    const [isDropdownVisible, setDropdownVisible] = useState(false); // 드롭다운 표시 여부\n    const [productImage, setProductImage] = useState(null);\n    const [message, setMessage] = useState('아이스크림을 검색 후 골라보세요!');\n    const navigate = useNavigate();\n\n    // 디바운스를 적용한 API 호출 함수\n    const debouncedFetchResults = debounce(async (searchQuery) => {\n        try {\n            const data = await SearchApi(searchQuery); // SearchApi 호출\n            setResults(data); // API 결과 업데이트\n            setDropdownVisible(data.length > 0);\n        } catch (error) {\n            console.error(\"검색 오류:\", error);\n        }\n    }, 500); // 500ms 지연\n\n    // 검색어 변경 시 디바운스 호출\n    const handleQueryChange = (newQuery) => {\n        setQuery(newQuery);\n        debouncedFetchResults(newQuery);\n    };\n\n    const handleItemClick = (item) => {\n        setProductImage(item.itemImageUrl)\n        console.log(\"선택된 항목:\", item);\n        console.log(productImage)\n        console.log(item.itemId)\n        setSelectedItem(item.itemId);\n        setMessage(`${item.itemName}\\n이 선택되었어요!`)\n        setDropdownVisible(false); // 선택 후 드롭다운 숨김\n    };\n\n    const handleSubmit = async () => {\n        const itemId = selectedItem;\n        const storeId = 2;\n        console.log(itemId)\n\n        if (itemId === 0) {\n            alert('제품을 선택 후 제출해주세요');\n            return; // 함수 실행 중지\n        }\n\n        try {\n            // API 호출\n            const result = await RequestApi({\n                storeId,\n                itemId,\n            });\n\n            // API 응답 처리\n            console.log('요청 성공:', result);\n            // 추가 성공 처리 로직 (예: 페이지 이동, 상태 업데이트 등)\n\n        } catch (error) {\n            console.error('요청 실패:', error);\n            // 에러 처리 로직 (예: 에러 메시지 표시)\n        }\n    };\n\n\n\n    return (\n        <div>\n            <div className=\"requestheader\"><HeaderContainer/></div>\n            <div className=\"storedetailpagerequestpopup\">\n                <div className=\"storedetailrequest\">\n                    <div className=\"requestnotice\">요청하기</div>\n                    <div className=\"requestsearchbar\">\n                        <SearchBar setQuery={handleQueryChange} />\n                    </div>\n                    {isDropdownVisible && results?.length > 0 && (\n                        <div className=\"requestdropdown\">\n                            <SearchDropdownList results={results} onItemClick={handleItemClick} />\n                        </div>\n                    )}\n                    <div className=\"requestitemimage\">\n                        <img src={productImage} alt=\"상품 이미지\" />\n                        { message }\n                    </div>\n                    <button onClick={handleSubmit}>제출하기</button>\n                    <button onClick={() => navigate(-1)}>닫기</button>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default StoredetailRequestPopup;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/StoredetailRequest/index.js b/Frontend/src/pages/StoredetailRequest/index.js
+--- a/Frontend/src/pages/StoredetailRequest/index.js	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/pages/StoredetailRequest/index.js	(date 1739707605449)
+@@ -1,5 +1,5 @@
+ import React, { useState } from "react";
+-import { useNavigate } from "react-router-dom";
++import { useNavigate, useParams } from "react-router-dom";
+ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+ import SearchApi from "../../api/searchApi";
+ import RequestApi from "../../api/RequestApi";
+@@ -27,6 +27,8 @@
+     const [productImage, setProductImage] = useState(null);
+     const [message, setMessage] = useState('아이스크림을 검색 후 골라보세요!');
+     const navigate = useNavigate();
++    const { storeNo } = useParams();
++
+ 
+     // 디바운스를 적용한 API 호출 함수
+     const debouncedFetchResults = debounce(async (searchQuery) => {
+@@ -47,9 +49,6 @@
+ 
+     const handleItemClick = (item) => {
+         setProductImage(item.itemImageUrl)
+-        console.log("선택된 항목:", item);
+-        console.log(productImage)
+-        console.log(item.itemId)
+         setSelectedItem(item.itemId);
+         setMessage(`${item.itemName}\n이 선택되었어요!`)
+         setDropdownVisible(false); // 선택 후 드롭다운 숨김
+@@ -57,9 +56,9 @@
+ 
+     const handleSubmit = async () => {
+         const itemId = selectedItem;
+-        const storeId = 2;
++        const storeId = storeNo;
++
+         console.log(itemId)
+-
+         if (itemId === 0) {
+             alert('제품을 선택 후 제출해주세요');
+             return; // 함수 실행 중지
+@@ -74,36 +73,48 @@
+ 
+             // API 응답 처리
+             console.log('요청 성공:', result);
+-            // 추가 성공 처리 로직 (예: 페이지 이동, 상태 업데이트 등)
++            alert('요청이 성공적으로 전달되었어요!')
++            navigate(-1)
+ 
+         } catch (error) {
+             console.error('요청 실패:', error);
+-            // 에러 처리 로직 (예: 에러 메시지 표시)
++            alert('오류가 발생했습니다. 다시 시도해주세요.')
+         }
+     };
+ 
+-
++    const handleClear = () => {
++        setDropdownVisible(false);
++        setResults([]);
++    };
+ 
+     return (
+         <div>
+             <div className="requestheader"><HeaderContainer/></div>
+             <div className="storedetailpagerequestpopup">
+                 <div className="storedetailrequest">
+-                    <div className="requestnotice">요청하기</div>
++                    <div className="requestnotice">입고 요청하기</div>
+                     <div className="requestsearchbar">
+-                        <SearchBar setQuery={handleQueryChange} />
+-                    </div>
+-                    {isDropdownVisible && results?.length > 0 && (
+-                        <div className="requestdropdown">
+-                            <SearchDropdownList results={results} onItemClick={handleItemClick} />
+-                        </div>
+-                    )}
++                        <SearchBar setQuery={handleQueryChange} onClear={handleClear} />
++                        {isDropdownVisible && results?.length > 0 && (
++                            <div className="requestdropdown">
++                                <SearchDropdownList results={results} onItemClick={handleItemClick}/>
++                            </div>
++                        )}
++                    </div>
+                     <div className="requestitemimage">
+-                        <img src={productImage} alt="상품 이미지" />
+-                        { message }
++                        <img
++                        src={productImage || '/logo.png'}
++                        className="requestitemimageimg"
++                        onError={(e) => {
++                            e.target.src = '/logo.png';
++                        }}
++                    />
++                        <div className="requestitemimagetxt">{ message }</div>
+                     </div>
+-                    <button onClick={handleSubmit}>제출하기</button>
+-                    <button onClick={() => navigate(-1)}>닫기</button>
++                    <div className="requestbuttonzone">
++                        <button className="requestbuttons" onClick={handleSubmit}>제출하기</button>
++                        <button className="requestbuttons" onClick={() => navigate(-1)}>닫기</button>
++                    </div>
+                 </div>
+             </div>
+         </div>
+Index: Frontend/src/api/RequestApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import apiClient from \"./apiClient\";\n\nconst RequestApi = async ({ storeId, userId }) => {\n    try {\n        const response = await apiClient.post(`/api/item/register`, {\n            storeId: storeId,\n            userId: userId\n        });\n\n        if (response.status >= 200 && response.status < 300) {\n            console.log(\"API 호출 성공:\", response.data);\n            return response.data;\n        }\n        throw new Error(`HTTP error! status: ${response.status}`);\n    } catch (error) {\n        console.error(\"API 호출 오류:\", error.response?.data || error.message);\n        throw error;\n    }\n};\n\nexport default RequestApi;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/RequestApi.js b/Frontend/src/api/RequestApi.js
+--- a/Frontend/src/api/RequestApi.js	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/api/RequestApi.js	(date 1739707540564)
+@@ -1,10 +1,10 @@
+ import apiClient from "./apiClient";
+ 
+-const RequestApi = async ({ storeId, userId }) => {
++const RequestApi = async ({ storeId, itemId }) => {
+     try {
+         const response = await apiClient.post(`/api/item/register`, {
+             storeId: storeId,
+-            userId: userId
++            itemId: itemId
+         });
+ 
+         if (response.status >= 200 && response.status < 300) {
+Index: Frontend/src/pages/Storedetail/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useEffect } from \"react\";\nimport { useNavigate, useParams } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport StoreDetailbar from \"../../components/StoreDetailBar\";\nimport StoreDetailApi from \"../../api/StoreDetailApi\";\nimport \"./style.css\";\n\nconst StoreDetail = () => {\n    const [productData, setProductData] = useState(null); // API 데이터를 저장할 상태\n    const [activeTab, setActiveTab] = useState(\"storeItems\"); // 활성화된 탭 상태\n    const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 데이터\n    const [selectedType, setSelectedType] = useState(\"\"); // 선택된 아이템 타입\n    const { storeNo } = useParams();\n\n    const handleTabClick = (tab) => {\n        setActiveTab(tab); // 활성화된 탭 업데이트\n    };\n\n    const navigate = useNavigate();\n\n    const navigateRequestPage = () => {\n        navigate(`/storedetail/${storeNo}/request`);\n    };\n\n    const navigateFlearequest = () => {\n        navigate(`/storeDetail/${storeNo}/flearequest`);\n    };\n\n    const handleItemClick = (item, type) => {\n        setSelectedItem(item); // 선택된 아이템 데이터 저장\n        setSelectedType(type); // 선택된 타입 저장 (store, fli, announcement)\n    };\n\n    const closePopup = () => {\n        setSelectedItem(null); // 팝업 닫기\n        setSelectedType(\"\");\n    };\n\n    // 날짜 형식 변환 함수\n    const formatDate = (dateString) => {\n        const options = { year: \"numeric\", month: \"long\", day: \"numeric\" }; // 예시: \"2025년 2월 6일\"\n        return new Date(dateString).toLocaleDateString(\"ko-KR\", options);\n    };\n\n    useEffect(() => {\n        // API 호출 및 데이터 설정\n        StoreDetailApi(storeNo, setProductData);\n    }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정\n\n    return (\n        <div className=\"searchpagedom\">\n            <div className=\"storedetailheadercontainer\"><HeaderContainer /></div>\n            <div className=\"storedetailphotoinfo\">\n                <div className=\"market-image\">\n                    <img src={productData?.store?.storeImageUrl} alt=\"StoreImage\" />\n                </div>\n                <div className=\"market-detail\">\n                    <div className=\"market-name\">이름 테스트 {productData?.store.name}</div>\n                    <div className=\"market-location\">주소주소 {productData?.store.address}</div>\n                    <div className=\"storedetail-btnlist\">\n                        <button className=\"requestbtn\" onClick={navigateRequestPage}>제품<br />입고요청</button>\n                        <button className=\"flearequestbtn\" onClick={navigateFlearequest}>플리마켓<br />신청하기</button>\n                    </div>\n                </div>\n            </div>\n            <div className=\"storedetailnavbar\">\n                <StoreDetailbar onTabClick={handleTabClick} />\n            </div>\n\n            {/* 리스트 렌더링 */}\n            <div className=\"storedetailmarketinfo\">\n                {activeTab === \"storeItems\" && (\n                    <ul className=\"storedetailul\">\n                        {productData?.storeItems?.map((storeItem) => (\n                            <li\n                                key={storeItem.itemId}\n                                className=\"storedetailmarketli\"\n                                onClick={() => handleItemClick(storeItem, \"store\")}\n                            >\n                                <img src={storeItem.itemImageUrl} alt=\"storedetailitemimage\" className='storedetailitemimage' />\n                                <div className=\"item-info\">\n                                    <span>{storeItem.itemName}</span>\n                                </div>\n                            </li>\n                        ))}\n                    </ul>\n                )}\n                {activeTab === \"fliItems\" && (\n                    <ul className=\"storedetailul\">\n                        {productData?.fliItems?.map((fliItem) => (\n                            <li\n                                key={fliItem.fliItemId}\n                                className=\"storedetailmarketli\"\n                                onClick={() => handleItemClick(fliItem, \"fli\")}\n                            >\n                                <img src={fliItem.imagePath} alt=\"storedetailitemimage\" />\n                                <div className=\"item-info\">\n                                    <span>{fliItem.fliItemName}</span>\n                                    <span>{fliItem.price}원</span>\n                                </div>\n                            </li>\n                        ))}\n                    </ul>\n                )}\n                {activeTab === \"announcements\" && (\n                    <ul className=\"storedetailul\">\n                        {productData?.announcements?.map((announcement) => (\n                            <li\n                                key={announcement.boardId}\n                                className=\"storedetailmarketli announcement\"\n                                onClick={() => handleItemClick(announcement, \"announcement\")}\n                            >\n                                <div className=\"item-info\">\n                                    <span>제목테스트{announcement.title}</span>\n                                    <span>{formatDate(announcement.createdAt)}</span> {/* 날짜 변환 적용 */}\n                                </div>\n                            </li>\n                        ))}\n                    </ul>\n                )}\n            </div>\n\n            {/* 팝업 */}\n            {selectedItem && (\n                <div className=\"popup-overlay\" onClick={closePopup}>\n                    <div className=\"popup-content\" onClick={(e) => e.stopPropagation()}>\n                        {selectedType === \"store\" && (\n                            <>\n                                <h3>{selectedItem.itemName}</h3>\n                                <p>가격: {selectedItem.finalPrice}원</p>\n                                <p>수량: {selectedItem.quantity}</p>\n                            </>\n                        )}\n                        {selectedType === \"fli\" && (\n                            <>\n                                <h3>{selectedItem.fliItemName}</h3>\n                                <p>가격: {selectedItem.price}원</p>\n                                <p>수량: {selectedItem.quantity}</p>\n                            </>\n                        )}\n                        {selectedType === \"announcement\" && (\n                            <>\n                                <h3>제목테스트{selectedItem.title}</h3>\n                                <p>난너를믿은만큼난내친구도믿었기에{selectedItem.content}</p>\n                                <p>작성일: {formatDate(selectedItem.createdAt)}</p> {/* 날짜 변환 적용 */}\n                            </>\n                        )}\n                        <button onClick={closePopup}>닫기</button>\n                    </div>\n                </div>\n            )}\n        </div>\n    );\n};\n\nexport default StoreDetail;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Storedetail/index.js b/Frontend/src/pages/Storedetail/index.js
+--- a/Frontend/src/pages/Storedetail/index.js	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/pages/Storedetail/index.js	(date 1739706969685)
+@@ -16,6 +16,10 @@
+         setActiveTab(tab); // 활성화된 탭 업데이트
+     };
+ 
++    const handleCouponGet = () => {
++
++    }
++
+     const navigate = useNavigate();
+ 
+     const navigateRequestPage = () => {
+@@ -47,19 +51,33 @@
+         StoreDetailApi(storeNo, setProductData);
+     }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정
+ 
++
+     return (
+         <div className="searchpagedom">
+             <div className="storedetailheadercontainer"><HeaderContainer /></div>
+             <div className="storedetailphotoinfo">
+                 <div className="market-image">
+-                    <img src={productData?.store?.storeImageUrl} alt="StoreImage" />
++                    {productData?.store?.storeImageUrl ? (
++                        <img
++                            src={productData.store.storeImageUrl}
++                            alt="StoreImage"
++                            onError={(e) => {
++                                e.target.style.display = 'none';  // 이미지 숨기기
++                            }}
++                        />
++                    ) : (
++                        <div className="image-fallback">
++                            <span>등록된 이미지가<br/> 없습니다.</span>
++                        </div>
++                    )}
+                 </div>
+                 <div className="market-detail">
+-                    <div className="market-name">이름 테스트 {productData?.store.name}</div>
+-                    <div className="market-location">주소주소 {productData?.store.address}</div>
++                    <div className="market-name">{productData?.store.name}</div>
++                    <div className="market-location">{productData?.store.address}</div>
+                     <div className="storedetail-btnlist">
+-                        <button className="requestbtn" onClick={navigateRequestPage}>제품<br />입고요청</button>
+-                        <button className="flearequestbtn" onClick={navigateFlearequest}>플리마켓<br />신청하기</button>
++                        <button className="couponrequestbtn">쿠폰<br/>수령</button>
++                        <button className="requestbtn" onClick={navigateRequestPage}>입고<br/>요청</button>
++                        <button className="flearequestbtn" onClick={navigateFlearequest}>플리<br/>신청</button>
+                     </div>
+                 </div>
+             </div>
+@@ -67,59 +85,86 @@
+                 <StoreDetailbar onTabClick={handleTabClick} />
+             </div>
+ 
+-            {/* 리스트 렌더링 */}
+             <div className="storedetailmarketinfo">
++                {/* 상점 상품 탭 */}
+                 {activeTab === "storeItems" && (
+-                    <ul className="storedetailul">
+-                        {productData?.storeItems?.map((storeItem) => (
+-                            <li
+-                                key={storeItem.itemId}
+-                                className="storedetailmarketli"
+-                                onClick={() => handleItemClick(storeItem, "store")}
+-                            >
+-                                <img src={storeItem.itemImageUrl} alt="storedetailitemimage" className='storedetailitemimage' />
+-                                <div className="item-info">
+-                                    <span>{storeItem.itemName}</span>
+-                                </div>
+-                            </li>
+-                        ))}
+-                    </ul>
++                    productData?.storeItems?.length ? (
++                        <ul className="storedetailul">
++                            {productData.storeItems.map((storeItem) => (
++                                <li
++                                    key={storeItem.itemId}
++                                    className="storedetailmarketli"
++                                    onClick={() => handleItemClick(storeItem, "store")}
++                                >
++                                    <img
++                                        src={storeItem.itemImageUrl}
++                                        alt="상품 이미지"
++                                        className="storedetailitemimage"
++                                    />
++                                    <div className="item-info">
++                                        <span>{storeItem.itemName}</span>
++                                    </div>
++                                </li>
++                            ))}
++                        </ul>
++                    ) : (
++                        <div className="no-items">등록된 상품이 없습니다</div>
++                    )
+                 )}
++
++                {/* FLI 상품 탭 */}
+                 {activeTab === "fliItems" && (
+-                    <ul className="storedetailul">
+-                        {productData?.fliItems?.map((fliItem) => (
+-                            <li
+-                                key={fliItem.fliItemId}
+-                                className="storedetailmarketli"
+-                                onClick={() => handleItemClick(fliItem, "fli")}
+-                            >
+-                                <img src={fliItem.imagePath} alt="storedetailitemimage" />
+-                                <div className="item-info">
+-                                    <span>{fliItem.fliItemName}</span>
+-                                    <span>{fliItem.price}원</span>
+-                                </div>
+-                            </li>
+-                        ))}
+-                    </ul>
++                    productData?.fliItems?.length ? (
++                        <ul className="storedetailul">
++                            {productData.fliItems.map((fliItem) => (
++                                <li
++                                    key={fliItem.fliItemId}
++                                    className="storedetailmarketli"
++                                    onClick={() => handleItemClick(fliItem, "fli")}
++                                >
++                                    <img
++                                        src={fliItem.imagePath || '/logo.png'}
++                                        className="storedetailitemimage"
++                                        onError={(e) => {
++                                            e.target.src = '/logo.png';
++                                        }}
++                                    />
++                                    <div className="item-info">
++                                        <span>{fliItem.fliItemName}</span>
++                                        <span>{fliItem.price.toLocaleString()}원</span>
++                                    </div>
++                                </li>
++                            ))}
++                        </ul>
++                    ) : (
++                        <div className="no-items">FLI 상품이 존재하지 않습니다</div>
++                    )
+                 )}
++
++                {/* 공지사항 탭 */}
+                 {activeTab === "announcements" && (
+-                    <ul className="storedetailul">
+-                        {productData?.announcements?.map((announcement) => (
+-                            <li
+-                                key={announcement.boardId}
+-                                className="storedetailmarketli announcement"
+-                                onClick={() => handleItemClick(announcement, "announcement")}
+-                            >
+-                                <div className="item-info">
+-                                    <span>제목테스트{announcement.title}</span>
+-                                    <span>{formatDate(announcement.createdAt)}</span> {/* 날짜 변환 적용 */}
+-                                </div>
+-                            </li>
+-                        ))}
+-                    </ul>
++                    productData?.announcements?.length ? (
++                        <ul className="storedetailul">
++                            {productData.announcements.map((announcement) => (
++                                <li
++                                    key={announcement.boardId}
++                                    className="storedetailmarketli"
++                                    onClick={() => handleItemClick(announcement, "announcement")}
++                                >
++                                    <div className="item-info">
++                                        <span>{announcement.title}</span>
++                                        <span>{formatDate(announcement.createdAt)}</span>
++                                    </div>
++                                </li>
++                            ))}
++                        </ul>
++                    ) : (
++                        <div className="no-items">등록된 공지사항이 없습니다</div>
++                    )
+                 )}
+             </div>
+ 
++
+             {/* 팝업 */}
+             {selectedItem && (
+                 <div className="popup-overlay" onClick={closePopup}>
+@@ -140,8 +185,8 @@
+                         )}
+                         {selectedType === "announcement" && (
+                             <>
+-                                <h3>제목테스트{selectedItem.title}</h3>
+-                                <p>난너를믿은만큼난내친구도믿었기에{selectedItem.content}</p>
++                                <h3>{selectedItem.title}</h3>
++                                <p>{selectedItem.content}</p>
+                                 <p>작성일: {formatDate(selectedItem.createdAt)}</p> {/* 날짜 변환 적용 */}
+                             </>
+                         )}
+Index: Frontend/src/components/StoreDetailBar/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.box {\n    display: grid;\n    width: 360px;\n    height: 50px;\n    background-color: lightblue;\n    grid-template-columns: 120px 120px 120px;\n}\n\n.storedetailbarbutton1 {\n    grid-column: 1;\n    width: 120px;\n    height: 100%;\n    background-color: transparent; /* 배경색 제거 */\n    border: none; /* 테두리 제거 */\n    outline: none; /* 포커스 시 외곽선 제거 */\n    box-shadow: none; /* 그림자 제거 */\n}\n\n.storedetailbarbutton2 {\n    grid-column: 2;\n    width: 120px;\n    height: 100%;\n    background-color: transparent; /* 배경색 제거 */\n    border: none; /* 테두리 제거 */\n    outline: none; /* 포커스 시 외곽선 제거 */\n    box-shadow: none; /* 그림자 제거 */\n\n}\n\n.storedetailbarbutton3 {\n    grid-column: 3;\n    width: 120px;\n    height: 100%;\n    background-color: transparent; /* 배경색 제거 */\n    border: none; /* 테두리 제거 */\n    outline: none; /* 포커스 시 외곽선 제거 */\n    box-shadow: none; /* 그림자 제거 */\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/StoreDetailBar/style.css b/Frontend/src/components/StoreDetailBar/style.css
+--- a/Frontend/src/components/StoreDetailBar/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/components/StoreDetailBar/style.css	(date 1739697795668)
+@@ -1,14 +1,14 @@
+ .box {
+     display: grid;
+-    width: 360px;
+-    height: 50px;
++    width: 100%;
++    height: 100%;
+     background-color: lightblue;
+-    grid-template-columns: 120px 120px 120px;
++    grid-template-columns: 33% 34% 33%;
+ }
+ 
+ .storedetailbarbutton1 {
+     grid-column: 1;
+-    width: 120px;
++    width: 100%;
+     height: 100%;
+     background-color: transparent; /* 배경색 제거 */
+     border: none; /* 테두리 제거 */
+@@ -18,7 +18,7 @@
+ 
+ .storedetailbarbutton2 {
+     grid-column: 2;
+-    width: 120px;
++    width: 100%;
+     height: 100%;
+     background-color: transparent; /* 배경색 제거 */
+     border: none; /* 테두리 제거 */
+@@ -29,7 +29,7 @@
+ 
+ .storedetailbarbutton3 {
+     grid-column: 3;
+-    width: 120px;
++    width: 100%;
+     height: 100%;
+     background-color: transparent; /* 배경색 제거 */
+     border: none; /* 테두리 제거 */
+Index: Frontend/src/components/SearchDropdownList/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* 드롭다운 리스트 스타일 */\n.search-dropdown-list {\n    display: flex;\n    justify-content: center;\n    width: 100%;\n    height: auto; /* 높이를 내용에 맞게 조정 */\n    background-color: white;\n    border-left: 3px solid #3f72af;\n    border-right: 3px solid #3f72af;\n    border-bottom: 3px solid #3f72af;\n    border-top: none; /* 위쪽 경계선 제거 */\n    box-sizing: border-box; /* 경계선 포함한 크기 계산 */\n    overflow-x: hidden; /* 가로 스크롤 방지 */\n}\n\n/* 드롭다운 리스트의 UL 스타일 */\n.search-dropdown-list ul {\n    width: 100%; /* UL이 부모 컨테이너 너비를 채우도록 설정 */\n    padding-left: 0; /* 내부 여백 제거 */\n    margin-top: 0; /* 외부 여백 제거 */\n    list-style-type: none; /* 기본 리스트 스타일 제거 */\n}\n\n/* 리스트 아이템 스타일 */\n.search-dropdown-list li {\n    display: flex; /* 플렉스 박스 사용 */\n    align-items: center; /* 세로 정렬 */\n    width: 100%; /* li가 부모 너비를 채우도록 설정 */\n    min-height: 30px; /* 최소 높이 */\n    height: auto; /* 높이를 내용에 맞게 조정 */\n    padding: 10px; /* 내부 여백 추가 */\n    background-color: white;\n    border-bottom: 1px solid #3f72af; /* 구분선 추가 */\n}\n\n/* 마지막 아이템의 구분선 제거 */\n.search-dropdown-list li:last-child {\n    border-bottom: none;\n}\n\n/* 호버 효과 추가 (선택 사항) */\n.search-dropdown-list li:hover {\n    background-color: #f8f8ff; /* 연한 배경색으로 변경 */\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchDropdownList/style.css b/Frontend/src/components/SearchDropdownList/style.css
+--- a/Frontend/src/components/SearchDropdownList/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/components/SearchDropdownList/style.css	(date 1739703092818)
+@@ -31,6 +31,9 @@
+     padding: 10px; /* 내부 여백 추가 */
+     background-color: white;
+     border-bottom: 1px solid #3f72af; /* 구분선 추가 */
++    overflow: hidden;
++    white-space: nowrap;
++    text-overflow: ellipsis;
+ }
+ 
+ /* 마지막 아이템의 구분선 제거 */
+Index: Frontend/src/components/SearchBar/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.searchbar {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-content: center;\n    justify-content: center;\n    z-index: 99;\n}\n\n.search-input-container {\n    box-sizing: border-box;\n    width: 100%;\n    height: 100%;\n    border: 2px solid #3f72af;\n    outline: none;\n    display: flex;\n    justify-content: space-between;\n\n}\n\n/* 검색 입력창 스타일 */\n.search-input-searchpage {\n    box-sizing: inherit;\n    width: 85%; /* 가로 비율 설정 */\n    font-size: 16px;\n    padding-left: 40px; /* 입력창 내부 여백 */\n    border: none;\n}\n\n.search-input-searchpage:focus {\n    outline: none; /* 기본 브라우저 아웃라인 제거 */\n}\n\n.clear-button {\n    box-sizing: inherit;\n    width: 15%;\n    height: 100%;\n}\n\n.search-input-mainpage {\n    box-sizing: border-box;\n    width: 100%;\n    height: 100%;\n    overflow: hidden;\n    font-size: 16px;\n    border: 2px solid #3f72af;\n    outline: none;\n    background-color: white;\n    box-sizing: border-box;\n    padding-left: 40px; /* 버튼과의 간격 확보 */\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchBar/style.css b/Frontend/src/components/SearchBar/style.css
+--- a/Frontend/src/components/SearchBar/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/components/SearchBar/style.css	(date 1739696569514)
+@@ -23,8 +23,8 @@
+     box-sizing: inherit;
+     width: 85%; /* 가로 비율 설정 */
+     font-size: 16px;
+-    padding-left: 40px; /* 입력창 내부 여백 */
+     border: none;
++    padding: 10px;
+ }
+ 
+ .search-input-searchpage:focus {
+@@ -47,5 +47,5 @@
+     outline: none;
+     background-color: white;
+     box-sizing: border-box;
+-    padding-left: 40px; /* 버튼과의 간격 확보 */
++    padding-left: 10px;
+ }
+Index: Frontend/src/pages/StoredetailRequest/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* ====== 팝업 레이아웃 ====== */\n.storedetailpagerequestpopup {\n    display: grid;\n    place-items: center;\n    width: 100%;\n    height: 100%;\n    position: fixed;\n    top: 0;\n    z-index: 300;\n    background-color: rgba(211, 211, 211, 0.9);\n}\n\n.storedetailrequest {\n    display: grid;\n    place-items: center;\n    width: 80%; /* 페이지의 80% 너비 */\n    height: 80%; /* 페이지의 80% 높이 */\n    background-color: white;\n    border-radius: 12px;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);\n    padding: 16px;\n    grid-template-rows: auto auto auto auto; /* 행 높이를 자동 조정 */\n}\n\n/* ====== 공지 메시지 ====== */\n.requestnotice {\n    text-align: center;\n    font-size: 1.2rem;\n    font-weight: bold;\n    margin-bottom: 16px; /* 공지와 검색 바 간격 */\n}\n\n/* ====== 검색 바 ====== */\n.requestsearchbar {\n    width: 95%; /* 검색 바 너비 */\n    margin-bottom: 16px; /* 검색 바와 드롭다운 간격 */\n}\n\n.requestdropdown {\n    position: relative;\n    z-index: 301; /* 드롭다운이 팝업 위에 표시되도록 설정 */\n    width: 100%;\n}\n\n/* ====== 선택된 아이템 이미지 ====== */\n.requestitemimage img {\n    width: 280px; /* 고정 너비 */\n    height: 280px; /* 고정 높이 */\n    object-fit: cover; /* 이미지가 영역에 맞게 조정되도록 설정 */\n    border-radius: 8px;\n}\n\n/* ====== 버튼 그룹 ====== */\n.request-buttons {\n    display: flex;\n    justify-content: space-between; /* 버튼 간격 균등 분배 */\n    width: 100%; /* 버튼 그룹 전체 너비 */\n    margin-top: auto; /* 버튼을 하단에 배치 */\n}\n\n.submitbtn,\n.closebtn {\n    flex: 1; /* 동일한 크기로 확장 */\n    padding: 16px; /* 버튼 크기 확대 */\n    font-size: 1.2rem; /* 버튼 텍스트 크기 증가 */\n    border-radius: 8px;\n    border: none;\n    cursor: pointer;\n}\n\n/* 제출하기 버튼 스타일 */\n.submitbtn {\n    background-color: #4a90e2; /* 제출하기 기본 색상 */\n    color: white;\n}\n\n.submitbtn:hover {\n    background-color: #357abd; /* 제출하기 호버 색상 */\n}\n\n/* 닫기 버튼 스타일 */\n.closebtn {\n    background-color: #f44336; /* 닫기 기본 색상 (빨강) */\n    color: white;\n}\n\n.closebtn:hover {\n    background-color: #d32f2f; /* 닫기 호버 색상 (어두운 빨강) */\n}\n\n.request-buttons .spacer {\n    width: 16px; /* 버튼 간 간격 추가 (여백) */\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/StoredetailRequest/style.css b/Frontend/src/pages/StoredetailRequest/style.css
+--- a/Frontend/src/pages/StoredetailRequest/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/pages/StoredetailRequest/style.css	(date 1739704582791)
+@@ -19,75 +19,69 @@
+     border-radius: 12px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     padding: 16px;
+-    grid-template-rows: auto auto auto auto; /* 행 높이를 자동 조정 */
++    grid-template-rows: 10vh 8vh 50vh auto; /* 행 높이를 자동 조정 */
+ }
+ 
+ /* ====== 공지 메시지 ====== */
+ .requestnotice {
++    grid-row: 1;
+     text-align: center;
+-    font-size: 1.2rem;
++    font-size: 30px;
+     font-weight: bold;
+     margin-bottom: 16px; /* 공지와 검색 바 간격 */
+ }
+ 
+ /* ====== 검색 바 ====== */
+ .requestsearchbar {
+-    width: 95%; /* 검색 바 너비 */
++    grid-row: 2;
++    width: 100%;
++    height: 80%;
+     margin-bottom: 16px; /* 검색 바와 드롭다운 간격 */
+ }
+ 
+ .requestdropdown {
+-    position: relative;
++    box-sizing: border-box;
++    position: fixed;
+     z-index: 301; /* 드롭다운이 팝업 위에 표시되도록 설정 */
+-    width: 100%;
++    width: 80%;
+ }
+ 
+ /* ====== 선택된 아이템 이미지 ====== */
+-.requestitemimage img {
+-    width: 280px; /* 고정 너비 */
+-    height: 280px; /* 고정 높이 */
+-    object-fit: cover; /* 이미지가 영역에 맞게 조정되도록 설정 */
++
++.requestitemimage {
++    grid-row: 3;
++    width: 100%;
++    height: 100%;
++    display: grid;
++    place-items: center;
++    grid-template-rows: 85% 15%;
++}
++
++.requestitemimageimg {
++    box-sizing: border-box;
++    grid-row: 1;
++    width: 100%;
++    height: 100%;
++    object-fit: scale-down;
+     border-radius: 8px;
++    border: #4a90e2 2px solid;
++}
++
++.requestitemimagetxt {
++    grid-row: 2;
++    width: 100%;
++    height: 15%;
+ }
+ 
+-/* ====== 버튼 그룹 ====== */
+-.request-buttons {
++.requestbuttonzone {
++    grid-row: 4;
++    width: 100%;
+     display: flex;
+-    justify-content: space-between; /* 버튼 간격 균등 분배 */
+-    width: 100%; /* 버튼 그룹 전체 너비 */
+-    margin-top: auto; /* 버튼을 하단에 배치 */
+-}
+-
+-.submitbtn,
+-.closebtn {
+-    flex: 1; /* 동일한 크기로 확장 */
+-    padding: 16px; /* 버튼 크기 확대 */
+-    font-size: 1.2rem; /* 버튼 텍스트 크기 증가 */
+-    border-radius: 8px;
+-    border: none;
+-    cursor: pointer;
+-}
+-
+-/* 제출하기 버튼 스타일 */
+-.submitbtn {
+-    background-color: #4a90e2; /* 제출하기 기본 색상 */
+-    color: white;
++    justify-content: space-evenly;
++    gap: 16px;
+ }
+ 
+-.submitbtn:hover {
+-    background-color: #357abd; /* 제출하기 호버 색상 */
+-}
+-
+-/* 닫기 버튼 스타일 */
+-.closebtn {
+-    background-color: #f44336; /* 닫기 기본 색상 (빨강) */
+-    color: white;
+-}
+-
+-.closebtn:hover {
+-    background-color: #d32f2f; /* 닫기 호버 색상 (어두운 빨강) */
+-}
+-
+-.request-buttons .spacer {
+-    width: 16px; /* 버튼 간 간격 추가 (여백) */
+-}
++.requestbuttons {
++    width: 40%;
++    height: 100%;
++}
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/App.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/App.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/App.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/App.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/RecommendApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/RecommendApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/HeaderContainer/HeaderContainer.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/HeaderContainer/HeaderContainer.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/RecommendList/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/RecommendList/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchNavbar/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchNavbar/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchNavbar/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchNavbar/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Search/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Search/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Search/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Search/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"git-widget-placeholder\": \"FE/FIX/#104\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"ts.external.directory.path\": \"/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"39963000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"10\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/.idea/workspace.xml	(date 1739707989484)
+@@ -6,27 +6,16 @@
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/RecommendApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/RecommendApi.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/HeaderContainer/HeaderContainer.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/HeaderContainer/HeaderContainer.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/RecommendList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/RecommendList/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/public/d.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNavbar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNavbar/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNavbar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNavbar/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/style.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -81,7 +70,7 @@
+   "keyToString": {
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "RunOnceActivity.git.unshallow": "true",
+-    "git-widget-placeholder": "FE/FIX/#104",
++    "git-widget-placeholder": "FE/FIX/#108",
+     "kotlin-language-version-configured": "true",
+     "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
+     "node.js.detected.package.eslint": "true",
+@@ -134,7 +123,7 @@
+       <workItem from="1739426375278" duration="2000" />
+       <workItem from="1739426451033" duration="11909000" />
+       <workItem from="1739452113566" duration="11559000" />
+-      <workItem from="1739513711472" duration="39963000" />
++      <workItem from="1739513711472" duration="51988000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -208,7 +197,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739670282959</updated>
+     </task>
+-    <option name="localTasksCounter" value="10" />
++    <task id="LOCAL-00010" summary="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)">
++      <option name="closed" value="true" />
++      <created>1739696098939</created>
++      <option name="number" value="00010" />
++      <option name="presentableId" value="LOCAL-00010" />
++      <option name="project" value="LOCAL" />
++      <updated>1739696098939</updated>
++    </task>
++    <option name="localTasksCounter" value="11" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+Index: Frontend/src/pages/Storedetail/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* ============ 메인 레이아웃 ============ */\n.searchpagedom {\n    display: grid;\n    width: 100%;\n    min-height: 100vh;\n    background: #f5f5f5;\n    grid-template-rows: 8vh 19vh 6vh auto;\n    grid-template-areas:\n        \"detailheader\"\n        \"photoinfo\"\n        \"storedetailnavbar\"\n        \"storedetailinfo\";\n}\n\n/* ============ 헤더 영역 ============ */\n.storedetailheadercontainer {\n    grid-area: detailheader;\n    width: 100%;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n    background: white;\n    z-index: 1;\n}\n\n/* ============ 가게 정보 섹션 ============ */\n.storedetailphotoinfo {\n    grid-area: photoinfo;\n    width: 100%;\n    height: 100%;\n    background: white;\n    border-bottom: 1px solid #eee;\n    display: grid;\n    grid-template-columns: 150px 1fr;\n    gap: 16px;\n}\n\n.market-image {\n    width: 150px;\n    height: 150px;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n}\n\n.market-image img {\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n}\n\n.market-detail {\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n}\n\n.market-name {\n    font-size: 1.2rem;\n    font-weight: 600;\n    color: #333;\n    margin-bottom: 8px;\n    display: -webkit-box;\n    -webkit-line-clamp: 2;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n}\n\n.market-location {\n    font-size: 0.9rem;\n    color: #666;\n    display: -webkit-box;\n    -webkit-line-clamp: 2;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n}\n\n/* ============ 버튼 그룹 ============ */\n.storedetail-btnlist {\n    display: flex;\n    gap: 8px;\n    margin-top: auto;\n}\n\n.requestbtn,\n.flearequestbtn {\n    flex: 1;\n    padding: 8px 12px;\n    border: none;\n    border-radius: 6px;\n    font-size: 1rem;\n    cursor: pointer;\n    transition: all 0.2s ease;\n}\n\n.requestbtn {\n    background: #4a90e2;\n    color: white;\n}\n\n.flearequestbtn {\n    background: #f0f0f0;\n    color: #333;\n}\n\n.requestbtn:hover { background: #357abd; }\n.flearequestbtn:hover { background: #e0e0e0; }\n\n/* ============ 네비게이션 바 ============ */\n.storedetailnavbar {\n    grid-area: storedetailnavbar;\n    width: 100%;\n    background: white;\n    border-bottom: 1px solid #eee;\n}\n\n/* ============ 메인 컨텐츠 영역 ============ */\n.storedetailmarketinfo {\n    grid-area: storedetailinfo;\n    width: 100%;\n    min-height: 100%;\n    overflow-y: auto;\n    background: white;\n    position: relative;\n}\n\n/* ============ 공통 리스트 스타일 ============ */\n.storedetailul {\n    list-style: none;\n    padding: 0;\n    margin: 0;\n    display: grid;\n    gap: 12px;\n    margin-top: 12px;\n}\n\n.storedetailmarketli {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 12px;\n    background: #fff;\n    border: 1px solid #4a90e2;\n    border-radius: 8px;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);\n    transition: transform 0.2s ease;\n    cursor: pointer;\n    height: 80px;\n    overflow: hidden;\n}\n\n/* 이미지가 없는 항목 (공지사항) */\n.storedetailmarketli.announcement {\n    flex-direction: column;\n    align-items: flex-start;\n    justify-content: center;\n    background: #f8f9fa;\n    border-color: #e0e0e0;\n}\n\n/* 텍스트 컨테이너 */\n.item-info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.storedetailitemimage {\n    width: 50px;\n    height: 50px;\n    border-radius: 6px;\n    object-fit: cover;\n    flex-shrink: 0;\n}\n\n/* ============ 팝업 스타일 ============ */\n.popup-overlay {\n    position: fixed;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background: rgba(0, 0, 0, 0.5);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    z-index: 1000;\n}\n\n.popup-content {\n    background: white;\n    padding: 24px;\n    border-radius: 12px;\n    max-width: 400px;\n    width: 90%;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);\n}\n\n.popup-field {\n    margin: 12px 0;\n    padding: 8px;\n    background: #f8f9fa;\n    border-radius: 6px;\n}\n\n.popup-field label {\n    display: block;\n    font-size: 0.9rem;\n    color: #666;\n    margin-bottom: 4px;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Storedetail/style.css b/Frontend/src/pages/Storedetail/style.css
+--- a/Frontend/src/pages/Storedetail/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/pages/Storedetail/style.css	(date 1739706336858)
+@@ -30,7 +30,7 @@
+     border-bottom: 1px solid #eee;
+     display: grid;
+     grid-template-columns: 150px 1fr;
+-    gap: 16px;
++    gap: 8px;
+ }
+ 
+ .market-image {
+@@ -38,6 +38,8 @@
+     height: 150px;
+     border-radius: 8px;
+     overflow: hidden;
++    display: grid;
++    place-items: center;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ }
+ 
+@@ -48,12 +50,13 @@
+ }
+ 
+ .market-detail {
+-    display: flex;
+-    flex-direction: column;
+-    justify-content: space-between;
++    display: grid;
++    grid-template-rows: 40% 25% 35%;
++    place-items: center;
+ }
+ 
+ .market-name {
++    grid-row: 1;
+     font-size: 1.2rem;
+     font-weight: 600;
+     color: #333;
+@@ -65,6 +68,7 @@
+ }
+ 
+ .market-location {
++    grid-row: 2;
+     font-size: 0.9rem;
+     color: #666;
+     display: -webkit-box;
+@@ -75,30 +79,37 @@
+ 
+ /* ============ 버튼 그룹 ============ */
+ .storedetail-btnlist {
++    grid-row: 3;
+     display: flex;
+     gap: 8px;
+-    margin-top: auto;
++    width: 100%;
++    height: 100%;
+ }
+ 
++.couponrequestbtn,
+ .requestbtn,
+ .flearequestbtn {
+-    flex: 1;
+-    padding: 8px 12px;
+-    border: none;
+-    border-radius: 6px;
+-    font-size: 1rem;
+-    cursor: pointer;
+-    transition: all 0.2s ease;
++    box-sizing: border-box;
++    border: #4a90e2 2px solid;
++    border-radius: 15px;
++    width: auto; /* 30% → auto로 변경 */
++    flex: 1 1 0%; /* 추가 */
++    min-width: 0; /* 추가 */
++}
++
++.couponrequestbtn {
++    background: #f0f0f0;
++    color: black;
+ }
+ 
+ .requestbtn {
+-    background: #4a90e2;
+-    color: white;
++    background: #f0f0f0;
++    color: black;
+ }
+ 
+ .flearequestbtn {
+     background: #f0f0f0;
+-    color: #333;
++    color: black;
+ }
+ 
+ .requestbtn:hover { background: #357abd; }
+@@ -116,7 +127,8 @@
+ .storedetailmarketinfo {
+     grid-area: storedetailinfo;
+     width: 100%;
+-    min-height: 100%;
++    height: 100%;
++    max-height: 70vh;
+     overflow-y: auto;
+     background: white;
+     position: relative;
+@@ -166,10 +178,11 @@
+ }
+ 
+ .storedetailitemimage {
+-    width: 50px;
+-    height: 50px;
++    width: 30%;
++    height: 100%;
+     border-radius: 6px;
+-    object-fit: cover;
++    border: 1px solid #4a90e2;
++    object-fit: scale-down;
+     flex-shrink: 0;
+ }
+ 
+Index: Frontend/src/pages/SearchResult/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.result-page {\n    width: 100%;\n    height: 100%;\n    position: fixed;\n    z-index: 100;\n    top: 0;\n}\n\n.resultpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh auto;\n    position: relative;\n    z-index: 100;\n}\n\n.resultheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.resultsearchbar {\n    box-sizing: border-box;\n    border: 2px solid #3f72af;\n    grid-row: 2;\n    width: 100%;\n    height: 100%;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n\n.resultsearchinput {\n    box-sizing: inherit;\n    width: 100%;\n    height: 100%;\n    background-color: white;\n    text-align: left;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    align-content: center;\n    padding-left: 40px;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/style.css b/Frontend/src/pages/SearchResult/style.css
+--- a/Frontend/src/pages/SearchResult/style.css	(revision 788bc386f2caa9d39803b5e4ac9a7babd5d78082)
++++ b/Frontend/src/pages/SearchResult/style.css	(date 1739696626198)
+@@ -42,5 +42,5 @@
+     white-space: nowrap;
+     text-overflow: ellipsis;
+     align-content: center;
+-    padding-left: 40px;
++    padding-left: 10px;
+ }

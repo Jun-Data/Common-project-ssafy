@@ -1,10 +1,10 @@
 import apiClient from "./apiClient";
 
-const RequestApi = async ({ storeId, userId }) => {
+const RequestApi = async ({ storeId, itemId }) => {
     try {
         const response = await apiClient.post(`/api/item/register`, {
             storeId: storeId,
-            userId: userId
+            itemId: itemId
         });
 
         if (response.status >= 200 && response.status < 300) {

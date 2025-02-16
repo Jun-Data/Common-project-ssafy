@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchApi from "../../api/searchApi";
 import RequestApi from "../../api/RequestApi";
@@ -27,6 +27,8 @@ const StoredetailRequestPopup = () => {
     const [productImage, setProductImage] = useState(null);
     const [message, setMessage] = useState('아이스크림을 검색 후 골라보세요!');
     const navigate = useNavigate();
+    const { storeNo } = useParams();
+
 
     // 디바운스를 적용한 API 호출 함수
     const debouncedFetchResults = debounce(async (searchQuery) => {
@@ -47,9 +49,6 @@ const StoredetailRequestPopup = () => {
 
     const handleItemClick = (item) => {
         setProductImage(item.itemImageUrl)
-        console.log("선택된 항목:", item);
-        console.log(productImage)
-        console.log(item.itemId)
         setSelectedItem(item.itemId);
         setMessage(`${item.itemName}\n이 선택되었어요!`)
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
@@ -57,9 +56,9 @@ const StoredetailRequestPopup = () => {
 
     const handleSubmit = async () => {
         const itemId = selectedItem;
-        const storeId = 2;
-        console.log(itemId)
+        const storeId = storeNo;
 
+        console.log(itemId)
         if (itemId === 0) {
             alert('제품을 선택 후 제출해주세요');
             return; // 함수 실행 중지
@@ -74,36 +73,48 @@ const StoredetailRequestPopup = () => {
 
             // API 응답 처리
             console.log('요청 성공:', result);
-            // 추가 성공 처리 로직 (예: 페이지 이동, 상태 업데이트 등)
+            alert('요청이 성공적으로 전달되었어요!')
+            navigate(-1)
 
         } catch (error) {
             console.error('요청 실패:', error);
-            // 에러 처리 로직 (예: 에러 메시지 표시)
+            alert('오류가 발생했습니다. 다시 시도해주세요.')
         }
     };
 
-
+    const handleClear = () => {
+        setDropdownVisible(false);
+        setResults([]);
+    };
 
     return (
         <div>
             <div className="requestheader"><HeaderContainer/></div>
             <div className="storedetailpagerequestpopup">
                 <div className="storedetailrequest">
-                    <div className="requestnotice">요청하기</div>
+                    <div className="requestnotice">입고 요청하기</div>
                     <div className="requestsearchbar">
-                        <SearchBar setQuery={handleQueryChange} />
+                        <SearchBar setQuery={handleQueryChange} onClear={handleClear} />
+                        {isDropdownVisible && results?.length > 0 && (
+                            <div className="requestdropdown">
+                                <SearchDropdownList results={results} onItemClick={handleItemClick}/>
+                            </div>
+                        )}
                     </div>
-                    {isDropdownVisible && results?.length > 0 && (
-                        <div className="requestdropdown">
-                            <SearchDropdownList results={results} onItemClick={handleItemClick} />
-                        </div>
-                    )}
                     <div className="requestitemimage">
-                        <img src={productImage} alt="상품 이미지" />
-                        { message }
+                        <img
+                        src={productImage || '/logo.png'}
+                        className="requestitemimageimg"
+                        onError={(e) => {
+                            e.target.src = '/logo.png';
+                        }}
+                    />
+                        <div className="requestitemimagetxt">{ message }</div>
                     </div>
-                    <button onClick={handleSubmit}>제출하기</button>
-                    <button onClick={() => navigate(-1)}>닫기</button>
+                    <div className="requestbuttonzone">
+                        <button className="requestbuttons" onClick={handleSubmit}>제출하기</button>
+                        <button className="requestbuttons" onClick={() => navigate(-1)}>닫기</button>
+                    </div>
                 </div>
             </div>
         </div>

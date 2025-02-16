@@ -31,6 +31,9 @@
     padding: 10px; /* 내부 여백 추가 */
     background-color: white;
     border-bottom: 1px solid #3f72af; /* 구분선 추가 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* 마지막 아이템의 구분선 제거 */

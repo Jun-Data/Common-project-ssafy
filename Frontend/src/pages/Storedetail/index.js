@@ -16,6 +16,10 @@ const StoreDetail = () => {
         setActiveTab(tab); // 활성화된 탭 업데이트
     };
 
+    const handleCouponGet = () => {
+
+    }
+
     const navigate = useNavigate();
 
     const navigateRequestPage = () => {
@@ -47,19 +51,33 @@ const StoreDetail = () => {
         StoreDetailApi(storeNo, setProductData);
     }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정
 
+
     return (
         <div className="searchpagedom">
             <div className="storedetailheadercontainer"><HeaderContainer /></div>
             <div className="storedetailphotoinfo">
                 <div className="market-image">
-                    <img src={productData?.store?.storeImageUrl} alt="StoreImage" />
+                    {productData?.store?.storeImageUrl ? (
+                        <img
+                            src={productData.store.storeImageUrl}
+                            alt="StoreImage"
+                            onError={(e) => {
+                                e.target.style.display = 'none';  // 이미지 숨기기
+                            }}
+                        />
+                    ) : (
+                        <div className="image-fallback">
+                            <span>등록된 이미지가<br/> 없습니다.</span>
+                        </div>
+                    )}
                 </div>
                 <div className="market-detail">
-                    <div className="market-name">이름 테스트 {productData?.store.name}</div>
-                    <div className="market-location">주소주소 {productData?.store.address}</div>
+                    <div className="market-name">{productData?.store.name}</div>
+                    <div className="market-location">{productData?.store.address}</div>
                     <div className="storedetail-btnlist">
-                        <button className="requestbtn" onClick={navigateRequestPage}>제품<br />입고요청</button>
-                        <button className="flearequestbtn" onClick={navigateFlearequest}>플리마켓<br />신청하기</button>
+                        <button className="couponrequestbtn">쿠폰<br/>수령</button>
+                        <button className="requestbtn" onClick={navigateRequestPage}>입고<br/>요청</button>
+                        <button className="flearequestbtn" onClick={navigateFlearequest}>플리<br/>신청</button>
                     </div>
                 </div>
             </div>
@@ -67,58 +85,85 @@ const StoreDetail = () => {
                 <StoreDetailbar onTabClick={handleTabClick} />
             </div>
 
-            {/* 리스트 렌더링 */}
             <div className="storedetailmarketinfo">
+                {/* 상점 상품 탭 */}
                 {activeTab === "storeItems" && (
-                    <ul className="storedetailul">
-                        {productData?.storeItems?.map((storeItem) => (
-                            <li
-                                key={storeItem.itemId}
-                                className="storedetailmarketli"
-                                onClick={() => handleItemClick(storeItem, "store")}
-                            >
-                                <img src={storeItem.itemImageUrl} alt="storedetailitemimage" className='storedetailitemimage' />
-                                <div className="item-info">
-                                    <span>{storeItem.itemName}</span>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    productData?.storeItems?.length ? (
+                        <ul className="storedetailul">
+                            {productData.storeItems.map((storeItem) => (
+                                <li
+                                    key={storeItem.itemId}
+                                    className="storedetailmarketli"
+                                    onClick={() => handleItemClick(storeItem, "store")}
+                                >
+                                    <img
+                                        src={storeItem.itemImageUrl}
+                                        alt="상품 이미지"
+                                        className="storedetailitemimage"
+                                    />
+                                    <div className="item-info">
+                                        <span>{storeItem.itemName}</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className="no-items">등록된 상품이 없습니다</div>
+                    )
                 )}
+
+                {/* FLI 상품 탭 */}
                 {activeTab === "fliItems" && (
-                    <ul className="storedetailul">
-                        {productData?.fliItems?.map((fliItem) => (
-                            <li
-                                key={fliItem.fliItemId}
-                                className="storedetailmarketli"
-                                onClick={() => handleItemClick(fliItem, "fli")}
-                            >
-                                <img src={fliItem.imagePath} alt="storedetailitemimage" />
-                                <div className="item-info">
-                                    <span>{fliItem.fliItemName}</span>
-                                    <span>{fliItem.price}원</span>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    productData?.fliItems?.length ? (
+                        <ul className="storedetailul">
+                            {productData.fliItems.map((fliItem) => (
+                                <li
+                                    key={fliItem.fliItemId}
+                                    className="storedetailmarketli"
+                                    onClick={() => handleItemClick(fliItem, "fli")}
+                                >
+                                    <img
+                                        src={fliItem.imagePath || '/logo.png'}
+                                        className="storedetailitemimage"
+                                        onError={(e) => {
+                                            e.target.src = '/logo.png';
+                                        }}
+                                    />
+                                    <div className="item-info">
+                                        <span>{fliItem.fliItemName}</span>
+                                        <span>{fliItem.price.toLocaleString()}원</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className="no-items">FLI 상품이 존재하지 않습니다</div>
+                    )
                 )}
+
+                {/* 공지사항 탭 */}
                 {activeTab === "announcements" && (
-                    <ul className="storedetailul">
-                        {productData?.announcements?.map((announcement) => (
-                            <li
-                                key={announcement.boardId}
-                                className="storedetailmarketli announcement"
-                                onClick={() => handleItemClick(announcement, "announcement")}
-                            >
-                                <div className="item-info">
-                                    <span>제목테스트{announcement.title}</span>
-                                    <span>{formatDate(announcement.createdAt)}</span> {/* 날짜 변환 적용 */}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    productData?.announcements?.length ? (
+                        <ul className="storedetailul">
+                            {productData.announcements.map((announcement) => (
+                                <li
+                                    key={announcement.boardId}
+                                    className="storedetailmarketli"
+                                    onClick={() => handleItemClick(announcement, "announcement")}
+                                >
+                                    <div className="item-info">
+                                        <span>{announcement.title}</span>
+                                        <span>{formatDate(announcement.createdAt)}</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className="no-items">등록된 공지사항이 없습니다</div>
+                    )
                 )}
             </div>
+
 
             {/* 팝업 */}
             {selectedItem && (
@@ -140,8 +185,8 @@ const StoreDetail = () => {
                         )}
                         {selectedType === "announcement" && (
                             <>
-                                <h3>제목테스트{selectedItem.title}</h3>
-                                <p>난너를믿은만큼난내친구도믿었기에{selectedItem.content}</p>
+                                <h3>{selectedItem.title}</h3>
+                                <p>{selectedItem.content}</p>
                                 <p>작성일: {formatDate(selectedItem.createdAt)}</p> {/* 날짜 변환 적용 */}
                             </>
                         )}

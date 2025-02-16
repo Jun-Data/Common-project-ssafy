@@ -1,14 +1,14 @@
 .box {
     display: grid;
-    width: 360px;
-    height: 50px;
+    width: 100%;
+    height: 100%;
     background-color: lightblue;
-    grid-template-columns: 120px 120px 120px;
+    grid-template-columns: 33% 34% 33%;
 }
 
 .storedetailbarbutton1 {
     grid-column: 1;
-    width: 120px;
+    width: 100%;
     height: 100%;
     background-color: transparent; /* 배경색 제거 */
     border: none; /* 테두리 제거 */
@@ -18,7 +18,7 @@
 
 .storedetailbarbutton2 {
     grid-column: 2;
-    width: 120px;
+    width: 100%;
     height: 100%;
     background-color: transparent; /* 배경색 제거 */
     border: none; /* 테두리 제거 */
@@ -29,7 +29,7 @@
 
 .storedetailbarbutton3 {
     grid-column: 3;
-    width: 120px;
+    width: 100%;
     height: 100%;
     background-color: transparent; /* 배경색 제거 */
     border: none; /* 테두리 제거 */
