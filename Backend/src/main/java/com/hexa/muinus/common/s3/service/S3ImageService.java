@@ -110,6 +110,7 @@ public class S3ImageService {
 
     public String Base64toImageUrl(String image) {
         String imageUrl = image;
+        if(image == null) return null;
         if(!image.equals("")) {
             String[] parts = image.split(",");
             String base64Data = parts.length > 1 ? parts[1] : parts[0];
