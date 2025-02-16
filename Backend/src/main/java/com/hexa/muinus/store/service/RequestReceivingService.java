@@ -76,18 +76,23 @@ public class RequestReceivingService {
         // 현재 날짜 가져오기
         LocalDate today = LocalDate.now();
 
-        // 가장 최근 요청의 날짜 가져오기
-        Timestamp lastRequestedTimestamp = requestReceivingRepository
-                .findTopByUserOrderByCreatedAtDesc(user)
-                .getCreatedAt();
+        // 가장 최근 요청 정보 가져오기
+        RequestReceiving lastRequest = requestReceivingRepository.findTopByUserOrderByCreatedAtDesc(user);
 
-        LocalDate lastRequestedDate = lastRequestedTimestamp.toLocalDateTime().toLocalDate();
+        // 요청 기록이 없거나, createdAt 값이 null이면 그냥 진행
+        if (lastRequest == null || lastRequest.getCreatedAt() == null) {
+            return;
+        }
+
+        // 가장 최근 요청의 날짜 가져오기
+        LocalDate lastRequestedDate = lastRequest.getCreatedAt().toLocalDateTime().toLocalDate();
 
         // 같은 날이면 예외 발생
         if (today.equals(lastRequestedDate)) {
             throw new MuinusException(USER_ALREADY_REQUESTED_ITEM);
         }
     }
+
 
     @Transactional(readOnly = true)
     public List<ItemResponseDTO> getItemRequestCounts(HttpServletRequest request) {
