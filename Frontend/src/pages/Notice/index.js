@@ -49,7 +49,7 @@ const Notice = () => {
     const handleAddNotice = async () => {
         console.log(logindata)
         const formData = new FormData();
-        formData.append("userEmail", logindata.email);
+        // formData.append("userEmail", logindata.email);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
         formData.append("boardImageUrl", noticeImage ? noticeImage : null);            
@@ -115,8 +115,17 @@ const Notice = () => {
         formData.append("boardId", editingNoticeId);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
-        formData.append("boardImageUrl", noticeImage ? noticeImage : null);                      
-        
+        // formData.append("boardImageUrl", noticeImage ? noticeImage : null);   
+
+        if (noticeImage && noticeImage.startsWith("data:image")) {
+            // 새로운 이미지 업로드
+            formData.append("boardImageUrl", noticeImage);
+        } else if (!noticeImage) {
+            // 이미지 삭제 (null 전송)
+            formData.append("boardImageUrl", null);
+        }
+        // 기존 이미지는 아예 추가하지 않음
+
         try {
             const response = await axios.put(
                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
@@ -130,13 +139,17 @@ const Notice = () => {
                 text: '공지사항이 성공적으로 수정되었습니다.',
                 confirmButtonText: '확인'
             });            
-            // 서버에서 변경된 데이터 다시 불러오기
+            // // 서버에서 변경된 데이터 다시 불러오기
+            // const updatedAnnouncements = await axios.get(
+            //     `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`
+            // );
+
+            // 등록 후 목록 새로고침
             const updatedAnnouncements = await axios.get(
-                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list?email=${logindata.email}`
-            );
-            setAnnouncements(updatedAnnouncements.data || []);
-            handleCloseModal();
-        }
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`);
+                setAnnouncements(updatedAnnouncements.data || []);
+                handleCloseModal();
+            }
         } catch (error) {
             console.error("공지사항 수정 실패:", error);
             Swal.fire({
@@ -164,7 +177,7 @@ const Notice = () => {
                             <NoticeItem key={announcement.boardId} onClick={()=>handleEditNotice(announcement)}>
                                 <h3>{announcement.title}</h3>
                                 <p>{announcement.content}</p>
-                                {announcement.boardImageUrl && (
+                                {announcement.boardImageUrl && announcement.boardImageUrl !== null && (
                                     <img src={announcement.boardImageUrl} alt="Notice" />
                                 )}
                                 <p><strong>작성일:</strong> {new Date(announcement.createdAt).toLocaleDateString()}</p>
@@ -208,10 +221,7 @@ const Notice = () => {
                                 />
                             {noticeImage && (
                                 <ImagePreview>
-                                    <img 
-                                        src={noticeImage.startsWith("data") ? noticeImage : noticeImage} 
-                                        alt="Preview" 
-                                    />
+                                    <img src={noticeImage} alt="Preview"/>
                                 </ImagePreview>
                             )}
                             </UploadContainer>
