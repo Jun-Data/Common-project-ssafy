@@ -303,6 +303,8 @@ public class StoreService {
         // 공지 사항 조회
         Announcement announcement = getAnnouncement(userEmail, dto.getBoardId());
         // 공지 사항 수정
+        String image = s3ImageService.Base64toImageUrl(dto.getBoardImageUrl());
+        dto.setBoardImageUrl(image);
         announcement.updateAnnouncement(dto);
         log.info("Announcement {} has been updated successfully", announcement);
     }
