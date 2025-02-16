@@ -117,14 +117,16 @@ const Notice = () => {
         formData.append("content", noticeContent);
         // formData.append("boardImageUrl", noticeImage ? noticeImage : null);   
 
+        // 이미지가 새로 첨부된 경우
         if (noticeImage && noticeImage.startsWith("data:image")) {
-            // 새로운 이미지 업로드
             formData.append("boardImageUrl", noticeImage);
-        } else if (!noticeImage) {
-            // 이미지 삭제 (null 전송)
+        } else if (noticeImage === null) {
+            // 이미지를 삭제한 경우
             formData.append("boardImageUrl", null);
+        } else {
+            // 이미지가 변경되지 않은 경우 기존의 base64 이미지를 그대로 보내기
+            formData.append("boardImageUrl", noticeImage);
         }
-        // 기존 이미지는 아예 추가하지 않음
 
         try {
             const response = await axios.put(
@@ -177,8 +179,8 @@ const Notice = () => {
                             <NoticeItem key={announcement.boardId} onClick={()=>handleEditNotice(announcement)}>
                                 <h3>{announcement.title}</h3>
                                 <p>{announcement.content}</p>
-                                {announcement.boardImageUrl && announcement.boardImageUrl !== null && (
-                                    <img src={announcement.boardImageUrl} alt="Notice" />
+                                {announcement.boardImageUrl && (
+                                    <img src={announcement.boardImageUrl} alt="공지사항 이미지" />
                                 )}
                                 <p><strong>작성일:</strong> {new Date(announcement.createdAt).toLocaleDateString()}</p>
                             </NoticeItem>
