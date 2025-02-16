@@ -195,7 +195,7 @@ const Notice = () => {
                         announcements.map((announcement) => (
                             <NoticeItem key={announcement.boardId}>
                                 <div>
-                                    <h3>{announcement.title}</h3>
+                                    <h2>{announcement.title}</h2>
                                     <p>{announcement.content}</p>
                                     {announcement.boardImageUrl && (
                                         <img src={announcement.boardImageUrl} alt="공지사항 이미지" />
