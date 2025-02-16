@@ -105,7 +105,26 @@ public class CouponService {
 
                     // CouponHistory에서 수량, 만료일, Coupon에서 name, discountRate, content 추출
                     return new CouponListResponseDto(
-                            store.getStoreNo(),
+                            coupon.getCouponId(),
+                            coupon.getName(),
+                            coupon.getDiscountRate(),
+                            ch.getCount(),
+                            coupon.getContent(),
+                            ch.getExpirationDate()
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional
+    public List<CouponListResponseDto> getCoupons(int storeNo){
+        // 가게 번호와 맞는 쿠폰들 전체 조회
+        List<CouponHistory> couponHistories = couponHistoryRepository.findById_StoreNo(storeNo);
+        return couponHistories.stream()
+                .map(ch -> {
+                    Coupon coupon = ch.getCoupon();
+
+                    return new CouponListResponseDto(
                             coupon.getCouponId(),
                             coupon.getName(),
                             coupon.getDiscountRate(),

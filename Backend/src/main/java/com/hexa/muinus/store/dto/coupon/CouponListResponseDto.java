@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CouponListResponseDto {
-    private Integer storeNo;
     private Integer couponId;
     private String name;
     private Integer discountRate;

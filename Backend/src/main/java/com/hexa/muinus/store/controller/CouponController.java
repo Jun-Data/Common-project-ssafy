@@ -41,6 +41,12 @@ public class CouponController {
         return ResponseEntity.ok().body(couponService.getCouponList(request));
     }
 
+    // 가게 쿠폰 전체 조회(소비자)
+    @GetMapping("/store/list")
+    public ResponseEntity<List<CouponListResponseDto>> getCoupons(@RequestParam("storeNo") int storeNo){
+        return ResponseEntity.ok().body(couponService.getCoupons(storeNo));
+    }
+
     // 쿠폰 수령
     @PostMapping("/receive")
     public ResponseEntity<?> receiveCoupon(HttpServletRequest request, @Valid @RequestBody ReceiveCouponRequestDto receiveCouponRequestDto){
