@@ -4,10 +4,8 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import MyPageHeader from "../../components/MyPageHeader";
-import useAuth from "../../hooks/useAuth";
 
 const Notice = () => {
-    const {logindata} = useAuth();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [noticeTitle, setNoticeTitle] = useState("");
     const [noticeContent, setNoticeContent] = useState("");
@@ -31,24 +29,9 @@ const Notice = () => {
         fetchAnnouncements();
     }, []);
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file); // Base64로 변환
-            reader.onloadend = () => {
-                setNoticeImage(reader.result); // 변환된 Base646 데이터 저장
-            };
-        } else {
-            setNoticeImage(null); // 파일 선택 취소 시 이미지 초기화
-        }
-    };
-
     // 공지사항 등록
     const handleAddNotice = async () => {
-        console.log(logindata)
         const formData = new FormData();
-        // formData.append("userEmail", logindata.email);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
         formData.append("boardImageUrl", noticeImage ? noticeImage : null);            
@@ -90,36 +73,22 @@ const Notice = () => {
             });        }
     };
 
-    const handleCloseModal = () => {
-        setNoticeTitle(""); // 제목 초기화
-        setNoticeContent(""); // 내용 초기화
-        setNoticeImage(null); // 이미지 초기화
-        setModalIsOpen(false); // 모달 닫기
-        setEditingNoticeId(null); // 수정 상태 리셋
-
-    };
-    
-    // 공지사항 수정 모달창
-    const handleEditNotice = (announcement) => {
-        setEditingNoticeId(announcement.boardId); // 수정할 공지사항 ID 설정
-        setNoticeTitle(announcement.title);
-        setNoticeContent(announcement.content);
-        setNoticeImage(announcement.boardImageUrl || null); // 이미지 미리보기 URL 설정
-        setModalIsOpen(true); // 모달 열기
-    };
-
     // 공지사항 수정
     const handleSaveNotice = async () => {
+        console.log("handleSaveNotice 실행됨"); // 함수 실행 확인
         const formData = new FormData();
         formData.append("boardId", editingNoticeId);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
-    
+
+        console.log("수정전 noticeImage:", noticeImage);
+
         // 이미지가 새로 첨부된 경우 (base64 데이터)
         if (noticeImage && noticeImage.startsWith("data:image")) {
+            console.log("Base64 이미지 추가됨");
             formData.append("boardImageUrl", noticeImage); // Base64 데이터
         } else if (noticeImage === null || noticeImage === "") {
-            // 이미지를 삭제한 경우
+            console.log("이미지 없음 처리");
             formData.append("boardImageUrl", null); // null로 보내기
         } else {
             // 기존 이미지가 있고 이미지를 변경하지 않은 경우
@@ -140,7 +109,8 @@ const Notice = () => {
                             `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
                             headers: { 'Content-Type': 'application/json' }
                         });
-    
+                        console.log("응답 데이터:", response.data);
+
                         if (updateResponse.status === 200) {
                             Swal.fire({
                                 icon: 'success',
@@ -178,6 +148,38 @@ const Notice = () => {
         }
     };
     
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            console.log("이미지 파일 선택됨:", file);
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Base64로 변환
+            reader.onloadend = () => {
+                console.log("Base64 인코딩된 이미지:", reader.result);
+                setNoticeImage(reader.result); // 변환된 Base646 데이터 저장
+            };
+        } else {
+            setNoticeImage(null); // 파일 선택 취소 시 이미지 초기화
+        }
+    };
+
+    const handleCloseModal = () => {
+        setNoticeTitle(""); // 제목 초기화
+        setNoticeContent(""); // 내용 초기화
+        setNoticeImage(null); // 이미지 초기화
+        setModalIsOpen(false); // 모달 닫기
+        setEditingNoticeId(null); // 수정 상태 리셋
+
+    };
+    
+    // 공지사항 수정 모달창
+    const handleEditNotice = (announcement) => {
+        setEditingNoticeId(announcement.boardId); // 수정할 공지사항 ID 설정
+        setNoticeTitle(announcement.title);
+        setNoticeContent(announcement.content);
+        setNoticeImage(announcement.boardImageUrl || null); // 이미지 미리보기 URL 설정
+        setModalIsOpen(true); // 모달 열기
+    };
 
     return (
         <div>

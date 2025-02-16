@@ -117,7 +117,6 @@ function MakeCoupons() {
 
             {/* 쿠폰 유형 선택 */}
             <CouponTypeContainer>
-                <h3>쿠폰 유형</h3>
                 {couponTypes.length > 0 ? (
                     <Select 
                         value={selectedCouponType?.couponId || ""} 
