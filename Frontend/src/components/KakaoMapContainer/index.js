@@ -15,19 +15,48 @@ const KakaoMapContainer = ({ coords }) => {
 
         // 2. 새 마커 생성
         const markerImage = new window.kakao.maps.MarkerImage(
-            '/mylocation.jpg',
-            new window.kakao.maps.Size(30, 30),
-            { offset: new window.kakao.maps.Point(0, 0) }
+            '/mylocation.png',
+            new window.kakao.maps.Size(40, 40),
+            { offset: new window.kakao.maps.Point(20, 0) }
         );
 
         const newMarker = new window.kakao.maps.Marker({
             position: new window.kakao.maps.LatLng(coords.lat, coords.lng),
             image: markerImage,
-            map: baseMap
+            map: baseMap,
+            clickable: true,
         });
 
         // 3. 마커 참조 업데이트
         markerRef.current = newMarker;
+
+        const iwContent = `
+          <div style="
+            width: 100px;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            position: relative;
+          ">
+            📍 내 위치
+            <div style="
+              position: absolute;
+              width: 0;
+              height: 0;
+            "></div>
+          </div>
+        `;
+
+        const infowindow = new window.kakao.maps.InfoWindow({
+            content: iwContent,
+            removable: true,
+        });
+
+        // 클릭 이벤트 핸들러
+        window.kakao.maps.event.addListener(newMarker, 'click', () => {
+            infowindow.open(baseMap, newMarker);
+        });
 
         // 4. 지도 중심 이동
         const position = new window.kakao.maps.LatLng(coords.lat, coords.lng);

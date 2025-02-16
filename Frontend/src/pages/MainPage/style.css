@@ -19,19 +19,21 @@
 }
 
 .mainpagecurrentaddress {
+    box-sizing: border-box;
     grid-row: 3;
     display: flex;
     justify-content: space-between;
     width: 100%;
     height: 100%;
-    background-color: #3f72af;
+    background-color: white;
+    border: 1px solid #4a90e2;
     align-items: center;
     position: relative;
     z-index: 99;
 }
 
 .mainpageaddressdetail {
-    width: 80%;
+    width: 70%;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
@@ -48,7 +50,7 @@
 
 
 .addressSearchButton {
-    width: 20%;
+    width: 15%;
     height: 100%;
     font-size: 12px;
 }
@@ -102,4 +104,9 @@
 
 .marker-layer > div {
     pointer-events: auto; /* 마커 영역만 이벤트 허용 */
+}
+
+.mainpageaddressimg {
+    width: 15% ;
+    height: 100% ;
 }

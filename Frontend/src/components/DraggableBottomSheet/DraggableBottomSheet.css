@@ -1,5 +1,6 @@
 /* 바텀시트를 화면 맨 아래에 고정 */
 .bottom-sheet {
+    box-sizing: border-box;
     position: fixed;
     bottom: 0 !important; /* ✅ 하단 고정 */
     left: 0;
@@ -7,6 +8,7 @@
     background-color: #fff;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
+    border: #4a90e2 3px solid;
     box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
 
     touch-action: none; /* 터치 스크롤 충돌 방지 */
@@ -17,10 +19,27 @@
     padding: 8px 0;
 }
 
-
 .drag-handle {
-    height: 24px; /* 핸들 높이 확보 */
+    position: absolute;
+    left: 30%;
+    width: 40%;
+    height: 20px;
+    border-radius: 6px;
+    background-color: #3f72af;
+    transition: background-color 0.3s ease;
 }
+
+/* 호버 시 */
+.drag-handle:hover {
+    background-color: #9e9e9e !important;
+}
+
+/* 드래그 동작 중 */
+.drag-handle:active,
+.drag-handle.dragging {
+    background-color: #616161 !important;
+}
+
 
 /* ul 스타일 */
 .bottom-sheet-content ul {
@@ -34,6 +53,8 @@
 
 /* li 스타일 */
 .bottom-sheet-content li {
+    display: flex;
+    justify-content: space-between;
     padding: 10px 15px;
     background-color: #f9f9f9; /* 밝은 배경색으로 가독성 향상 */
     border-radius: 8px; /* 부드러운 모서리 */
@@ -42,6 +63,19 @@
     transition: background-color 0.2s ease; /* 부드러운 호버 효과 */
 }
 
+.store-name {
+    text-align: left;
+    width: 80%;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.store-distance {
+    width: 20%;
+    height: 100%;
+}
 /* li 호버 효과 */
 .bottom-sheet-content li:hover {
     background-color: #eaeaea; /* 호버 시 약간 더 어두운 배경색 */

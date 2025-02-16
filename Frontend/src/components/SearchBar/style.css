@@ -11,6 +11,7 @@
 
 /* 검색 입력창 스타일 */
 .search-input-searchpage {
+    box-sizing: border-box;
     width: 100%; /* 가로 비율 설정 */
     height: 100%; /* 부모 높이에 맞춤 */
     font-size: 16px;
@@ -22,6 +23,7 @@
 
 
 .search-input-mainpage {
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     overflow: hidden;

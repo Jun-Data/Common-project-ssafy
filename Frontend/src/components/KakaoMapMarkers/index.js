@@ -12,8 +12,39 @@ const KakaoMapMarkers = ({ storelist }) => {
         const markers = storelist.map((store) => {
             const marker = new window.kakao.maps.Marker({
                 position: new window.kakao.maps.LatLng(store.locationX, store.locationY),
-                map: baseMap
+                map: baseMap,
+                clickable: true,
             });
+
+            const iwContent = `
+              <div style="
+                width: 100px;
+                padding: 15px;
+                text-align: center;
+                font-size: 14px;
+                color: #333;
+                position: relative;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              ">
+                ${store.storeName}
+                <div style="
+                  position: absolute;
+                  width: 0;
+                  height: 0;
+                "></div>
+              </div>
+            `;            const infowindow = new window.kakao.maps.InfoWindow({
+                content: iwContent,
+                removable: true,
+            });
+
+            // 클릭 이벤트 핸들러
+            window.kakao.maps.event.addListener(marker, 'click', () => {
+                infowindow.open(baseMap, marker);
+            });
+
 
             // 클릭 시 해당 마커 위치로 지도 중심 이동
             window.kakao.maps.event.addListener(marker, 'click', () => {

@@ -138,7 +138,7 @@ const DraggableBottomSheet = ({ coords, setStorelist, itemId=null }) => {
 
         {/* 바텀시트 내용 */}
         <div className="bottom-sheet-content">
-          <h2>근처 매장</h2>
+          <h3 style={{ marginTop: 50 }}>근처 매장 리스트</h3>
           {LocalStorelist ? (
               <ul>
                 {LocalStorelist.map((store, index) => (
@@ -146,7 +146,8 @@ const DraggableBottomSheet = ({ coords, setStorelist, itemId=null }) => {
                         onClick={() => navigate(`/storedetail/${store.storeNo}`)}
                         key={index}
                     >
-                      {store.storeName} {store.distance}
+                      <span className="store-name">{store.storeName}</span>
+                      <span className="store-distance">{parseFloat(store.distance).toFixed(0)}m</span>
                     </li>
                 ))}
               </ul>

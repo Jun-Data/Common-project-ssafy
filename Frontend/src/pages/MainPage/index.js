@@ -66,8 +66,9 @@ const MainPage = () => {
                 </div>
 
                 <div className="mainpagecurrentaddress">
+                        <img src='/mylocation.png' className="mainpageaddressimg" />
                     <div className="mainpageaddressdetail">
-                        {error ? "위치 찾는 중...." : `내 위치: ${address}`}
+                        {error ? "위치 찾는 중...." : `${address}`}
                     </div>
                     <button
                         onClick={() => setIsPopupOpen(true)}
@@ -84,9 +85,6 @@ const MainPage = () => {
                         setStorelist={setStorelist}
                     />
                 </div>
-
-                {/* 지도 루트 컨테이너 (한 페이지에 단 하나만 존재해야 함) */}
-                {/*<div id="map-root" className="mainpagemap" ></div>*/}
 
                 {isSDKLoaded && (
                     <>
