@@ -29,6 +29,7 @@ const SearchResult = () => {
                 <div className="resultheader"><HeaderContainer/></div>
                 <div className="resultsearchbar">
                     <p className="resultsearchinput">{itemName}</p>
+                    <button className="resultbackbutton" onClick={() => navigate(-1)}>뒤로가기</button>
                 </div>
                 <DraggableBottomSheet
                     coords={coords}

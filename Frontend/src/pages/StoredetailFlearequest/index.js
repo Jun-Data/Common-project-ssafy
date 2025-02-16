@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate,useParams } from "react-router-dom";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import FleaRequestApi from "../../api/FleaRequestApi";
 import './style.css';
 
 const StoredetailFlearequest = () => {
     const navigate = useNavigate();
+    const { storeNo } = useParams();
+    const nStoreNo = Number(storeNo)
 
     const [formData, setFormData] = useState({
+        storeId : nStoreNo,
         userAccount: "",
         userBank: "",
         accountName: "",
@@ -15,7 +18,7 @@ const StoredetailFlearequest = () => {
         quantity: 1,
         price: 10000,
         sectionNumber: 1,
-        startDate: "",
+        application_Date: "",
         expireDate: 30,
         imagePath: "", // Base64 형식으로 저장
     });
@@ -61,16 +64,6 @@ const StoredetailFlearequest = () => {
                     <form onSubmit={handleSubmit} className="fleaform">
                         <ul>
                             <li>
-                                <label>계좌:</label>
-                                <input
-                                    type="text"
-                                    name="userAccount"
-                                    value={formData.userAccount}
-                                    onChange={handleChange}
-                                    placeholder="계좌번호를 입력하세요"
-                                />
-                            </li>
-                            <li>
                                 <label>은행:</label>
                                 <input
                                     type="text"
@@ -81,7 +74,17 @@ const StoredetailFlearequest = () => {
                                 />
                             </li>
                             <li>
-                                <label>계좌:</label>
+                                <label>계좌1:</label>
+                                <input
+                                    type="number"
+                                    name="userAccount"
+                                    value={formData.userAccount}
+                                    onChange={handleChange}
+                                    placeholder="계좌번호를 입력하세요"
+                                />
+                            </li>
+                            <li>
+                                <label>계좌2:</label>
                                 <input
                                     type="text"
                                     name="accountName"
@@ -113,7 +116,7 @@ const StoredetailFlearequest = () => {
                             <li>
                                 <label>가격:</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}

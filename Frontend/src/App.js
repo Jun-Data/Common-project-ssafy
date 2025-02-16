@@ -25,6 +25,7 @@ import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
 import VideoCall from "./pages/VideoCall";
 
 function App() {
+
   const location = useLocation();
   const params = useParams();
 

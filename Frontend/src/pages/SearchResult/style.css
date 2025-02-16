@@ -35,7 +35,7 @@
 
 .resultsearchinput {
     box-sizing: inherit;
-    width: 100%;
+    width: 75%;
     height: 100%;
     background-color: white;
     text-align: left;
@@ -43,4 +43,10 @@
     text-overflow: ellipsis;
     align-content: center;
     padding-left: 10px;
+}
+
+.resultbackbutton {
+    box-sizing: inherit;
+    width: 25%;
+    height: 100%;
 }

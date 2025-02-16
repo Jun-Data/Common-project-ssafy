@@ -28,6 +28,8 @@ const StoredetailRequestPopup = () => {
     const [message, setMessage] = useState('아이스크림을 검색 후 골라보세요!');
     const navigate = useNavigate();
     const { storeNo } = useParams();
+    const nStoreNo = Number(storeNo)
+
 
 
     // 디바운스를 적용한 API 호출 함수
@@ -56,9 +58,8 @@ const StoredetailRequestPopup = () => {
 
     const handleSubmit = async () => {
         const itemId = selectedItem;
-        const storeId = storeNo;
+        const storeId = nStoreNo;
 
-        console.log(itemId)
         if (itemId === 0) {
             alert('제품을 선택 후 제출해주세요');
             return; // 함수 실행 중지

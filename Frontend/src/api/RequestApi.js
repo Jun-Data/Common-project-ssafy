@@ -4,7 +4,7 @@ const RequestApi = async ({ storeId, itemId }) => {
     try {
         const response = await apiClient.post(`/api/item/register`, {
             storeId: storeId,
-            itemId: itemId
+            itemId: itemId,
         });
 
         if (response.status >= 200 && response.status < 300) {
