@@ -1,5 +1,4 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import styled from 'styled-components';
@@ -26,8 +25,6 @@ function SignUp() {
                 <Button type="TERTIARY">매장 이용자</Button>
             </Link>
             </ButtonsWrapper>
-
-            <BottomNav />
         </div>
     );
 }

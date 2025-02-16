@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from "styled-components";
 import axios from "axios";
@@ -178,8 +177,8 @@ function MakeCoupons() {
                     {issuedCoupons.length > 0 ? (
                         issuedCoupons.map((coupon, index) => (
                             <tr key={index}>
-                                <td>{coupon.content}</td>
-                                <td>{coupon.count}</td>
+                                <td>{coupon.content} 할인</td>
+                                <td>{coupon.count} 장</td>
                                 <td>{new Date(coupon.expirationDate).toLocaleDateString('ko-KR')}</td>
                                 </tr>
                         ))
@@ -190,8 +189,6 @@ function MakeCoupons() {
                     )}
                 </tbody>
             </IssuedCouponTable>
-
-            <BottomNav />
         </Container>
     );
 }
@@ -205,11 +202,11 @@ const Container = styled.div`
 `;
 
 const Form = styled.div`
-    flex-direction: column;
     align-items: center;
     width: 90%;
     background: white;
     border-radius: 12px;
+    margin-top: 10px;
 `;
 
 const Input = styled.input`
@@ -312,13 +309,15 @@ const Select = styled.select`
 `;
 
 const IssuedCouponTable = styled.table`
-    width: 100%;
+    width: 97%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin: 20px auto;
     background: white;
     border-radius: 12px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    white-space: nowrap;
+
 
     th, td {
         border: 1px solid #ddd;
@@ -337,7 +336,7 @@ const IssuedCouponTable = styled.table`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-    width: 100%;
+    width: 131%;
     padding: 12px;
     font-size: 1rem;
     border: 1px solid #d1d8e0;

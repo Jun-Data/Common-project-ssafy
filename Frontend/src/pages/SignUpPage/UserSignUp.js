@@ -1,5 +1,4 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import RegisterButtons from "../../components/RegisterButtons";
 import { useState } from "react";
 import styled from "styled-components";
@@ -235,7 +234,6 @@ function UserSignUp() {
                     <RegisterButtons onSubmit={handleSubmit} />
                 </ButtonWrapper>
             </form>
-            <BottomNav />
         </div>
     );
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from 'styled-components';
 
@@ -41,7 +40,6 @@ const StockRequests = () => {
         <NoRequests>입고 요청 내역이 없습니다</NoRequests>
       )}
       </Container>
-      <BottomNav />
     </div>
   );
 };

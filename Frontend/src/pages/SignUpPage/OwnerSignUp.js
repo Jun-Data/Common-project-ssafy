@@ -1,5 +1,4 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import RegisterButtons from "../../components/RegisterButtons";
 import { useState,useEffect } from "react";
 import styled from "styled-components";
@@ -459,9 +458,6 @@ function OwnerSignUp() {
                 </RegisterButtonsWrapper>
                 <br/>
             </form>
-            <BottomNavWrapper>
-                <BottomNav />
-            </BottomNavWrapper>
         </div>
     );
 }
@@ -516,10 +512,6 @@ const RegisterButtonsWrapper = styled.div`
     padding: 15px;
     display: flex;
     justify-content: center;
-`;
-
-const BottomNavWrapper = styled.div`
-    margin-top: 20px;    
 `;
 
 const ErrorMessage = styled.div`

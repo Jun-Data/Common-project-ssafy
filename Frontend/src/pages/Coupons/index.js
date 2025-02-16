@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 
 function Coupons() {
@@ -113,8 +112,6 @@ function Coupons() {
                 )}
 
             </CouponsContainer>
-
-            <BottomNav />
         </div>
     );
 };

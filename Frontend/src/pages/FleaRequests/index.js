@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import styled from 'styled-components';
 import useAuth from '../../hooks/useAuth';
@@ -124,7 +123,6 @@ const FleaRequests = () => {
           </ModalContent>
         </ModalOverlay>
       )}
-      <BottomNav />
       </div>
   );
 };

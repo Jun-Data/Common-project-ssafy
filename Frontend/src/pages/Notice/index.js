@@ -3,7 +3,6 @@ import axios from "axios";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 import useAuth from "../../hooks/useAuth";
 
@@ -255,7 +254,6 @@ const Notice = () => {
                         </ModalContent>
                     </ModalBackground>
                 )}
-                <BottomNav />
             </Container>
         </div>
     );

@@ -1,5 +1,4 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import BottomNav from "../../components/BottomNav/BottomNav";
 import MyPageHeader from "../../components/MyPageHeader";
 
 function MyPage() {
@@ -7,7 +6,6 @@ function MyPage() {
         <div>
             <HeaderContainer />
             <MyPageHeader/>
-            <BottomNav />
         </div>
     );
 }
