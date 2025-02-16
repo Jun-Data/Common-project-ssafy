@@ -14,6 +14,7 @@
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "env-cmd": "^10.1.0",
+    "openvidu-browser": "^2.31.0",
     "react": "^18.3.1",
     "react-barcode-scanner": "^3.0.1",
     "react-cookie": "^7.2.2",
