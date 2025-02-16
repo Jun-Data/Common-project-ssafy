@@ -5,6 +5,8 @@ import MyPageHeader from "../../components/MyPageHeader";
 import styled from "styled-components";
 import axios from "axios";
 import Swal from "sweetalert2";
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
 
 function MakeCoupons() {
     const [count, setCount] = useState(0);
@@ -49,11 +51,22 @@ function MakeCoupons() {
             }
         } catch (error) {
             console.error("쿠폰 등록 실패:", error);
-            Swal.fire({
-                icon: 'error',
-                title: '오류 발생',
-                text: '쿠폰 등록에 실패했습니다.',  // 실패 메시지
-            });        }
+            if (error.response?.data?.message?.includes("Duplicate entry")) {
+                // 중복 생성 오류 처리
+                Swal.fire({
+                    icon: 'error',
+                    title: '이미 생성된 쿠폰',
+                    text: '이미 해당 종류의 쿠폰을 만드셨습니다.',
+                });
+            } else {
+                // 기타 에러 처리
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '쿠폰 등록에 실패했습니다.',
+                });
+            }
+        }
     };
 
     // 쿠폰 개수 증감
@@ -101,7 +114,7 @@ function MakeCoupons() {
             <HeaderContainer />
             <MyPageHeader />
             <h2>쿠폰 등록 페이지</h2>
-            <p>여기서 점주가 쿠폰을 등록할 수 있습니다.</p>
+            <p>매장 이용자를 위한 쿠폰을 등록해 보세요!</p>
 
             {/* 쿠폰 유형 선택 */}
             <CouponTypeContainer>
@@ -124,18 +137,18 @@ function MakeCoupons() {
                 ) : (
                     <p>쿠폰 유형을 불러오는 중입니다...</p>
                 )}
-            </CouponTypeContainer>
 
             {/* 쿠폰 입력 폼 */}
             <Form>
-                <InputWrapper>
-                    <Input
-                        type="datetime-local"                        
-                        placeholder="만료일"
-                        value={expirationDate}
-                        onChange={(e) => setExpirationDate(e.target.value)}
-                        max="9999-12-31T23:59"
-                        min="1900-01-01T00:00"
+                <StyledDatePicker
+                        selected={expirationDate}
+                        onChange={(date) => setExpirationDate(date)}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
+                        minDate={new Date()} 
+                        placeholderText="쿠폰 만료일 선택"
                     />
                     <CountContainer>
                     <Input
@@ -147,10 +160,10 @@ function MakeCoupons() {
                     <CountButton onClick={decreaseCount}>-</CountButton>
                     <CountButton onClick={increaseCount}>+</CountButton>
                     </CountContainer>
-                </InputWrapper>
 
                 <Button onClick={handleAddCoupon}>쿠폰 등록</Button>
             </Form>
+            </CouponTypeContainer>
 
             {/* 발급된 쿠폰 목록 */}
             <IssuedCouponTable>
@@ -185,34 +198,39 @@ function MakeCoupons() {
 
 export default MakeCoupons;
 
-// Styled Components
 const Container = styled.div`
-    background: #f8f9fa;
+    background: #f4f6f8;
     text-align: center;
+    min-height: 100vh;
 `;
 
 const Form = styled.div`
-    margin: 20px 0;
-    display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 90%;
+    background: white;
+    border-radius: 12px;
 `;
 
 const Input = styled.input`
-    width: 90%;
+    width: 100%;
     padding: 12px;
     margin: 8px 0;
     font-size: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid #d1d8e0;
     border-radius: 8px;
     box-sizing: border-box;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        border-color: #3f72af;
+        outline: none;
+    }
 
     /* 기본 증감 버튼 숨기기 */
     -moz-appearance: textfield;
     appearance: textfield;
 
-    /* Chrome, Safari, Edge에서 증감 버튼 제거 */
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -220,25 +238,24 @@ const Input = styled.input`
     }
 `;
 
-const InputWrapper = styled.div`
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    width: 90%;
-`;
-
 const Button = styled.button`
-    padding: 10px 15px;
+    padding: 12px 20px;
     font-size: 1rem;
-    background-color: #3f72af;
+    background: linear-gradient(135deg, #3f72af, #2c5aa0);
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    width: 100px;
+    transition: all 0.3s ease;
+    width: 110%;
+    margin-top: 10px;
+    font-weight: bold;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
 
     &:hover {
-        background-color: #2c5aa0;
+        background: linear-gradient(135deg, #2c5aa0, #1f487e);
+        transform: translateY(-2px);
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
     }
 `;
 
@@ -247,38 +264,65 @@ const CountButton = styled.button`
     background-color: #3f72af;
     font-size: 1rem;
     cursor: pointer;
-    border-radius:7px;
+    border-radius: 7px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    
     &:hover {
-        background-color:rgb(136, 136, 136);
+        background-color: #2c5aa0;
     }
 `;
 const CountContainer = styled.div`
-    display:flex;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 `;
+
 const CouponTypeContainer = styled.div`
+    margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    width: 100%;
-    box-sizing: border-box;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 86%;
+    max-width: 400px;
+    text-align: left;
+
+    h3 {
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
 `;
 
 const Select = styled.select`
     width: 100%;
     padding: 12px;
-    margin-top: 10px;
     font-size: 1rem;
+    border: 1px solid #d1d8e0;
     border-radius: 8px;
+    transition: border-color 0.3s ease;
+    background: white;
+
+    &:focus {
+        border-color: #3f72af;
+        outline: none;
+    }
 `;
 
 const IssuedCouponTable = styled.table`
     width: 100%;
     border-collapse: collapse;
-    white-space: nowrap;  /* 텍스트 줄바꿈 방지 */
+    margin-top: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
     th, td {
         border: 1px solid #ddd;
-        padding: 10px;
+        padding: 12px;
         font-size: 1rem;
     }
 
@@ -289,5 +333,20 @@ const IssuedCouponTable = styled.table`
 
     td {
         text-align: center;
+    }
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #d1d8e0;
+    border-radius: 8px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        border-color: #3f72af;
+        outline: none;
     }
 `;
