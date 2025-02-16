@@ -73,69 +73,37 @@ const Notice = () => {
             });        }
     };
 
-    // 공지사항 수정
     const handleSaveNotice = async () => {
-        console.log("handleSaveNotice 실행됨"); // 함수 실행 확인
         const formData = new FormData();
         formData.append("boardId", editingNoticeId);
         formData.append("title", noticeTitle);
         formData.append("content", noticeContent);
-
+    
         console.log("수정전 noticeImage:", noticeImage);
-
-        // 이미지가 새로 첨부된 경우 (base64 데이터)
+    
         if (noticeImage && noticeImage.startsWith("data:image")) {
             console.log("Base64 이미지 추가됨");
-            formData.append("boardImageUrl", noticeImage); // Base64 데이터
-        } else if (noticeImage === null || noticeImage === "") {
-            console.log("이미지 없음 처리");
-            formData.append("boardImageUrl", null); // null로 보내기
+            formData.append("boardImageUrl", noticeImage);
+        } else if (noticeImage === null) {
+            console.log("이미지 없음");
+            formData.append("boardImageUrl", null);
         } else {
-            // 기존 이미지가 있고 이미지를 변경하지 않은 경우
-            // URL을 base64로 변환하여 보내기
+            console.log("기존 이미지 사용");
             try {
                 const response = await fetch(noticeImage);
                 const blob = await response.blob();
                 const reader = new FileReader();
     
                 reader.onloadend = async () => {
-                    const base64Image = reader.result.split(',')[1]; // base64 문자열 추출
+                    const base64Image = reader.result;
+                    formData.append("boardImageUrl", base64Image);
     
-                    // base64 문자열을 formData에 추가
-                    formData.append("boardImageUrl", `data:image/png;base64,${base64Image}`);
-    
-                    try {
-                        const updateResponse = await axios.put(
-                            `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`, formData, {
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        console.log("응답 데이터:", response.data);
-
-                        if (updateResponse.status === 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '공지사항 수정',
-                                text: '공지사항이 성공적으로 수정되었습니다.',
-                                confirmButtonText: '확인'
-                            });
-    
-                            // 등록 후 목록 새로고침
-                            const updatedAnnouncements = await axios.get(
-                                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`);
-                            setAnnouncements(updatedAnnouncements.data || []);
-                            handleCloseModal();
-                        }
-                    } catch (error) {
-                        console.error("공지사항 수정 실패:", error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: '수정 실패',
-                            text: '공지사항 수정에 실패했습니다.',
-                            confirmButtonText: '확인'
-                        });
-                    }
+                    // ✅ 이미지 변환 후 요청 실행
+                    await sendUpdateRequest(formData);
                 };
-                reader.readAsDataURL(blob); // blob을 base64로 변환
+    
+                reader.readAsDataURL(blob);
+                return; // ✅ reader.onloadend 내부에서 요청하므로, 여기서 함수 종료
             } catch (error) {
                 console.error("이미지 변환 실패:", error);
                 Swal.fire({
@@ -144,9 +112,50 @@ const Notice = () => {
                     text: '이미지 변환 중 오류가 발생했습니다.',
                     confirmButtonText: '확인'
                 });
+                return;
             }
         }
+    
+        // ✅ 이미지 추가/삭제 시 요청 실행
+        await sendUpdateRequest(formData);
     };
+    
+    // ✅ 공통 요청 함수
+    const sendUpdateRequest = async (formData) => {
+        try {
+            const updateResponse = await axios.put(
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board`,
+                formData,
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            console.log("응답 데이터:", updateResponse.data);
+            if (updateResponse.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '공지사항 수정',
+                    text: '공지사항이 성공적으로 수정되었습니다.',
+                    confirmButtonText: '확인'
+                });
+    
+                // 등록 후 목록 새로고침
+                const updatedAnnouncements = await axios.get(
+                    `${process.env.REACT_APP_BACKEND_API_URL}/api/store/board/list`
+                );
+                setAnnouncements(updatedAnnouncements.data || []);
+                handleCloseModal();
+            }
+        } catch (error) {
+            console.error("공지사항 수정 실패:", error);
+            Swal.fire({
+                icon: 'error',
+                title: '수정 실패',
+                text: '공지사항 수정에 실패했습니다.',
+                confirmButtonText: '확인'
+            });
+        }
+    };
+    
     
     const handleImageChange = (e) => {
         const file = e.target.files[0];
