@@ -5,7 +5,7 @@ import './style.css';
 const SearchNavbar = ({lat, lng}) => {
     const navigate = useNavigate()
     const handlenavigate = () => {
-        navigate(`/searchbynutrition?lat=${lat}&llng=${lng}`);
+        navigate(`/searchbynutrition?lat=${lat}&lng=${lng}`);
     }
 
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);

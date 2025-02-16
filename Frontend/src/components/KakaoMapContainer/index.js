@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useBaseMap } from "../../contexts/ KakaoMapContext";
+import './style.css'
+
 
 const KakaoMapContainer = ({ coords }) => {
     const { baseMap, isSDKLoaded } = useBaseMap();
@@ -56,6 +58,7 @@ const KakaoMapContainer = ({ coords }) => {
         // 클릭 이벤트 핸들러
         window.kakao.maps.event.addListener(newMarker, 'click', () => {
             infowindow.open(baseMap, newMarker);
+            baseMap.setCenter(newMarker)
         });
 
         // 4. 지도 중심 이동

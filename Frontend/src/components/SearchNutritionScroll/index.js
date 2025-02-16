@@ -4,16 +4,10 @@ import axios from 'axios';
 import './style.css'
 
 
-const SearchNutritionScroll = () => {
+const SearchNutritionScroll = ({ coords }) => {
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
     const navigate = useNavigate();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-
-    const lat = queryParams.get('lat');
-    const lng = queryParams.get('lng');
-
 
     // 상태 관리
     const [maxSugar, setMaxSugar] = useState(100);
@@ -21,6 +15,7 @@ const SearchNutritionScroll = () => {
     const [items, setItems] = useState([]);
     const [error, setError] = useState(null);
 
+    console.log(coords)
     // API 호출 함수
     const fetchItems = async (maxSugar, maxCal) => {
         try {
@@ -43,8 +38,6 @@ const SearchNutritionScroll = () => {
     useEffect(() => {
         fetchItems(maxSugar, maxCal);
     }, [maxSugar, maxCal]);
-
-    console.log(items);
 
     return (
         <div className="scrollcontents">
@@ -83,7 +76,7 @@ const SearchNutritionScroll = () => {
                                 key={item.itemId}
                                 onClick={() =>
                                     navigate(
-                                        `search/results?lat=${lat}&lng=${lng}&itemId=${item.itemId}`
+                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.itemId}&itemName=${item.itemName}`
                                     )
                                 }
                             >

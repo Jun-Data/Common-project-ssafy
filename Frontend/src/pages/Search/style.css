@@ -1,14 +1,17 @@
 .searchpage {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: grid;
-    grid-template-rows: 8vh 6vh auto auto;
+    grid-template-rows: 8vh 6vh 6vh auto;
 }
+
 
 
 .searchpageheader {
     grid-row: 1;
     width: 100%;
+    position: relative;
+    z-index: 200;
 }
 
 .searchpagesearchbar {
@@ -19,17 +22,16 @@
 }
 
 .searchpagedropdown {
+    box-sizing: border-box;
     position: fixed;
     z-index: 101;
     width: 100%;
-    top: 118px;
-    left: 0;
 }
 
 .searchpagerecommend {
-    grid-row: 3;
+    grid-row: 4;
 }
 
 .searchpagenavbar {
-    grid-row: 4;
+    grid-row: 3;
 }

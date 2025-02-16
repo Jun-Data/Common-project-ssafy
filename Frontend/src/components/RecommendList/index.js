@@ -2,44 +2,41 @@ import React, { useEffect, useState } from "react";
 import RecommendApi from "../../api/RecommendApi";
 import './style.css'
 
-const RecommendList = () => {
+const RecommendList = ({ userNo }) => {
     const [recommendations, setRecommendations] = useState([]);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
-            const userId = 1; // 예시로 userId를 1로 설정
             try {
-                // 추천 데이터를 API에서 가져오기
-                const response = await RecommendApi.get(`api/recommend/user`, {
-                    params: { userId }, // userId를 쿼리 파라미터로 전달
-                });
+                // ✅ 올바른 API 함수 호출 방식
+                const data = await RecommendApi(userNo);
 
-                // API 응답 데이터가 유효한지 확인 후 상태 업데이트
-                if (response && response.data) {
-                    setRecommendations(response.data);
+                // ✅ 응답 데이터 직접 사용
+                if (!userNo) {
+                    setRecommendations(null);
                 } else {
-                    console.error("추천 API에서 데이터를 받지 못했습니다.");
+                    console.log("추천 데이터가 없습니다.");
                     setRecommendations([]);
                 }
             } catch (error) {
-                console.error("추천 데이터를 가져오는 중 오류 발생:", error);
+                console.error("추천 데이터 가져오기 실패:", error);
                 setRecommendations([]);
             }
         };
 
         fetchRecommendations();
-    }, []);
+    }, [userNo]); // ✅ userId 종속성 추가
 
     return (
         <div>
             <h2>추천 리스트</h2>
             <ul>
-                {recommendations.length > 0 ? (
+                { userNo ? (
                     recommendations.map((item) => (
                         <li key={item.id}>{item.name}</li> // API 응답에 id와 name이 있다고 가정
                     ))
                 ) : (
-                    <li>추천 데이터가 없습니다.</li>
+                    <li>로그인을 하시면 제품을 추천해드려요!</li>
                 )}
             </ul>
         </div>

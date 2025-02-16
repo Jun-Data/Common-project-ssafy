@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Kiosk from "./pages/Kiosk"
 import KioskMainScreen from "./pages/KioskMain";
@@ -21,29 +21,39 @@ import SearchbyNurtrition from "./pages/SearchbyNurtrition";
 import SearchResult from "./pages/SearchResult";
 import StoredetailRequestPopup from "./pages/StoredetailRequest";
 import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
-import {KakaoMapProvider} from "./contexts/ KakaoMapContext";
+import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
 
 
 function App() {
 
   const location = useLocation();
+  const params = useParams();
+
+  // 검색 결과[9] 참조: 동적 라우트 키 생성
+  const routeKey = location.pathname.startsWith('/search/results')
+      ? `search-${location.search}`
+      : location.pathname;
+
+  // 지도 페이지 판별 로직
   const isMapPage = ['/', '/search/results'].includes(location.pathname);
 
-  function setScreenSize() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }
-  useEffect(() => {
-    setScreenSize();
-  });
 
+  // 뷰포트 높이 설정 (검색 결과[5] 참조)
+  useEffect(() => {
+    const setScreenSize = () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    setScreenSize();
+    window.addEventListener('resize', setScreenSize);
+    return () => window.removeEventListener('resize', setScreenSize);
+  }, []);
 
   return (
     <div className="App">
       <div>
       <KakaoMapProvider>
         <Routes>
-
           <Route path="/signup" element={<SignUp/>}/>
           <Route path="/owner-signup" element={<OwnerSignUp/>}/>
           <Route path="/user-signup" element={<UserSignUp/>}/>
@@ -63,21 +73,26 @@ function App() {
           {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
 
           <Route path="/" element={<MainPage />}/>
-          <Route path="/search/results" element={<SearchResult/>}/>
+          <Route path="/search/results" element={<SearchResult key={location.key}/>}/>
           <Route path="/search" element={<SearchPage/>}/>
           <Route path="/storedetail/:storeNo" element={<StoreDetail/>}/>
           <Route path="/storedetail/:storeNo/request" element={<StoredetailRequestPopup/>}/>
           <Route path="/storedetail/:storeNo/flearequest" element={<StoreDetailFlearequest/>}/>
           <Route path="/searchbynutrition" element={<SearchbyNurtrition/>}/>
-
-      </Routes>
-    </KakaoMapProvider>
-    </div>
+        </Routes>
+      </KakaoMapProvider>
+        </div>
       <div
           id="map-root"
           className={`map-container ${isMapPage ? 'visible' : 'hidden'}`}
-      />
-  </div>
+          style={{
+            opacity: isMapPage ? 1 : 0,
+            visibility: isMapPage ? 'visible' : 'hidden',
+            transition: 'opacity 0.3s ease, visibility 0.3s ease'
+          }}
+      ></div>
+
+    </div>
   );
 }
 

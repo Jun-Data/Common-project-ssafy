@@ -35,20 +35,17 @@ const KakaoMapMarkers = ({ storelist }) => {
                   height: 0;
                 "></div>
               </div>
-            `;            const infowindow = new window.kakao.maps.InfoWindow({
+            `;
+
+            const infowindow = new window.kakao.maps.InfoWindow({
                 content: iwContent,
                 removable: true,
             });
 
-            // 클릭 이벤트 핸들러
-            window.kakao.maps.event.addListener(marker, 'click', () => {
-                infowindow.open(baseMap, marker);
-            });
-
-
             // 클릭 시 해당 마커 위치로 지도 중심 이동
             window.kakao.maps.event.addListener(marker, 'click', () => {
                 baseMap.panTo(marker.getPosition());
+                infowindow.open(baseMap, marker);
             });
 
             return marker;

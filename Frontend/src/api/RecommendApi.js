@@ -1,19 +1,19 @@
 import apiClient from "./apiClient";
 
-const RecommendApi = async (userId) => {
+const RecommendApi = async (userNo) => {
     try {
-        const response = await apiClient.get(`/api/recommend/user/${userId}`);
+        // ✅ 경로 파라미터 방식으로 변경
+        const response = await apiClient.get(`/api/recommend/user/${userNo}?limit=5`);
+
         if (response.status === 200) {
-            console.log("API 호출 성공:", response.data);
-            return response.data; // 추천 리스트 반환
-        } else {
-            console.error("API 요청 실패:", response.message || "알 수 없는 오류");
-            throw new Error(response.message || "API 요청 실패");
+            return response.data;
         }
+        throw new Error(response.message || "추천 데이터 요청 실패");
     } catch (error) {
-        console.error("API 호출 중 오류 발생:", error);
+        console.error("API Error:", error);
         throw error;
     }
 };
 
-export default RecommendApi;
+export default RecommendApi
+
