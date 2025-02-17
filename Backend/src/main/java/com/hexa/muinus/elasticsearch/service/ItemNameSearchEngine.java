@@ -9,10 +9,12 @@ import co.elastic.clients.elasticsearch.indices.analyze.AnalyzeToken;
 import co.elastic.clients.util.ObjectBuilder;
 import com.hexa.muinus.common.exception.ESErrorCode;
 import com.hexa.muinus.common.exception.MuinusException;
+import com.hexa.muinus.elasticsearch.config.KeywordDataLoader;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -30,31 +32,40 @@ import java.util.function.Function;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ItemNameSearchEngine {
 
     private final ElasticsearchOperations elasticsearchOperations;
     private final ElasticsearchClient elasticsearchClient;
 
-    private final static Set<String> SUB_KEYWORDS = Set.of("케이크", "케익", "콘", "바");
+    private static Set<String> TYPE_KEYWORDS;
+    private static Set<String> BRAND_KEYWORDS;
+
     private final static Float MAIN_SCORE = 5.0F;
-    private final static Float SUB_SCORE = 2.0F;
+    private final static Float TYPE_SCORE = 2.0F;
+    private final static Float BRAND_SCORE = 1.0F;
+
+    public ItemNameSearchEngine (ElasticsearchOperations elasticsearchOperations, ElasticsearchClient elasticsearchClient) {
+        this.elasticsearchOperations = elasticsearchOperations;
+        this.elasticsearchClient = elasticsearchClient;
+        TYPE_KEYWORDS = KeywordDataLoader.getTypeKeywords();
+        BRAND_KEYWORDS = KeywordDataLoader.getBrandKeywords();
+    }
 
     public List<ESItem> searchByQuery(SearchNativeDTO dto) {
         String query = dto.getQuery();
 
         List<String> tokens = getTokens(query, "items", "custom_search_analyzer");
-        log.info("tokens: {}", tokens);
+        log.debug("tokens: {}", tokens);
         if(tokens.isEmpty()){
             return List.of();
         }
 
         try {
-            List<ESItem> items = searchNoriOperation(tokens, "item_name.nori", dto);
-            log.info("nori - items: {}", items);
+            List<ESItem> items = searchNoriOperation(tokens, "item_name.nori", dto, 0, 7);
+            log.debug("nori - items: {}", items);
             if(!items.isEmpty()){
-                items = searchNoriOperation(tokens, "item_name.nori_shingle", dto);
-                log.info("shingle - items: {}", items);
+                items = searchNoriOperation(tokens, "item_name.nori_shingle", dto, 0, 7);
+                log.debug("shingle - items: {}", items);
             }
             return items;
 
@@ -67,7 +78,7 @@ public class ItemNameSearchEngine {
     private List<ESItem> shuffleSameScore(List<SearchHit<ESItem>> hits) {
         if(hits.isEmpty()) return List.of();
 
-        log.info("before shuffle - hits: {}", hits);
+        log.debug("before shuffle - hits: {}", hits);
         List<ESItem> finalItemList = new ArrayList<>();
         List<ESItem> sameScoreItemList = new ArrayList<>();
 
@@ -119,8 +130,8 @@ public class ItemNameSearchEngine {
     }
 
 
-    public List<ESItem> searchNoriOperation(List<String> tokens, String field, SearchNativeDTO condition) throws IOException {
-        NativeQuery query = createNativeQueryForSearch(tokens, field, condition);
+    public List<ESItem> searchNoriOperation(List<String> tokens, String field, SearchNativeDTO condition, int page, int pageSize) throws IOException {
+        NativeQuery query = createNativeQueryForSearch(tokens, field, condition, page, pageSize);
         log.info("query: {}", query.getQuery().toString());
         SearchHits<ESItem> hits = elasticsearchOperations.search(query, ESItem.class, IndexCoordinates.of("items"));
 
@@ -128,16 +139,15 @@ public class ItemNameSearchEngine {
 
     }
 
-    public NativeQuery createNativeQueryForSearch(List<String> tokens,  String field, SearchNativeDTO condition){
+    public NativeQuery createNativeQueryForSearch(List<String> tokens,  String field, SearchNativeDTO condition, int page, int pageSize){
         return new NativeQueryBuilder()
                 .withQuery(q -> q.bool(b -> {
                     tokens.forEach(token -> {
-                        float boost;
-                        if(SUB_KEYWORDS.contains(token)) {
-                            boost = SUB_SCORE;
-                        } else {
-                            boost = MAIN_SCORE;
-                        }
+                        float boost = TYPE_KEYWORDS.contains(token)
+                                ? TYPE_SCORE
+                                : BRAND_KEYWORDS.contains(token)
+                                ? BRAND_SCORE
+                                : MAIN_SCORE;
                         b.should(s -> s.constantScore(buildConstantScoreQuery(field, token, boost)));
                     });
 
@@ -148,11 +158,10 @@ public class ItemNameSearchEngine {
                     b.minimumShouldMatch("1");
                     return b;
                 }))
+                .withPageable(PageRequest.of(page, pageSize))
                 .build();
 
     }
-
-
 
     public List<String> getTokens(String query, String index, String analyzer) {
         try {
