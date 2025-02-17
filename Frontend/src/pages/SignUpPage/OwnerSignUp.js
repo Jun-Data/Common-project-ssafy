@@ -1,5 +1,4 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import RegisterButtons from "../../components/RegisterButtons";
 import { useState,useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
@@ -7,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import KakaoPostcodePopup from "../../components/KakaoPostcodePopup";
 import useGeocoding from "../../hooks/useGeocoding";
 import Swal from "sweetalert2";
+import Button from "../../components/Button";
 
 function OwnerSignUp() {
     const navigate = useNavigate(); 
@@ -307,6 +307,10 @@ function OwnerSignUp() {
         console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
     }, [formData]);  // formData가 변경될 때마다 실행
     
+    const handleBack = (e) => {
+        e.preventDefault();  // 기본 동작인 폼 제출을 막는다.
+        navigate(-1);  // 이전 페이지로 이동
+    };
 
     return (
         <div>
@@ -453,9 +457,14 @@ function OwnerSignUp() {
                     </InputGroup>
                 )}
 
-                <RegisterButtonsWrapper>
-                    <RegisterButtons onSubmit={handleSubmit} />
-                </RegisterButtonsWrapper>
+                <ButtonContainer>
+                <Button type="TERTIARY" onClick={handleBack}>
+                        뒤로가기
+                    </Button>
+                    <Button type="PRIMARY" onClick={handleSubmit}>
+                        가입하기
+                    </Button>
+                </ButtonContainer>
                 <br/>
             </form>
         </div>
@@ -507,13 +516,6 @@ const CheckboxWrapper = styled.div`
   font-weight: bold;
 `;
 
-const RegisterButtonsWrapper = styled.div`
-    margin-bottom: 50px; /* 하단 버튼과 구분을 위한 간격 */
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-`;
-
 const ErrorMessage = styled.div`
   color: red;
   font-size: 12px;
@@ -536,6 +538,11 @@ const FindButton = styled.button`
     font-size: 13px; 
     width: 85px !important;
     padding: 3px;
+`;
+const ButtonContainer = styled.div`
+display: flex;
+justify-content: center; /* 버튼을 중앙 정렬 */
+gap: 20px; /* 버튼 사이 간격 조절 */
 `;
 
 export default OwnerSignUp;

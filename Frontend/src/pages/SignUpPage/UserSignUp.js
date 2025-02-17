@@ -1,10 +1,10 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import RegisterButtons from "../../components/RegisterButtons";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Button from "../../components/Button";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -72,7 +72,9 @@ function UserSignUp() {
     // 실시간 유효성 검사 함수
     const validateField = (name, value) => {
         let formErrors = { ...errors };
-
+        if (!value) {
+            return formErrors;
+        }
         switch (name) {
             case "userName":
                 // 이름은 한글 또는 영문으로만 입력을 허용
@@ -167,6 +169,11 @@ function UserSignUp() {
             }
     };
 
+    const handleBack = (e) => {
+        e.preventDefault();  // 기본 동작인 폼 제출을 막는다.
+        navigate(-1);  // 이전 페이지로 이동
+    };
+
     return (
         <div>
             <HeaderContainer />
@@ -210,9 +217,9 @@ function UserSignUp() {
                         onBlur={handleBlur}
                         placeholder="예: 010-1234-5678"
                         required
-                        style={{ borderColor: errors.phoneNumber ? 'red' : '#ccc' }}
+                        style={{ borderColor: errors.userTelephone ? 'red' : '#ccc' }}
                     />
-                    {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber}</ErrorMessage>}
+                    {errors.userTelephone && <ErrorMessage>{errors.userTelephone}</ErrorMessage>}
                 </InputGroup>
 
                 <InputGroup>
@@ -230,9 +237,14 @@ function UserSignUp() {
                     />
                     {errors.userBirth && <ErrorMessage>{errors.userBirth}</ErrorMessage>}
                 </InputGroup>
-                <ButtonWrapper>
-                    <RegisterButtons onSubmit={handleSubmit} />
-                </ButtonWrapper>
+                <ButtonContainer>
+                <Button type="TERTIARY" onClick={handleBack}>
+                        뒤로가기
+                    </Button>
+                    <Button type="PRIMARY" onClick={handleSubmit}>
+                        가입하기
+                    </Button>
+                </ButtonContainer>
             </form>
         </div>
     );
@@ -264,8 +276,10 @@ const InputGroup = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-    margin-top: 30px;
+const ButtonContainer = styled.div`
+display: flex;
+justify-content: center; /* 버튼을 중앙 정렬 */
+gap: 20px; /* 버튼 사이 간격 조절 */
 `;
 
 const ErrorMessage = styled.div`

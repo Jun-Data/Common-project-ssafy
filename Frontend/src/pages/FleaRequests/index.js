@@ -88,6 +88,8 @@ const FleaRequests = () => {
       <HeaderContainer />
       <MyPageHeader />
       <Title>플리마켓 요청 목록</Title>
+      <p>플리마켓 판매 요청을 검토하고 승인 또는 거절하세요!</p>
+
       <Container>
       {requests.length > 0 ? (
         requests.map((request, index) => ( // 요청 목록을 반복하여 출력
