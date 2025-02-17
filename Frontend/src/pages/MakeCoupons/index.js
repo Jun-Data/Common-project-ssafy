@@ -195,7 +195,6 @@ function MakeCoupons() {
 export default MakeCoupons;
 
 const Container = styled.div`
-    background: #f4f6f8;
     text-align: center;
     min-height: 100vh;
 `;
@@ -335,7 +334,7 @@ const IssuedCouponTable = styled.table`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-    width: 131%;
+    width: 100%;
     padding: 12px;
     font-size: 1rem;
     border: 1px solid #d1d8e0;

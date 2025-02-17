@@ -24,6 +24,8 @@ const StockRequests = () => {
       <HeaderContainer />
       <MyPageHeader />
       <Title>상품 요청 목록</Title>
+      <p>매장 이용자들이 원하는 제품들이에요!</p>
+
       <Container>
       {items.length > 0 ? ( // 아이템 배열이 비어있지 않으면 출력
         items.map((item, index) => ( // 아이템 배열을 반복하여 출력

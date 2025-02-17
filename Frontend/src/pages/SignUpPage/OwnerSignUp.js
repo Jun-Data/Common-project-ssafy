@@ -243,7 +243,6 @@ function OwnerSignUp() {
             setErrors(formErrors);
         };
     
-
     const handleBlur = (e) => {
         const { name, value } = e.target;
         validateField(name, value);
@@ -255,12 +254,32 @@ function OwnerSignUp() {
     
         // 데이터 유효성 검사
         const formErrors = { ...errors };
+        // 개별 필드 유효성 검사 수행
         Object.keys(formData).forEach((key) => {
             validateField(key, formData[key]);
         });
+        // 유효성 검사 상태를 업데이트
+        setErrors(formErrors);
+        // 업데이트된 errors 상태를 확인하여 유효성 검사 통과 여부 확인
+        const hasErrors = Object.values(formErrors).some(error => error !== '');
+        if (hasErrors) {
+            console.log("입력값에 오류가 있습니다.");
     
+            // 각 필드에 대한 오류 메시지 알림
+            Object.keys(formErrors).forEach((key) => {
+                if (formErrors[key]) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "입력 오류",
+                        text: `${key} 필드 오류: ${formErrors[key]}`,
+                    });
+                }
+            });
+            return; // 오류가 있으면 요청을 보내지 않음
+        }
+
         // 유효성 검사에서 오류가 없다면
-        if (!Object.values(formErrors).some(error => error !== '')) {
+        // if (!Object.values(formErrors).some(error => error !== '')) {
             try {
                 // JSON 형식으로 데이터를 변환
                 const response = await axios.post(
@@ -292,18 +311,18 @@ function OwnerSignUp() {
                     confirmButtonText: "확인",
                 })            
             }
-        } else {
-            console.log("입력값에 오류가 있습니다.");
-                    // 각 필드에 대한 오류 메시지 확인
-        Object.keys(formErrors).forEach((key) => {
-            if (formErrors[key]) {
-                Swal.fire({
-                    icon: "error",
-                    title: "입력 오류",
-                    text: `${key} 필드 오류: ${formErrors[key]}`,
-                });            }
-        });
-        }
+        // } else {
+        //     console.log("입력값에 오류가 있습니다.");
+        //             // 각 필드에 대한 오류 메시지 확인
+        // Object.keys(formErrors).forEach((key) => {
+        //     if (formErrors[key]) {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: "입력 오류",
+        //             text: `${key} 필드 오류: ${formErrors[key]}`,
+        //         });            }
+        // });
+        // }
     };
     
     // 제출 폼 확인용용
