@@ -97,6 +97,8 @@ const FleaRequests = () => {
             <RequestItem><strong>판매 물품:</strong> {request.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {request.quantity}</RequestItem>
             <RequestItem><strong>섹션 번호:</strong> {request.sectionNumber}</RequestItem>
+            <RequestItem><strong>플리마켓 제품 이미지:</strong> {request.imageUrl}</RequestItem>
+
           </RequestCard>
         ))
       ) : (
@@ -112,6 +114,7 @@ const FleaRequests = () => {
             <RequestItem><strong>가격:</strong> {selectedRequest.price}원</RequestItem>
             <RequestItem><strong>입고 날짜:</strong> {selectedRequest.expirationDate}일</RequestItem>
             <RequestItem><strong>판매자 계좌 정보:</strong> {selectedRequest.userAccount} ({selectedRequest.userBank}, {selectedRequest.accountName})</RequestItem>
+            <RequestItem><strong>제품 이미지:</strong> {selectedRequest.imageUrl}일</RequestItem>
 
             <ButtonContainer>
             <ActionButtons>
@@ -197,7 +200,7 @@ const ModalContent = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  width: 90%;
+  width: 85%;
   max-width: 500px;
   text-align: center;
 `;
@@ -212,7 +215,7 @@ const ButtonContainer = styled.div`
 const ActionButtons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 77px;
+  gap: 50px;
   width: 100%;
   max-width: 300px; /* 버튼 최대 너비 설정 */
   margin-bottom: 10px; /* 닫기 버튼과 간격 */
@@ -227,7 +230,7 @@ const CloseButtonContainer = styled.div`
 const AcceptButton = styled.button`
   background: #4CAF50;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -241,7 +244,7 @@ const AcceptButton = styled.button`
 const RejectButton = styled.button`
   background: #f44336;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -255,7 +258,7 @@ const RejectButton = styled.button`
 const CloseButton = styled.button`
   background: #f8f9fa;
   color: black;
-  padding: 7px 15px;
+  padding: 7px 97px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
