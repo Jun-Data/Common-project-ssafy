@@ -97,7 +97,8 @@ const FleaRequests = () => {
             <RequestItem><strong>판매 물품:</strong> {request.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {request.quantity}</RequestItem>
             <RequestItem><strong>섹션 번호:</strong> {request.sectionNumber}</RequestItem>
-            <RequestItem><strong>플리마켓 제품 이미지:</strong> {request.imageUrl}</RequestItem>
+            <RequestItem><strong>플리마켓 제품 이미지:</strong> <img src={request.imageUrl} alt={request.itemName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></RequestItem>
+            
 
           </RequestCard>
         ))
@@ -114,7 +115,7 @@ const FleaRequests = () => {
             <RequestItem><strong>가격:</strong> {selectedRequest.price}원</RequestItem>
             <RequestItem><strong>입고 날짜:</strong> {selectedRequest.expirationDate}일</RequestItem>
             <RequestItem><strong>판매자 계좌 정보:</strong> {selectedRequest.userAccount} ({selectedRequest.userBank}, {selectedRequest.accountName})</RequestItem>
-            <RequestItem><strong>제품 이미지:</strong> {selectedRequest.imageUrl}일</RequestItem>
+            <RequestItem><strong>제품 이미지:</strong> <img src={selectedRequest.imageUrl} alt={selectedRequest.itemName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></RequestItem>
 
             <ButtonContainer>
             <ActionButtons>
