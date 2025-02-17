@@ -14,14 +14,16 @@ import java.util.Optional;
 public interface FliItemRepository extends CrudRepository<FliItem, Integer> {
     @Query("""
     SELECT new com.hexa.muinus.store.dto.fli.FliItemDTO(
-        fi.fliItemId, u.userNo, fi.fliItemName, fi.price, fi.quantity, fi.imagePath
+        fi.fliItemId, u.userNo, fi.fliItemName, fi.price, fi.quantity, fi.imagePath, fi.applicationDate
     )
     FROM FliItem fi
     JOIN fi.users u
     WHERE fi.store.storeNo = :storeNo
     AND fi.status = 'SELLING'
+    AND fi.applicationDate > CURRENT_TIMESTAMP
 """)
     List<FliItemDTO> findSellingFliItemsByStoreNo(@Param("storeNo") int storeNo);
+
 
     Optional<FliItem> findByStoreAndSectionId(Store store, Integer sectionId);
 

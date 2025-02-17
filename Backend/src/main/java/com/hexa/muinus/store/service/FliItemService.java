@@ -38,5 +38,4 @@ public class FliItemService {
     public List<FliItemDTO> getSellingFliItemsByStoreNo(Integer storeNo) {
         return fliItemRepository.findSellingFliItemsByStoreNo(storeNo);
     }
-
 }

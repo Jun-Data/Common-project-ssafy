@@ -104,7 +104,7 @@ public class FliRequestService {
         FliItem item;
         if(fliItem.isPresent()) {
             item = fliItem.get();
-            item.setStatus(FliItemStatus.APPROVED);
+            item.setStatus(FliItemStatus.SELLING);
             fliItemRepository.save(item);
         }
     }
