@@ -1,0 +1,278 @@
+Index: Frontend/src/pages/Kiosk/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.kiosk {\n    display: grid;\n    width: 100%;\n    height: 100%;\n    grid-template-rows: 8vh auto auto auto auto;\n    place-items: center;\n}\n\n.headercontainer1 {\n    grid-row: 1;\n    width: 100%;\n}\n\n.barcode_image {\n    grid-row: 2;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    margin-top: 1vh;\n    width: 100%;\n    height: 100%;\n}\n\n.barcode_image img {\n    max-width: 100%;\n    max-height: 100%;\n    object-fit: contain;\n}\n\n\n.instructions {\n    grid-row: 3; /* 두 번째 행에 배치 */\n    width: 100%;\n    font-size: 40px;\n    font-weight: bold;\n    text-align: center;\n}\n\n.start_button {\n    grid-row: 4; /* 세 번째 행에 배치 */\n    background-color: #4a90e2;\n    width: 100%;\n    height: 100%;\n    color: white;\n    border: none;\n    font-size: 60px;\n    border-radius: 5%;\n    cursor: pointer;\n}\n\n.description {\n    grid-row: 5;\n    width: 100%;\n    height: 30vh;\n    object-fit: contain;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/style.css b/Frontend/src/pages/Kiosk/style.css
+--- a/Frontend/src/pages/Kiosk/style.css	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/Frontend/src/pages/Kiosk/style.css	(date 1739751939527)
+@@ -2,13 +2,14 @@
+     display: grid;
+     width: 100%;
+     height: 100%;
+-    grid-template-rows: 8vh auto auto auto auto;
++    grid-template-rows: 8vh 40vh 12vh 6vh 34vh;
+     place-items: center;
+ }
+ 
+ .headercontainer1 {
+     grid-row: 1;
+     width: 100%;
++    height: 100%;
+ }
+ 
+ .barcode_image {
+@@ -19,12 +20,13 @@
+     margin-top: 1vh;
+     width: 100%;
+     height: 100%;
++    object-fit: scale-down;
+ }
+ 
+ .barcode_image img {
+     max-width: 100%;
+     max-height: 100%;
+-    object-fit: contain;
++    object-fit: scale-down;
+ }
+ 
+ 
+@@ -51,6 +53,6 @@
+ .description {
+     grid-row: 5;
+     width: 100%;
+-    height: 30vh;
+-    object-fit: contain;
++    height: 100%;
++    object-fit: scale-down;
+ }
+Index: Frontend/src/pages/Kiosk/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import KioskHeaderContainer from \"../../components/KioskHeaderContainer\";\nimport userInfoApi from \"../../api/UserInfoApi\";\nimport \"./style.css\"\nimport {useState} from \"react\";\n\nconst apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\nconst Kiosk = () => {\n    const [kioskStoreNo, setKioskStoreNo] = useState(1);\n    const getUserInfo = userInfoApi();\n\n    const handleStoreNo = (storeNo) => {\n        setKioskStoreNo(storeNo);\n    }\n\n    return (\n        <div className=\"kiosk\">\n\n            <div className=\"headercontainer1\">\n                <KioskHeaderContainer onstoreNoReceived = {handleStoreNo} />\n            </div>\n\n            <div className=\"barcode_image\">\n                <img src=\"/barcode_icon.png\" alt=\"kioskbarcode\"/>\n            </div>\n\n            <section className=\"instructions\">\n                <p>상품은 <span className=\"highlight\">바코드 스캐너</span>에 찍어주세요!</p>\n                <p>플리마켓 제품은 <span className=\"highlight\">키오스크</span>에서 구매하세요!</p>\n            </section>\n\n            <a\n                href={`localhost:3000/kiosk/main`}\n                className=\"kioskstartbutton\"\n            >\n            {/*<a*/}\n            {/*    href={getUserInfo ? `${apiUrl}/kiosk/${getUserInfo?.storeNo}` : '#'}*/}\n            {/*    className=\"kioskstartbutton\"*/}\n            {/*    onClick={(e) => {*/}\n            {/*    if (!getUserInfo) {*/}\n            {/*        e.preventDefault();*/}\n            {/*        alert(\"접근 권한이 없습니다\");*/}\n            {/*    }*/}\n            {/*        }}*/}\n            {/*    >*/}\n            <button\n                className={`start_button ${!getUserInfo ? 'disabled' : ''}`}\n                // disabled={!getUserInfo}\n                >시작하기</button>\n               </a>\n\n            <div className=\"description\">\n                <img src='/Description.png' alt= \"kioskinstruction\" />\n            </div>\n        </div>\n    )\n}\n\nexport default Kiosk\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/index.js b/Frontend/src/pages/Kiosk/index.js
+--- a/Frontend/src/pages/Kiosk/index.js	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/Frontend/src/pages/Kiosk/index.js	(date 1739752191410)
+@@ -3,7 +3,6 @@
+ import "./style.css"
+ import {useState} from "react";
+ 
+-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+ 
+ const Kiosk = () => {
+     const [kioskStoreNo, setKioskStoreNo] = useState(1);
+Index: Frontend/src/pages/StoredetailFlearequest/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\nimport { useNavigate,useParams } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport FleaRequestApi from \"../../api/FleaRequestApi\";\nimport './style.css';\n\nconst StoredetailFlearequest = () => {\n    const navigate = useNavigate();\n    const { storeNo } = useParams();\n    const nStoreNo = Number(storeNo)\n\n    const [formData, setFormData] = useState({\n        storeId : nStoreNo,\n        userAccount: \"\",\n        userBank: \"\",\n        accountName: \"\",\n        itemName: \"\",\n        quantity: 1,\n        price: 10000,\n        sectionNumber: 1,\n        application_Date: \"\",\n        expireDate: 30,\n        imagePath: \"\", // Base64 형식으로 저장\n    });\n\n    // 입력값 변경 핸들러\n    const handleChange = (e) => {\n        const { name, value } = e.target;\n        setFormData({\n            ...formData,\n            [name]: value,\n        });\n    };\n\n    // 이미지 파일 업로드 핸들러\n    const handleFileChange = (e) => {\n        const file = e.target.files[0];\n        if (file) {\n            const reader = new FileReader();\n            reader.onloadend = () => {\n                setFormData({\n                    ...formData,\n                    imagePath: reader.result, // Base64 데이터 저장\n                });\n            };\n            reader.readAsDataURL(file); // 파일을 Base64로 변환\n        }\n    };\n\n    // 폼 제출 핸들러\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        console.log(\"입력된 데이터:\", formData);\n        FleaRequestApi(formData);\n        // API 호출 또는 추가 처리\n    };\n\n    return (\n        <div className=\"storedetailpageflearequest\">\n            <div className=\"requestheader\"><HeaderContainer /></div>\n            <div className=\"requestpopup\">\n                <div className=\"storedetailflea\">\n                    <div className=\"fleanotice\">플리마켓 신청하기</div>\n                    <form onSubmit={handleSubmit} className=\"fleaform\">\n                        <ul>\n                            <li>\n                                <label>은행:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"userBank\"\n                                    value={formData.userBank}\n                                    onChange={handleChange}\n                                    placeholder=\"은행 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>계좌1:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"userAccount\"\n                                    value={formData.userAccount}\n                                    onChange={handleChange}\n                                    placeholder=\"계좌번호를 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>계좌2:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"accountName\"\n                                    value={formData.accountName}\n                                    onChange={handleChange}\n                                    placeholder=\"소유주 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>상품:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"itemName\"\n                                    value={formData.itemName}\n                                    onChange={handleChange}\n                                    placeholder=\"상품 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>수량:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"quantity\"\n                                    value={formData.quantity}\n                                    onChange={handleChange}\n                                    min=\"1\"\n                                />\n                            </li>\n                            <li>\n                                <label>가격:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"price\"\n                                    value={formData.price}\n                                    onChange={handleChange}\n                                    min=\"0\"\n                                />\n                            </li>\n                            <li>\n                                <label>섹션:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"sectionNumber\"\n                                    value={formData.sectionNumber}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li className=\"datetimeinputfield\">\n                                <label>시작:</label>\n                                <input\n                                    type=\"datetime-local\"\n                                    name=\"startDate\"\n                                    value={formData.startDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li>\n                                <label>보관:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"expireDate\"\n                                    value={formData.expireDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            {/* 파일 업로드 버튼 */}\n                            <li>\n                                <label>사진:</label>\n                                <input\n                                    type=\"file\"\n                                    accept=\"image/*\" // 이미지 파일만 허용\n                                    onChange={handleFileChange} // 파일 변경 핸들러 호출\n                                />\n                            </li>\n                        </ul>\n                        {/* 제출 버튼 */}\n                        <button type=\"submit\" className=\"flearequestsubmitbutton\">제출하기</button>\n                    </form>\n\n                    {/* 뒤로가기 버튼 */}\n                    <button\n                        onClick={() => navigate(-1)}\n                        className='flearequestbackbutton'>뒤로가기</button>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default StoredetailFlearequest;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/StoredetailFlearequest/index.js b/Frontend/src/pages/StoredetailFlearequest/index.js
+--- a/Frontend/src/pages/StoredetailFlearequest/index.js	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/Frontend/src/pages/StoredetailFlearequest/index.js	(date 1739753872958)
+@@ -18,9 +18,9 @@
+         quantity: 1,
+         price: 10000,
+         sectionNumber: 1,
+-        application_Date: "",
+-        expireDate: 30,
+-        imagePath: "", // Base64 형식으로 저장
++        startDate: "",
++        expirationDate: 30,
++        imageUrl: "",
+     });
+ 
+     // 입력값 변경 핸들러
+@@ -40,7 +40,7 @@
+             reader.onloadend = () => {
+                 setFormData({
+                     ...formData,
+-                    imagePath: reader.result, // Base64 데이터 저장
++                    imageUrl: reader.result, // Base64 데이터 저장
+                 });
+             };
+             reader.readAsDataURL(file); // 파일을 Base64로 변환
+@@ -76,7 +76,7 @@
+                             <li>
+                                 <label>계좌1:</label>
+                                 <input
+-                                    type="number"
++                                    type="text"
+                                     name="userAccount"
+                                     value={formData.userAccount}
+                                     onChange={handleChange}
+Index: Frontend/src/pages/Storedetail/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useEffect } from \"react\";\nimport { useNavigate, useParams } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport StoreDetailbar from \"../../components/StoreDetailBar\";\nimport StoreDetailApi from \"../../api/StoreDetailApi\";\nimport CouponGetApi from \"../../api/CouponGetApi\";\nimport CouponListApi from \"../../api/CouponListApi\";\nimport useAuth from \"../../hooks/useAuth\";\nimport axios from \"axios\";\n\nimport \"./style.css\";\n\nconst StoreDetail = () => {\n  const [productData, setProductData] = useState(null); // API 데이터를 저장할 상태\n  const [activeTab, setActiveTab] = useState(\"storeItems\"); // 활성화된 탭 상태\n  const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 데이터\n  const [selectedType, setSelectedType] = useState(\"\"); // 선택된 아이템 타입\n  const { storeNo } = useParams();\n  const nStoreNo = Number(storeNo);\n  const navigate = useNavigate();\n  const { logindata } = useAuth();\n  const apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\n  const handleTabClick = (tab) => {\n    setActiveTab(tab); // 활성화된 탭 업데이트\n  };\n\n  // 수정 필요\n  const checkLogin = () => {\n    if (!logindata) {\n      alert(\"로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.\");\n      axios.get(`${apiUrl}/api/users/login`, {});\n      return false;\n    }\n    return true;\n  };\n\n  const handleCouponGet = async (nStoreNo) => {\n    if (!checkLogin()) return;\n\n    try {\n      const couponList = await CouponListApi(nStoreNo);\n      if (!couponList || couponList.length === 0 || !couponList[0]?.couponId) {\n        alert(\"사용 가능한 쿠폰이 없습니다\");\n        return;\n      }\n\n      const couponId = couponList[0].couponId;\n      const receivedCoupon = await CouponGetApi(nStoreNo, couponId); // 순서 변경\n      return receivedCoupon;\n    } catch (error) {\n      console.error(\"쿠폰 처리 실패:\", error);\n    }\n  };\n\n  // 3. 페이지 이동 함수들\n  const navigateRequestPage = () => {\n    if (!checkLogin()) return; // 로그인 체크\n    navigate(`/storedetail/${storeNo}/request`);\n  };\n\n  const navigateFlearequest = () => {\n    if (!checkLogin()) return; // 로그인 체크\n    navigate(`/storeDetail/${storeNo}/flearequest`);\n  };\n\n  const navigateToVideoCall = () => {\n    navigate(`/${storeNo}/videocall`);\n  };\n\n  const handleItemClick = (item, type) => {\n    setSelectedItem(item); // 선택된 아이템 데이터 저장\n    setSelectedType(type); // 선택된 타입 저장 (store, fli, announcement)\n  };\n\n  const closePopup = () => {\n    setSelectedItem(null); // 팝업 닫기\n    setSelectedType(\"\");\n  };\n\n  // 날짜 형식 변환 함수\n  const formatDate = (dateString) => {\n    const options = { year: \"numeric\", month: \"long\", day: \"numeric\" }; // 예시: \"2025년 2월 6일\"\n    return new Date(dateString).toLocaleDateString(\"ko-KR\", options);\n  };\n\n  useEffect(() => {\n    // API 호출 및 데이터 설정\n    StoreDetailApi(storeNo, setProductData);\n  }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정\n\n  return (\n    <div className=\"searchpagedom\">\n      <div className=\"storedetailheadercontainer\">\n        <HeaderContainer />\n      </div>\n      <div className=\"storedetailphotoinfo\">\n        <div className=\"market-image\">\n          {productData?.store?.storeImageUrl ? (\n            <img\n              src={productData.store.storeImageUrl}\n              alt=\"StoreImage\"\n              onError={(e) => {\n                e.target.style.display = \"none\"; // 이미지 숨기기\n              }}\n            />\n          ) : (\n            <div className=\"image-fallback\">\n              <span>\n                등록된 이미지가\n                <br /> 없습니다.\n              </span>\n            </div>\n          )}\n        </div>\n        <div className=\"market-detail\">\n          <div className=\"market-name\">{productData?.store.name}</div>\n          <div className=\"market-location\">{productData?.store.address}</div>\n          <div className=\"storedetail-btnlist\">\n            <button\n              className=\"couponrequestbtn\"\n              onClick={() => handleCouponGet(nStoreNo)}\n            >\n              쿠폰\n              <br />\n              수령\n            </button>\n            <button className=\"requestbtn\" onClick={navigateRequestPage}>\n              입고\n              <br />\n              요청\n            </button>\n            <button className=\"flearequestbtn\" onClick={navigateFlearequest}>\n              플리\n              <br />\n              신청\n            </button>\n            <button onClick={navigateToVideoCall}>화상통화</button>\n          </div>\n        </div>\n      </div>\n      <div className=\"storedetailnavbar\">\n        <StoreDetailbar onTabClick={handleTabClick} />\n      </div>\n\n      <div className=\"storedetailmarketinfo\">\n        {/* 상점 상품 탭 */}\n        {activeTab === \"storeItems\" &&\n          (productData?.storeItems?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.storeItems.map((storeItem) => (\n                <li\n                  key={storeItem.itemId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(storeItem, \"store\")}\n                >\n                  <img\n                    src={storeItem.itemImageUrl}\n                    alt=\"상품 이미지\"\n                    className=\"storedetailitemimage\"\n                  />\n                  <div className=\"item-info\">\n                    <span>{storeItem.itemName}</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">등록된 상품이 없습니다</div>\n          ))}\n\n        {/* FLI 상품 탭 */}\n        {activeTab === \"fliItems\" &&\n          (productData?.fliItems?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.fliItems.map((fliItem) => (\n                <li\n                  key={fliItem.fliItemId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(fliItem, \"fli\")}\n                >\n                  <img\n                    src={fliItem.imagePath || \"/logo.png\"}\n                    className=\"storedetailitemimage\"\n                    onError={(e) => {\n                      e.target.src = \"/logo.png\";\n                    }}\n                  />\n                  <div className=\"item-info\">\n                    <span>{fliItem.fliItemName}</span>\n                    <span>{fliItem.price.toLocaleString()}원</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">FLI 상품이 존재하지 않습니다</div>\n          ))}\n\n        {/* 공지사항 탭 */}\n        {activeTab === \"announcements\" &&\n          (productData?.announcements?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.announcements.map((announcement) => (\n                <li\n                  key={announcement.boardId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(announcement, \"announcement\")}\n                >\n                  <div className=\"item-info\">\n                    <span>{announcement.title}</span>\n                    <span>{formatDate(announcement.createdAt)}</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">등록된 공지사항이 없습니다</div>\n          ))}\n      </div>\n\n      {/* 팝업 */}\n      {selectedItem && (\n        <div className=\"popup-overlay\" onClick={closePopup}>\n          <div className=\"popup-content\" onClick={(e) => e.stopPropagation()}>\n            {selectedType === \"store\" && (\n              <>\n                <h3>{selectedItem.itemName}</h3>\n                <p>가격: {selectedItem.finalPrice}원</p>\n                <p>수량: {selectedItem.quantity}</p>\n              </>\n            )}\n            {selectedType === \"fli\" && (\n              <>\n                <h3>{selectedItem.fliItemName}</h3>\n                <img\n                  src={selectedItem.imagePath || \"/logo.png\"}\n                  className=\"fliitemdetailimage\"\n                  onError={(e) => {\n                    e.target.src = \"/logo.png\";\n                  }}\n                />\n                <p>가격: {selectedItem.price}원</p>\n                <p>수량: {selectedItem.quantity}</p>\n              </>\n            )}\n            {selectedType === \"announcement\" && (\n              <>\n                <h3>{selectedItem.title}</h3>\n                <p>{selectedItem.content}</p>\n                <p>작성일: {formatDate(selectedItem.createdAt)}</p>{\" \"}\n                {/* 날짜 변환 적용 */}\n              </>\n            )}\n            <button onClick={closePopup}>닫기</button>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default StoreDetail;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Storedetail/index.js b/Frontend/src/pages/Storedetail/index.js
+--- a/Frontend/src/pages/Storedetail/index.js	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/Frontend/src/pages/Storedetail/index.js	(date 1739753663432)
+@@ -36,7 +36,7 @@
+   };
+ 
+   const handleCouponGet = async (nStoreNo) => {
+-    if (!checkLogin()) return;
++    // if (!checkLogin()) return;
+ 
+     try {
+       const couponList = await CouponListApi(nStoreNo);
+@@ -55,12 +55,12 @@
+ 
+   // 3. 페이지 이동 함수들
+   const navigateRequestPage = () => {
+-    if (!checkLogin()) return; // 로그인 체크
++    // if (!checkLogin()) return; // 로그인 체크
+     navigate(`/storedetail/${storeNo}/request`);
+   };
+ 
+   const navigateFlearequest = () => {
+-    if (!checkLogin()) return; // 로그인 체크
++    // if (!checkLogin()) return; // 로그인 체크
+     navigate(`/storeDetail/${storeNo}/flearequest`);
+   };
+ 
+@@ -194,7 +194,7 @@
+               ))}
+             </ul>
+           ) : (
+-            <div className="no-items">FLI 상품이 존재하지 않습니다</div>
++            <div className="no-items">플리마켓 상품이 존재하지 않습니다.</div>
+           ))}
+ 
+         {/* 공지사항 탭 */}
+Index: Frontend/public/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <link rel=\"icon\" href=\"%PUBLIC_URL%/favicon.ico\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"theme-color\" content=\"#000000\" />\n    <meta\n      name=\"description\"\n      content=\"Web site created using create-react-app\"\n    />\n    <link rel=\"apple-touch-icon\" href=\"%PUBLIC_URL%/logo192.png\" />\n    <!--\n      manifest.json provides metadata used when your web app is installed on a\n      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/\n    -->\n    <!--\n      Notice the use of %PUBLIC_URL% in the tags above.\n      It will be replaced with the URL of the `public` folder during the build.\n      Only files inside the `public` folder can be referenced from the HTML.\n\n      Unlike \"/favicon.ico\" or \"favicon.ico\", \"%PUBLIC_URL%/favicon.ico\" will\n      work correctly both with client-side routing and a non-root public URL.\n      Learn how to configure a non-root public URL by running `npm run build`.\n    -->\n\n\n    <!-- <script\n    type=\"text/javascript\"\n    src=\"//dapi.kakao.com/v2/maps/sdk.js?appkey=19cbdb97a9ab4ebbe174fd4aa99ac549&libraries=services,clusterer\"\n  ></script> -->\n  <script src=\"https://developers.kakao.com/sdk/js/kakao.js\"></script>\n\n    <title>React App</title>\n  </head>\n  <body>\n    <noscript>You need to enable JavaScript to run this app.</noscript>\n    <div id=\"root\"></div>\n    <!--\n      This HTML file is a template.\n      If you open it directly in the browser, you will see an empty page.\n\n      You can add webfonts, meta tags, or analytics to this file.\n      The build step will place the bundled scripts into the <body> tag.\n\n      To begin the development, run `npm start` or `yarn start`.\n      To create a production bundle, use `npm run build` or `yarn build`.\n    -->\n  </body>\n</html>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/public/index.html b/Frontend/public/index.html
+--- a/Frontend/public/index.html	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/Frontend/public/index.html	(date 1739754405987)
+@@ -31,7 +31,7 @@
+   ></script> -->
+   <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+ 
+-    <title>React App</title>
++    <title>Muinus: 편안함의 새로운 기준</title>
+   </head>
+   <body>
+     <noscript>You need to enable JavaScript to run this app.</noscript>
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/App.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/App.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/CouponListApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/CouponListApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/api/RequestApi.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/api/RequestApi.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#113&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"63491000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739696098939</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739696098939</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739708076864</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739708076864</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"12\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 95e4629c5372af29ececc328d5b5e2e20f0b6218)
++++ b/.idea/workspace.xml	(date 1739754720308)
+@@ -4,17 +4,13 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)">
++    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponListApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponListApi.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -65,22 +61,22 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#113&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "git-widget-placeholder": "FE/FIX/#116",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup" />
+@@ -122,7 +118,8 @@
+       <workItem from="1739426375278" duration="2000" />
+       <workItem from="1739426451033" duration="11909000" />
+       <workItem from="1739452113566" duration="11559000" />
+-      <workItem from="1739513711472" duration="63491000" />
++      <workItem from="1739513711472" duration="63743000" />
++      <workItem from="1739750470079" duration="4243000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -212,7 +209,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739708076864</updated>
+     </task>
+-    <option name="localTasksCounter" value="12" />
++    <task id="LOCAL-00012" summary="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
++      <option name="closed" value="true" />
++      <created>1739722788572</created>
++      <option name="number" value="00012" />
++      <option name="presentableId" value="LOCAL-00012" />
++      <option name="project" value="LOCAL" />
++      <updated>1739722788573</updated>
++    </task>
++    <option name="localTasksCounter" value="13" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -234,6 +239,7 @@
+     <MESSAGE value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
+-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
++    <MESSAGE value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
++    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
+   </component>
+ </project>
+\ No newline at end of file

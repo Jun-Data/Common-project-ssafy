@@ -18,9 +18,9 @@ const StoredetailFlearequest = () => {
         quantity: 1,
         price: 10000,
         sectionNumber: 1,
-        application_Date: "",
-        expireDate: 30,
-        imagePath: "", // Base64 형식으로 저장
+        startDate: "",
+        expirationDate: 30,
+        imageUrl: "",
     });
 
     // 입력값 변경 핸들러
@@ -40,7 +40,7 @@ const StoredetailFlearequest = () => {
             reader.onloadend = () => {
                 setFormData({
                     ...formData,
-                    imagePath: reader.result, // Base64 데이터 저장
+                    imageUrl: reader.result, // Base64 데이터 저장
                 });
             };
             reader.readAsDataURL(file); // 파일을 Base64로 변환
@@ -76,7 +76,7 @@ const StoredetailFlearequest = () => {
                             <li>
                                 <label>계좌1:</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     name="userAccount"
                                     value={formData.userAccount}
                                     onChange={handleChange}

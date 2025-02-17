@@ -36,7 +36,7 @@ const StoreDetail = () => {
   };
 
   const handleCouponGet = async (nStoreNo) => {
-    if (!checkLogin()) return;
+    // if (!checkLogin()) return;
 
     try {
       const couponList = await CouponListApi(nStoreNo);
@@ -55,12 +55,12 @@ const StoreDetail = () => {
 
   // 3. 페이지 이동 함수들
   const navigateRequestPage = () => {
-    if (!checkLogin()) return; // 로그인 체크
+    // if (!checkLogin()) return; // 로그인 체크
     navigate(`/storedetail/${storeNo}/request`);
   };
 
   const navigateFlearequest = () => {
-    if (!checkLogin()) return; // 로그인 체크
+    // if (!checkLogin()) return; // 로그인 체크
     navigate(`/storeDetail/${storeNo}/flearequest`);
   };
 
@@ -194,7 +194,7 @@ const StoreDetail = () => {
               ))}
             </ul>
           ) : (
-            <div className="no-items">FLI 상품이 존재하지 않습니다</div>
+            <div className="no-items">플리마켓 상품이 존재하지 않습니다.</div>
           ))}
 
         {/* 공지사항 탭 */}

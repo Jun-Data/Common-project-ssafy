@@ -3,7 +3,6 @@ import userInfoApi from "../../api/UserInfoApi";
 import "./style.css"
 import {useState} from "react";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 const Kiosk = () => {
     const [kioskStoreNo, setKioskStoreNo] = useState(1);

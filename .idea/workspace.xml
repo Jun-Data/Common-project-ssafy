@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)">
+    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponListApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponListApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/RequestApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,22 +61,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#113&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "FE/FIX/#116",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup" />
@@ -122,7 +118,8 @@
       <workItem from="1739426375278" duration="2000" />
       <workItem from="1739426451033" duration="11909000" />
       <workItem from="1739452113566" duration="11559000" />
-      <workItem from="1739513711472" duration="63491000" />
+      <workItem from="1739513711472" duration="63743000" />
+      <workItem from="1739750470079" duration="4243000" />
     </task>
     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
       <option name="closed" value="true" />
@@ -212,7 +209,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739708076864</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
+      <option name="closed" value="true" />
+      <created>1739722788572</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1739722788573</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,6 +239,7 @@
     <MESSAGE value="[FE/FIX] 지도 호출 흐름 수정 (#68)" />
     <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
     <MESSAGE value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
+    <MESSAGE value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
+    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
   </component>
 </project>
