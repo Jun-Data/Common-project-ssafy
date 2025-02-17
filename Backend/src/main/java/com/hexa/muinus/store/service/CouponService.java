@@ -309,12 +309,12 @@ public class CouponService {
     }
 
     @Transactional
-    public CouponQRCodeCheckResponseDto checkCouponBarcode(HttpServletRequest request, CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
+    public CouponQRCodeCheckResponseDto checkCouponQR(HttpServletRequest request, CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
 
-        String barcodeData = couponQRCodeCheckRequestDto.getQRData();
+        String QRData = couponQRCodeCheckRequestDto.getQRData();
 
         // QR 데이터 파싱
-        String[] dataParts = barcodeData.split(",");
+        String[] dataParts = QRData.split(",");
         Integer couponId = null;
         Integer storeNo = null;
         Integer userNo = null;

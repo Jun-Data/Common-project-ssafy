@@ -72,7 +72,7 @@ public class CouponController {
     // 쿠폰 바코드 인식
     @PostMapping("/check")
         public ResponseEntity<CouponQRCodeCheckResponseDto> checkCouponBarcode(HttpServletRequest request, @Valid @RequestBody CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
-        CouponQRCodeCheckResponseDto responseDto = couponService.checkCouponBarcode(request, couponQRCodeCheckRequestDto);
+        CouponQRCodeCheckResponseDto responseDto = couponService.checkCouponQR(request, couponQRCodeCheckRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }
