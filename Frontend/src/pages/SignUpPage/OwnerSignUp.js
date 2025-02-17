@@ -12,6 +12,7 @@ function OwnerSignUp() {
     const navigate = useNavigate(); 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const { addressToCoord } = useGeocoding();
+    const [ImagePreview, setImagePreview] = useState(null);
     const [formData, setFormData] = useState({
         userName: '', 
         userEmail: '', 
@@ -26,6 +27,7 @@ function OwnerSignUp() {
         storeAddress: '',
         registrationNumber: '', 
         fliMarketSectionCount: '0',
+        storeImageUrl : null,
     });
 
     const [errors, setErrors] = useState({
@@ -66,8 +68,7 @@ function OwnerSignUp() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-    
+        const { name, value, files } = e.target;
         if (name === "userTelephone") {
             let formattedValue = value.replace(/[^0-9]/g, '');  // 숫자만 남기기
         
@@ -132,12 +133,31 @@ function OwnerSignUp() {
                 ...prevData,
                 [name]: value, // 입력값을 그대로 상태에 반영
             }));
+        } else if (name === "storeImgUrl") {
+            const file = files[0];
+            if (file) {
+                console.log("이미지 파일 선택됨:", file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file); // Base64 변환
+                reader.onloadend = () => {
+                    console.log("Base64 인코딩된 이미지:", reader.result);
+                    setFormData((prevData) => ({
+                        ...prevData,
+                        storeImgUrl: reader.result, // Base64 데이터 저장
+                    }));
+                    setImagePreview(reader.result) // 미리보기 이미지 상태 업데이트
+                };
+            } else {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    storeImgUrl: null, // 파일 선택 취소 시 초기화
+                }));
+                setImagePreview(null); // 미리보기 이미지 초기화
+            }
         } else {
-            setFormData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
-        }};
+            setFormData((prevData) => ({ ...prevData, [name]: value }));
+        }
+    };
     
     const handleCheckboxChange = () => {
         setFormData((prevData) => ({
@@ -449,6 +469,32 @@ function OwnerSignUp() {
                     <FindButton type="button" onClick={checkregistrationNumber}>인증하기</FindButton>
                 </InputGroup>
 
+                <InputGroup>
+                    <label>매장 사진</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        name="storeImgUrl"
+                        onChange={handleChange}
+                    />
+                </InputGroup>
+                    {/* 미리보기 이미지 */}
+                    {ImagePreview && (
+                        <div style={{ marginTop: "10px" }}>
+                            <img
+                                src={ImagePreview}
+                                alt="매장 이미지 미리보기"
+                                style={{
+                                    display: "flex",
+                                    marginLeft: "20px",
+                                    width: "100px",
+                                    height: "100px",
+                                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                                    border: "2px solid #ddd",
+                                }}
+                            />
+                        </div>
+                    )}
                 <CheckboxWrapper>
                     <FleaAllow>플리마켓 허용여부</FleaAllow>
                     <input
@@ -490,7 +536,7 @@ function OwnerSignUp() {
 }
 
 const InputGroup = styled.div`
-  margin-top: 15px;
+  margin-top: 17px;
   margin-left: 15px;
   display: flex;
   align-items: ;

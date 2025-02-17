@@ -25,9 +25,6 @@ function MyPageHeader() {
                     </>
                 ) : (
                     <>
-                        <NavLink to="/mypage/user/chats" isActive={location.pathname === "/mypage/user/chats"}>
-                            채팅목록
-                        </NavLink>
                         <NavLink to="/mypage/user/coupons" isActive={location.pathname === "/mypage/user/coupons"}>
                             쿠폰함
                         </NavLink>

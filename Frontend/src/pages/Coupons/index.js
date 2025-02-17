@@ -6,9 +6,7 @@ import MyPageHeader from "../../components/MyPageHeader";
 
 function Coupons() {
     const [coupons, setCoupons] = useState([]); // 쿠폰 데이터 상태
-    const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 상태
-    const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
     const [selectedBarcode, setSelectedBarcode] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const modalBackground = useRef();
@@ -24,8 +22,8 @@ function Coupons() {
 
             } catch (err) {
                 setError("쿠폰 데이터를 가져오는데 실패했습니다.");
-            } finally {
-                setLoading(false);
+                console.error("Error:", error);
+
             }
         };
 
@@ -45,17 +43,16 @@ function Coupons() {
             console.log(response.data.qr);
             console.log(response.data.QR);
             setSelectedBarcode(response.data.qr); // 클릭한 쿠폰 바코드 
-            setSelectedCoupon(coupon); // 선택된 쿠폰 업데이트
             setModalIsOpen(true);
 
         } catch (err) {
             setError("쿠폰 데이터를 가져오는데 실패했습니다.");
+            console.error("Error:", error);
         }
     };
 
     const handleCloseModal = ()=>{
         setModalIsOpen(false);
-        setSelectedCoupon(null);
         setSelectedBarcode(null);
     }
 
@@ -63,7 +60,8 @@ function Coupons() {
         <div>
             <HeaderContainer />
             <MyPageHeader />
-
+            <h2>보유 쿠폰 목록</h2>
+            <p>쿠폰을 클릭하여 QR 코드를 생성하고, 키오스크에서 바로 사용하세요!</p>
             <CouponsContainer>
                 {coupons.length === 0 ? (
                     <p>현재 보유한 쿠폰이 없습니다.</p>
@@ -80,7 +78,8 @@ function Coupons() {
                             >
                                 <CouponContent>
                                     <StoreInfo>
-                                        <h3>{coupon.storeName} {coupon.discountRate}%</h3>
+                                        <h3>{coupon.storeName} 매장</h3>
+                                        <h3>{coupon.discountRate}% 할인쿠폰</h3>
                                     </StoreInfo>
                                     <CouponText>{coupon.content}</CouponText>
                                     <ExpirationDate>

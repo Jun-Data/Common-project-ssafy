@@ -98,12 +98,12 @@ const Notice = () => {
                     const base64Image = reader.result;
                     formData.append("boardImageUrl", base64Image);
     
-                    // ✅ 이미지 변환 후 요청 실행
+                    // 이미지 변환 후 요청 실행
                     await sendUpdateRequest(formData);
                 };
     
                 reader.readAsDataURL(blob);
-                return; // ✅ reader.onloadend 내부에서 요청하므로, 여기서 함수 종료
+                return; // reader.onloadend 내부에서 요청하므로, 여기서 함수 종료
             } catch (error) {
                 console.error("이미지 변환 실패:", error);
                 Swal.fire({
@@ -116,11 +116,11 @@ const Notice = () => {
             }
         }
     
-        // ✅ 이미지 추가/삭제 시 요청 실행
+        // 이미지 추가/삭제 시 요청 실행
         await sendUpdateRequest(formData);
     };
     
-    // ✅ 공통 요청 함수
+    // 공통 요청 함수
     const sendUpdateRequest = async (formData) => {
         try {
             const updateResponse = await axios.put(

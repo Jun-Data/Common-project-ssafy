@@ -1,4 +1,4 @@
-import { faRightToBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -70,7 +70,6 @@ function HeaderContainer() {
           <p className="welcome-text" onClick={handleNavigateToMyPage}>
             {logindata ? `${logindata.userName}님 환영합니다.` : "환영합니다."}
           </p>
-          <Link to="/mypage/user/chats">채팅목록</Link>
           <Link to="/mypage/user/coupons">쿠폰함</Link>
         </>
       );
@@ -110,42 +109,25 @@ function HeaderContainer() {
       </Link>
 
       <div className="icons">
-        {/* <div className="link" onClick={handleDropdown}>
-                    <div className="bell">
-                        <FontAwesomeIcon
-                            icon={faBell}
-                            className={locationNow.pathname === "/notifications" ? "bell-icon active-bell-icon" : "bell"}
-                        />
-                    </div>
-                </div> */}
 
         <div className="login">
           {isLoading ? ( // 로그인 정보 로딩 중이면 아무것도 렌더링하지 않음
             <></>
           ) : logindata ? (
-            <FontAwesomeIcon
-              icon={faUser}
-              className="login-icon"
-              onClick={handleDropdown}
+            <img src="/user.png" alt="User Icon" className="login-icon"
+            onClick={handleDropdown}
             />
+            // <FontAwesomeIcon
+            //   icon={faUser}
+            //   className="login-icon"
+            //   onClick={handleDropdown}
+            // />
           ) : (
             <a href={`https://i12a506.p.ssafy.io/api/users/login?redirect=${url}`}>
-              <FontAwesomeIcon icon={faRightToBracket} className="login-icon" />
+              <img src="/login.png" alt="Login Icon" className="login-icon"/>
             </a>
           )}
         </div>
-
-        {/* <div className="login">
-                    {isLoading ? null : logindata ? (
-                        // 로그인된 유저: faUser 아이콘 + 클릭 시 마이페이지 이동
-                        <FontAwesomeIcon icon={faUser} className="login-icon" onClick={handleDropdown} />
-                    ) : (
-                        // 로그인되지 않은 유저: faRightToBracket 아이콘 + 로그인 페이지 이동
-                        <Link to="https://i12a506.p.ssafy.io/api/users/login">
-                            <FontAwesomeIcon icon={faRightToBracket} className="login-icon" />
-                        </Link>
-                    )}
-                </div> */}
       </div>
 
       {/* 드롭다운 메뉴 */}

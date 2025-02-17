@@ -9,7 +9,6 @@ import OwnerSignUp from "./pages/SignUpPage/OwnerSignUp";
 import UserSignUp from "./pages/SignUpPage/UserSignUp";
 import MyPage from "./pages/MyPage";
 import Coupons from "./pages/Coupons";
-import Chats from "./pages/Chats";
 import KakaoRedirect from "./pages/KakaoRedirect";
 import SearchPage from "./pages/Search";
 import StoreDetail from "./pages/Storedetail";
@@ -60,7 +59,6 @@ function App() {
             <Route path="/user-signup" element={<UserSignUp />} />
             <Route path="/mypage/user" element={<MyPage />} />
             <Route path="/mypage/user/coupons" element={<Coupons />} />
-            <Route path="/mypage/user/chats" element={<Chats />} />
             <Route path="/mypage/admin" element={<MyPage />} />
             <Route path="/mypage/admin/flea" element={<FleaRequests />} />
             <Route path="/mypage/admin/stock" element={<StockRequests />} />
