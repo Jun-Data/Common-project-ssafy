@@ -251,7 +251,18 @@ function OwnerSignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("폼 제출 데이터:", formData);
-    
+        
+        // 폼의 모든 필드가 채워졌는지 확인
+        const formIsFull = Object.values(formData).every(value => value.trim() !== "");
+        if (!formIsFull) {
+            // 폼이 채워지지 않으면 경고 메시지 출력
+            Swal.fire({
+                icon: "error",
+                title: "입력 오류",
+                text: "모든 입력값을 채워주세요!",
+            });            
+            return; 
+        }
         // 데이터 유효성 검사
         const formErrors = { ...errors };
         // 개별 필드 유효성 검사 수행
@@ -278,8 +289,6 @@ function OwnerSignUp() {
             return; // 오류가 있으면 요청을 보내지 않음
         }
 
-        // 유효성 검사에서 오류가 없다면
-        // if (!Object.values(formErrors).some(error => error !== '')) {
             try {
                 // JSON 형식으로 데이터를 변환
                 const response = await axios.post(
@@ -307,28 +316,11 @@ function OwnerSignUp() {
                 Swal.fire({
                     icon: "error",
                     title: "가입 실패!",
-                    text: "가입 중 오류가 발생했습니다. 다시 시도해주세요!",
+                    text: "가입 중 오류가 발생했습니다. 입력값을 확인해주세요!",
                     confirmButtonText: "확인",
                 })            
             }
-        // } else {
-        //     console.log("입력값에 오류가 있습니다.");
-        //             // 각 필드에 대한 오류 메시지 확인
-        // Object.keys(formErrors).forEach((key) => {
-        //     if (formErrors[key]) {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: "입력 오류",
-        //             text: `${key} 필드 오류: ${formErrors[key]}`,
-        //         });            }
-        // });
-        // }
     };
-    
-    // 제출 폼 확인용용
-    // useEffect(() => {
-    //     console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
-    // }, [formData]);  // formData가 변경될 때마다 실행
     
     const handleBack = (e) => {
         e.preventDefault();  // 기본 동작인 폼 제출을 막는다.
