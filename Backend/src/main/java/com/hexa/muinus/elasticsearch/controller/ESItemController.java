@@ -4,7 +4,7 @@ import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.domain.ESStoreItem;
 import com.hexa.muinus.elasticsearch.service.ESItemService;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
-import com.hexa.muinus.elasticsearch.service.ItemNameSearchEngine;
+import com.hexa.muinus.elasticsearch.service.ItemSearchEngine;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ESItemController {
 
     private final ESItemService esItemService;
-    private final ItemNameSearchEngine searchEngine;
+    private final ItemSearchEngine searchEngine;
 
     @GetMapping("/autocomplete")
     public List<ESItem> autocomplete(@RequestParam String prefix) {
@@ -63,9 +63,9 @@ public class ESItemController {
     }
 
     @GetMapping("/search-native")
-    public List<ESItem> searchByQuery(@Valid @ModelAttribute SearchNativeDTO searchNativeDTO) {
+    public ResponseEntity<List<ESItem>> searchByQuery(@Valid @ModelAttribute SearchNativeDTO searchNativeDTO) {
         log.info("Search Item: {}", searchNativeDTO);
-        return searchEngine.searchByQuery(searchNativeDTO);
+        return ResponseEntity.ok(searchEngine.searchByQuery(searchNativeDTO));
     }
 }
 

@@ -49,7 +49,7 @@ public class KeywordDataLoader implements InitializingBean {
         log.info("Brand words({}): {}", BRAND_KEYWORDS.size(), BRAND_KEYWORDS);
         log.info("Type words({}): {}", TYPE_KEYWORDS.size(), TYPE_KEYWORDS);
 
-        log.info("Successfully loaded keywords...");
+        log.info("Successfully loaded keywords");
     }
 
     private void loadKeywords(String resourcePath, Set<String> keywordSet) {

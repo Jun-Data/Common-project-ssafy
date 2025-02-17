@@ -1,18 +1,13 @@
 package com.hexa.muinus.elasticsearch.service;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.ConstantScoreQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.elasticsearch.indices.AnalyzeRequest;
-import co.elastic.clients.elasticsearch.indices.AnalyzeResponse;
-import co.elastic.clients.elasticsearch.indices.analyze.AnalyzeToken;
 import co.elastic.clients.util.ObjectBuilder;
 import com.hexa.muinus.common.exception.ESErrorCode;
 import com.hexa.muinus.common.exception.MuinusException;
 import com.hexa.muinus.elasticsearch.config.KeywordDataLoader;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
@@ -32,10 +27,10 @@ import java.util.function.Function;
 
 @Slf4j
 @Service
-public class ItemNameSearchEngine {
+public class ItemSearchEngine {
 
     private final ElasticsearchOperations elasticsearchOperations;
-    private final ElasticsearchClient elasticsearchClient;
+    private final ItemAnalyzer esAnalyzer;
 
     private static Set<String> TYPE_KEYWORDS;
     private static Set<String> BRAND_KEYWORDS;
@@ -44,9 +39,9 @@ public class ItemNameSearchEngine {
     private final static Float TYPE_SCORE = 2.0F;
     private final static Float BRAND_SCORE = 1.0F;
 
-    public ItemNameSearchEngine (ElasticsearchOperations elasticsearchOperations, ElasticsearchClient elasticsearchClient) {
+    public ItemSearchEngine(ElasticsearchOperations elasticsearchOperations, ItemAnalyzer esAnalyzer) {
         this.elasticsearchOperations = elasticsearchOperations;
-        this.elasticsearchClient = elasticsearchClient;
+        this.esAnalyzer = esAnalyzer;
         TYPE_KEYWORDS = KeywordDataLoader.getTypeKeywords();
         BRAND_KEYWORDS = KeywordDataLoader.getBrandKeywords();
     }
@@ -54,8 +49,9 @@ public class ItemNameSearchEngine {
     public List<ESItem> searchByQuery(SearchNativeDTO dto) {
         String query = dto.getQuery();
 
-        List<String> tokens = getTokens(query, "items", "custom_search_analyzer");
+        List<String> tokens = esAnalyzer.getAnalyzedTokens(query, "items", "custom_search_analyzer");
         log.debug("tokens: {}", tokens);
+
         if(tokens.isEmpty()){
             return List.of();
         }
@@ -63,7 +59,7 @@ public class ItemNameSearchEngine {
         try {
             List<ESItem> items = searchNoriOperation(tokens, "item_name.nori", dto, 0, 7);
             log.debug("nori - items: {}", items);
-            if(!items.isEmpty()){
+            if(items.isEmpty()){
                 items = searchNoriOperation(tokens, "item_name.nori_shingle", dto, 0, 7);
                 log.debug("shingle - items: {}", items);
             }
@@ -76,6 +72,7 @@ public class ItemNameSearchEngine {
     }
 
     private List<ESItem> shuffleSameScore(List<SearchHit<ESItem>> hits) {
+        log.info(hits.toString());
         if(hits.isEmpty()) return List.of();
 
         log.debug("before shuffle - hits: {}", hits);
@@ -125,7 +122,6 @@ public class ItemNameSearchEngine {
     }
 
     private Function<RangeQuery.Builder, ObjectBuilder<RangeQuery>> buildRangeFilter(String field, double min, double max) {
-
         return r -> r.number(rn -> rn.field(field).gte(min).lte(max));
     }
 
@@ -161,28 +157,6 @@ public class ItemNameSearchEngine {
                 .withPageable(PageRequest.of(page, pageSize))
                 .build();
 
-    }
-
-    public List<String> getTokens(String query, String index, String analyzer) {
-        try {
-            // 분석해서 토큰 먼저 얻기
-            AnalyzeRequest request = AnalyzeRequest.of(a -> a
-                    .index(index)                           // 인덱스 지정
-                    .analyzer(analyzer)       // 사용할 analyzer 지정
-                    .text(query)
-            );
-
-            // Analyze API 호출
-            AnalyzeResponse response = elasticsearchClient.indices().analyze(request);
-            List<AnalyzeToken> analyzeTokens = response.tokens();
-
-            List<String> tokens = analyzeTokens.stream().map(AnalyzeToken::token).toList();
-            return tokens;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return List.of();
-        }
     }
 }
 
