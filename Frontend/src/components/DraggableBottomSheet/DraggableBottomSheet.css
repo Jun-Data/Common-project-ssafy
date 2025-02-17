@@ -2,7 +2,7 @@
 .bottom-sheet {
     box-sizing: border-box;
     position: fixed;
-    bottom: 0 !important; /* ✅ 하단 고정 */
+    bottom: 0 !important; /* 하단 고정 */
     left: 0;
     right: 0;
     background-color: #fff;
@@ -14,8 +14,8 @@
     touch-action: none; /* 터치 스크롤 충돌 방지 */
     -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
 
-    max-height: 85vh; /* 최대 높이 제한 */
-    overflow-y: auto; /* 내용 스크롤 활성화 */
+    max-height: 85vh;  /* 최대 높이 제한 */
+    overflow: hidden; /* 내부 컨텐츠 별도 스크롤 처리 */
     padding: 8px 0;
 }
 
@@ -25,7 +25,7 @@
     width: 40%;
     height: 20px;
     border-radius: 6px;
-    background-color: #3f72af;
+    color: #4a90e2;
     transition: background-color 0.3s ease;
 }
 
@@ -40,29 +40,57 @@
     background-color: #616161 !important;
 }
 
+/* bottom-sheet의 내부 콘텐츠 영역 */
+.bottom-sheet-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-/* ul 스타일 */
-.bottom-sheet-content ul {
+.fixed-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 10px 15px;
+    z-index: 2;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 스크롤 가능한 영역: ul 리스트가 포함된 부분 */
+.scrollable-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* ul 리스트 스타일 */
+.scrollable-section ul {
     list-style: none; /* 기본 불릿 제거 */
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column; /* 아이템을 세로로 정렬 */
-    gap: 10px; /* 리스트 아이템 간 간격 추가 */
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* li 스타일 */
-.bottom-sheet-content li {
+.scrollable-section li {
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
-    background-color: #f9f9f9; /* 밝은 배경색으로 가독성 향상 */
-    border-radius: 8px; /* 부드러운 모서리 */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가로 깊이감 제공 */
-    cursor: pointer; /* 클릭 가능하다는 표시 */
-    transition: background-color 0.2s ease; /* 부드러운 호버 효과 */
+    background-color: #f9f9f9; /* 밝은 배경색 */
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 16px;
 }
 
+.scrollable-section li:hover {
+    background-color: #eaeaea;
+}
+
+/* 매장 이름과 거리 스타일 */
 .store-name {
     text-align: left;
     width: 80%;
@@ -76,19 +104,10 @@
     width: 20%;
     height: 100%;
 }
-/* li 호버 효과 */
-.bottom-sheet-content li:hover {
-    background-color: #eaeaea; /* 호버 시 약간 더 어두운 배경색 */
-}
 
-/* li 텍스트 스타일 */
-.bottom-sheet-content li {
-    font-size: 16px; /* 기본 폰트 크기 */
-}
-
-/* 작은 화면에서 반응형 폰트 크기 조정 */
+/* 작은 화면을 위한 반응형 조정 */
 @media (max-width: 768px) {
-    .bottom-sheet-content li {
-        font-size: 14px; /* 작은 화면에서는 폰트 크기 축소 */
+    .scrollable-section li {
+        font-size: 14px;
     }
 }

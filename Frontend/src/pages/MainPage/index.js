@@ -12,6 +12,7 @@ import { useBaseMap } from "../../contexts/ KakaoMapContext";
 import "./style.css";
 
 const MainPage = () => {
+
     const { isSDKLoaded } = useBaseMap();
     const { coordToAddress } = useReverseGeocoding();
     const { addressToCoord } = useGeocoding();

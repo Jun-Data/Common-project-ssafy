@@ -1,58 +1,44 @@
+import { useState } from "react";
 import KioskHeaderContainer from "../../components/KioskHeaderContainer";
-import userInfoApi from "../../api/UserInfoApi";
-import "./style.css"
-import {useState} from "react";
-
+import useAuth from "../../hooks/useAuth";
+import "./style.css";
 
 const Kiosk = () => {
-    const [kioskStoreNo, setKioskStoreNo] = useState(1);
-    const getUserInfo = userInfoApi();
+    const [storeNo, setStoreNo] = useState("");
+    const { logindata } = useAuth();
 
-    const handleStoreNo = (storeNo) => {
-        setKioskStoreNo(storeNo);
-    }
+
 
     return (
         <div className="kiosk">
-
             <div className="headercontainer1">
-                <KioskHeaderContainer onstoreNoReceived = {handleStoreNo} />
+                {/* 로그인 및 권한 처리는 KioskHeaderContainer에서 모두 해결 */}
+                <KioskHeaderContainer />
             </div>
-
             <div className="barcode_image">
-                <img src="/barcode_icon.png" alt="kioskbarcode"/>
+                <img src="/barcode_icon.png" alt="kioskbarcode" />
             </div>
 
             <section className="instructions">
-                <p>상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!</p>
-                <p>플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!</p>
+                <p>
+                    상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!
+                </p>
+                <p>
+                    플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!
+                </p>
             </section>
 
-            <a
-                href={`localhost:3000/kiosk/main`}
-                className="kioskstartbutton"
-            >
-            {/*<a*/}
-            {/*    href={getUserInfo ? `${apiUrl}/kiosk/${getUserInfo?.storeNo}` : '#'}*/}
-            {/*    className="kioskstartbutton"*/}
-            {/*    onClick={(e) => {*/}
-            {/*    if (!getUserInfo) {*/}
-            {/*        e.preventDefault();*/}
-            {/*        alert("접근 권한이 없습니다");*/}
-            {/*    }*/}
-            {/*        }}*/}
-            {/*    >*/}
-            <button
-                className={`start_button ${!getUserInfo ? 'disabled' : ''}`}
-                // disabled={!getUserInfo}
-                >시작하기</button>
-               </a>
+            <a href="http://localhost:3000/kiosk/main" className="kioskstartbutton">
+                <button className={`start_button ${!logindata ? "disabled" : ""}`}>
+                    시작하기
+                </button>
+            </a>
 
             <div className="description">
-                <img src='/Description.png' alt= "kioskinstruction" />
+                <img src="/Description.png" alt="kioskinstruction" />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Kiosk
+export default Kiosk;

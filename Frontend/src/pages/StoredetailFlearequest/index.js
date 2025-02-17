@@ -10,7 +10,7 @@ const StoredetailFlearequest = () => {
     const nStoreNo = Number(storeNo)
 
     const [formData, setFormData] = useState({
-        storeId : nStoreNo,
+        storeId: nStoreNo,
         userAccount: "",
         userBank: "",
         accountName: "",
@@ -19,7 +19,7 @@ const StoredetailFlearequest = () => {
         price: 10000,
         sectionNumber: 1,
         startDate: "",
-        expirationDate: 30,
+        expirationDate: 30,  // 필드명 통일
         imageUrl: "",
     });
 
@@ -47,13 +47,12 @@ const StoredetailFlearequest = () => {
         }
     };
 
-    // 폼 제출 핸들러
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("입력된 데이터:", formData);
+
+        // API 호출부
         FleaRequestApi(formData);
-        // API 호출 또는 추가 처리
-    };
+    }
 
     return (
         <div className="storedetailpageflearequest">
@@ -145,7 +144,7 @@ const StoredetailFlearequest = () => {
                                 <label>보관:</label>
                                 <input
                                     type="number"
-                                    name="expireDate"
+                                    name="expirationDate"
                                     value={formData.expireDate}
                                     onChange={handleChange}
                                 />
@@ -161,7 +160,10 @@ const StoredetailFlearequest = () => {
                             </li>
                         </ul>
                         {/* 제출 버튼 */}
-                        <button type="submit" className="flearequestsubmitbutton">제출하기</button>
+                        <button
+                            type="submit"
+                            className="flearequestsubmitbutton"
+                            onClick={() => navigate(-1)}>제출하기</button>
                     </form>
 
                     {/* 뒤로가기 버튼 */}

@@ -4,12 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
+    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/api/FleaRequestApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/FleaRequestApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +71,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "FE/FIX/#116",
+    "git-widget-placeholder": "FE/FIX/#118",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
     "node.js.detected.package.eslint": "true",
@@ -119,7 +125,7 @@
       <workItem from="1739426451033" duration="11909000" />
       <workItem from="1739452113566" duration="11559000" />
       <workItem from="1739513711472" duration="63743000" />
-      <workItem from="1739750470079" duration="4243000" />
+      <workItem from="1739750470079" duration="12985000" />
     </task>
     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
       <option name="closed" value="true" />
@@ -217,7 +223,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739722788573</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
+      <option name="closed" value="true" />
+      <created>1739754878271</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1739754878271</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -240,6 +254,7 @@
     <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
     <MESSAGE value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
     <MESSAGE value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
+    <MESSAGE value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
+    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
   </component>
 </project>

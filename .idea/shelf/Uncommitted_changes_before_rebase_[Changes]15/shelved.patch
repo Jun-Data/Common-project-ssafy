@@ -1,0 +1,1885 @@
+Index: Frontend/src/pages/MainPage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect } from \"react\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchBar from \"../../components/SearchBar\";\nimport KakaoPostcodePopup from \"../../components/KakaoPostcodePopup\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport useGeolocation from \"../../hooks/UseGeolocation\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\nimport \"./style.css\";\n\nconst MainPage = () => {\n    const { isSDKLoaded } = useBaseMap();\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const { geoCoords, error } = useGeolocation();\n\n    const [coords, setCoords] = useState({ lat: 37.5015376, lng: 127.0397208 });\n    const [address, setAddress] = useState(\"인재의 산실 멀티캠퍼스\");\n    const [isPopupOpen, setIsPopupOpen] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n    const [isManualAddress, setIsManualAddress] = useState(false);\n\n    // 자동 위치 추적: geolocation 결과로 좌표와 주소 업데이트\n    useEffect(() => {\n        if (isSDKLoaded && !isManualAddress && geoCoords) {\n            (async () => {\n                try {\n                    const newAddress = await coordToAddress(geoCoords);\n                    setCoords(geoCoords);\n                    setAddress(newAddress);\n                } catch (err) {\n                    console.error(\"위치 업데이트 실패:\", err);\n                    setAddress(\"위치 정보 불러오기 실패\");\n                }\n            })();\n        }\n    }, [geoCoords, isSDKLoaded, isManualAddress, coordToAddress]);\n\n    // 주소 검색 완료 시 핸들러\n    const handleAddressComplete = async (data) => {\n        try {\n            const fullAddress = data.fullAddress;\n            setAddress(fullAddress);\n            setIsManualAddress(true);\n            const newCoords = await addressToCoord(fullAddress);\n            if (newCoords) {\n                setCoords(prev => ({ ...prev, ...newCoords }));\n            }\n        } catch (err) {\n            console.error(\"주소 변환 오류:\", err);\n        }\n    };\n\n    return (\n        <div className=\"mainpagebackground\">\n            <div className=\"mainpagecontents\">\n                <div className=\"mainpageheader\">\n                    <HeaderContainer />\n                </div>\n\n                <div className=\"mainpagesearchbar\">\n                    <SearchBar coords={coords} />\n                </div>\n\n                <div className=\"mainpagecurrentaddress\">\n                        <img src='/mylocation.png' className=\"mainpageaddressimg\" />\n                    <div className=\"mainpageaddressdetail\">\n                        {error ? \"위치 찾는 중....\" : `${address}`}\n                    </div>\n                    <button\n                        onClick={() => setIsPopupOpen(true)}\n                        className=\"addressSearchButton\"\n                    >\n                        주소 찾기\n                    </button>\n                </div>\n\n\n                <div className=\"mainpagebottomsheet\">\n                    <DraggableBottomSheet\n                        coords={coords}\n                        setStorelist={setStorelist}\n                    />\n                </div>\n\n                {isSDKLoaded && (\n                    <>\n                        <KakaoMapContainer coords={coords} />\n                        <KakaoMapMarkers storelist={storelist} />\n                    </>\n                )}\n\n                {isPopupOpen && (\n                    <KakaoPostcodePopup\n                        onClose={() => setIsPopupOpen(false)}\n                        onComplete={handleAddressComplete}\n                    />\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default MainPage;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/index.js b/Frontend/src/pages/MainPage/index.js
+--- a/Frontend/src/pages/MainPage/index.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/pages/MainPage/index.js	(date 1739765663711)
+@@ -12,6 +12,7 @@
+ import "./style.css";
+ 
+ const MainPage = () => {
++
+     const { isSDKLoaded } = useBaseMap();
+     const { coordToAddress } = useReverseGeocoding();
+     const { addressToCoord } = useGeocoding();
+Index: Frontend/src/pages/Kiosk/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import KioskHeaderContainer from \"../../components/KioskHeaderContainer\";\nimport userInfoApi from \"../../api/UserInfoApi\";\nimport \"./style.css\"\nimport {useState} from \"react\";\n\n\nconst Kiosk = () => {\n    const [kioskStoreNo, setKioskStoreNo] = useState(1);\n    const getUserInfo = userInfoApi();\n\n    const handleStoreNo = (storeNo) => {\n        setKioskStoreNo(storeNo);\n    }\n\n    return (\n        <div className=\"kiosk\">\n\n            <div className=\"headercontainer1\">\n                <KioskHeaderContainer onstoreNoReceived = {handleStoreNo} />\n            </div>\n\n            <div className=\"barcode_image\">\n                <img src=\"/barcode_icon.png\" alt=\"kioskbarcode\"/>\n            </div>\n\n            <section className=\"instructions\">\n                <p>상품은 <span className=\"highlight\">바코드 스캐너</span>에 찍어주세요!</p>\n                <p>플리마켓 제품은 <span className=\"highlight\">키오스크</span>에서 구매하세요!</p>\n            </section>\n\n            <a\n                href={`localhost:3000/kiosk/main`}\n                className=\"kioskstartbutton\"\n            >\n            {/*<a*/}\n            {/*    href={getUserInfo ? `${apiUrl}/kiosk/${getUserInfo?.storeNo}` : '#'}*/}\n            {/*    className=\"kioskstartbutton\"*/}\n            {/*    onClick={(e) => {*/}\n            {/*    if (!getUserInfo) {*/}\n            {/*        e.preventDefault();*/}\n            {/*        alert(\"접근 권한이 없습니다\");*/}\n            {/*    }*/}\n            {/*        }}*/}\n            {/*    >*/}\n            <button\n                className={`start_button ${!getUserInfo ? 'disabled' : ''}`}\n                // disabled={!getUserInfo}\n                >시작하기</button>\n               </a>\n\n            <div className=\"description\">\n                <img src='/Description.png' alt= \"kioskinstruction\" />\n            </div>\n        </div>\n    )\n}\n\nexport default Kiosk\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Kiosk/index.js b/Frontend/src/pages/Kiosk/index.js
+--- a/Frontend/src/pages/Kiosk/index.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/pages/Kiosk/index.js	(date 1739765938224)
+@@ -1,58 +1,44 @@
+-import KioskHeaderContainer from "../../components/KioskHeaderContainer";
+-import userInfoApi from "../../api/UserInfoApi";
+-import "./style.css"
+-import {useState} from "react";
+-
++import { useState } from "react";
++import KioskHeaderContainer from "../../components/KioskHeaderContainer";
++import useAuth from "../../hooks/useAuth";
++import "./style.css";
+ 
+ const Kiosk = () => {
+-    const [kioskStoreNo, setKioskStoreNo] = useState(1);
+-    const getUserInfo = userInfoApi();
++    const [storeNo, setStoreNo] = useState("");
++    const { logindata } = useAuth();
+ 
+-    const handleStoreNo = (storeNo) => {
+-        setKioskStoreNo(storeNo);
+-    }
++
+ 
+     return (
+         <div className="kiosk">
+-
+             <div className="headercontainer1">
+-                <KioskHeaderContainer onstoreNoReceived = {handleStoreNo} />
++                {/* 로그인 및 권한 처리는 KioskHeaderContainer에서 모두 해결 */}
++                <KioskHeaderContainer />
+             </div>
+-
+             <div className="barcode_image">
+-                <img src="/barcode_icon.png" alt="kioskbarcode"/>
++                <img src="/barcode_icon.png" alt="kioskbarcode" />
+             </div>
+ 
+             <section className="instructions">
+-                <p>상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!</p>
+-                <p>플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!</p>
++                <p>
++                    상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!
++                </p>
++                <p>
++                    플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!
++                </p>
+             </section>
+ 
+-            <a
+-                href={`localhost:3000/kiosk/main`}
+-                className="kioskstartbutton"
+-            >
+-            {/*<a*/}
+-            {/*    href={getUserInfo ? `${apiUrl}/kiosk/${getUserInfo?.storeNo}` : '#'}*/}
+-            {/*    className="kioskstartbutton"*/}
+-            {/*    onClick={(e) => {*/}
+-            {/*    if (!getUserInfo) {*/}
+-            {/*        e.preventDefault();*/}
+-            {/*        alert("접근 권한이 없습니다");*/}
+-            {/*    }*/}
+-            {/*        }}*/}
+-            {/*    >*/}
+-            <button
+-                className={`start_button ${!getUserInfo ? 'disabled' : ''}`}
+-                // disabled={!getUserInfo}
+-                >시작하기</button>
+-               </a>
++            <a href="http://localhost:3000/kiosk/main" className="kioskstartbutton">
++                <button className={`start_button ${!logindata ? "disabled" : ""}`}>
++                    시작하기
++                </button>
++            </a>
+ 
+             <div className="description">
+-                <img src='/Description.png' alt= "kioskinstruction" />
++                <img src="/Description.png" alt="kioskinstruction" />
+             </div>
+         </div>
+-    )
+-}
++    );
++};
+ 
+-export default Kiosk
++export default Kiosk;
+\ No newline at end of file
+Index: Frontend/src/components/KioskHeaderContainer/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useEffect } from \"react\";\nimport axios from \"axios\";\nimport useAuth from \"../../hooks/useAuth\";\nimport \"./style.css\";\n\nconst apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\nconst KioskHeaderContainer = () => {\n  const url = \"https://i12a506.p.ssafy.io/kiosk/main\";\n  const { logindata } = useAuth();\n\n  useEffect(() => {\n    const logout = async () => {\n      if (logindata && logindata.usertype !== \"A\") {\n        try {\n          const response = await axios.get(\n            `${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`\n          );\n          if (response.status === 200) {\n            alert(\"로그아웃 되었습니다\");\n            window.location.href = \"https://i12a506.p.ssafy.io\";\n          } else {\n            alert(\"로그아웃 실패! 다시 시도해주세요.\");\n          }\n        } catch (error) {\n          console.error(\"로그아웃 요청 중 오류 발생:\", error);\n          alert(\"서버 오류로 로그아웃에 실패했습니다.\");\n        }\n      }\n    };\n\n    logout();\n  }, [logindata]);\n\n  return (\n    <div className=\"headercontainer\">\n      <div className=\"logo\">\n        <img src=\"/logo.png\" alt=\"headercontainerimg\" />\n      </div>\n\n      <div className=\"auth-section\">\n        {logindata ? (\n          logindata.usertype === \"A\" ? (\n            <a href={`${apiUrl}/api/users/logout`} className=\"logout-button\">\n              로그아웃\n            </a>\n          ) : (\n            <div className=\"auth-message\">\n              <span className=\"permission-error\">\n                페이지 접근 권한이 없습니다 (자동 로그아웃)\n              </span>\n            </div>\n          )\n        ) : (\n          <a\n            href={`${apiUrl}/api/users/login?redirect=${url}`}\n            className=\"login-button\"\n          >\n            <button className=\"login-button\">로그인</button>\n          </a>\n        )}\n      </div>\n    </div>\n  );\n};\n\nexport default KioskHeaderContainer;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskHeaderContainer/index.js b/Frontend/src/components/KioskHeaderContainer/index.js
+--- a/Frontend/src/components/KioskHeaderContainer/index.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/components/KioskHeaderContainer/index.js	(date 1739765739068)
+@@ -1,4 +1,4 @@
+-import React, { useEffect } from "react";
++import { useEffect } from "react";
+ import axios from "axios";
+ import useAuth from "../../hooks/useAuth";
+ import "./style.css";
+@@ -6,18 +6,17 @@
+ const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+ 
+ const KioskHeaderContainer = () => {
+-  const url = "https://i12a506.p.ssafy.io/kiosk/main";
++
+   const { logindata } = useAuth();
+ 
+   useEffect(() => {
+-    const logout = async () => {
+-      if (logindata && logindata.usertype !== "A") {
++// 로그인했지만 권한이 없는 userType 일 경우, 자동 로그아웃 처리
++    if (logindata && logindata.userType !== "A") {
++      const logout = async () => {
+         try {
+-          const response = await axios.get(
+-            `${process.env.REACT_APP_BACKEND_API_URL}/api/users/logout`
+-          );
++          const response = await axios.get(`${apiUrl}/api/users/logout`);
+           if (response.status === 200) {
+-            alert("로그아웃 되었습니다");
++            alert("권한이 없습니다. 로그아웃합니다.");
+             window.location.href = "https://i12a506.p.ssafy.io";
+           } else {
+             alert("로그아웃 실패! 다시 시도해주세요.");
+@@ -26,42 +25,42 @@
+           console.error("로그아웃 요청 중 오류 발생:", error);
+           alert("서버 오류로 로그아웃에 실패했습니다.");
+         }
+-      }
+-    };
+-
+-    logout();
++      };
++      logout();
++    }
+   }, [logindata]);
+ 
+   return (
+-    <div className="headercontainer">
+-      <div className="logo">
+-        <img src="/logo.png" alt="headercontainerimg" />
+-      </div>
+-
+-      <div className="auth-section">
+-        {logindata ? (
+-          logindata.usertype === "A" ? (
+-            <a href={`${apiUrl}/api/users/logout`} className="logout-button">
+-              로그아웃
+-            </a>
+-          ) : (
+-            <div className="auth-message">
+-              <span className="permission-error">
+-                페이지 접근 권한이 없습니다 (자동 로그아웃)
+-              </span>
+-            </div>
+-          )
+-        ) : (
+-          <a
+-            href={`${apiUrl}/api/users/login?redirect=${url}`}
+-            className="login-button"
+-          >
+-            <button className="login-button">로그인</button>
+-          </a>
+-        )}
+-      </div>
+-    </div>
++      <div className="headercontainer">
++        <div className="logo">
++          <img src="/logo.png" alt="headercontainerimg" />
++        </div>
++        <div className="auth-section">
++          {logindata ? (
++              // 로그인되어 있다면 usertype에 따라 분기 처리
++              logindata.userType === "A" ? (
++                  <a href={`${apiUrl}/api/users/logout`} className="logout-button">
++                    로그아웃
++                  </a>
++              ) : (
++                  <div className="auth-message">
++          <span className="permission-error">
++            페이지 접근 권한이 없습니다 (자동 로그아웃)
++          </span>
++                  </div>
++              )
++          ) : (
++              // 아직 로그인이 안 되어 있다면 로그인 버튼 노출
++              <a
++                  href={`${apiUrl}/api/users/login?redirect=${apiUrl}`}
++                  className="login-button"
++              >
++                <button className="login-button">로그인</button>
++              </a>
++          )}
++        </div>
++      </div>
+   );
+ };
+ 
+-export default KioskHeaderContainer;
++export default KioskHeaderContainer;
+\ No newline at end of file
+Index: Frontend/package-lock.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/package-lock.json b/Frontend/package-lock.json
+--- a/Frontend/package-lock.json	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/package-lock.json	(date 1739763417069)
+@@ -15,6 +15,7 @@
+         "@fortawesome/free-regular-svg-icons": "^6.7.2",
+         "@fortawesome/free-solid-svg-icons": "^6.7.2",
+         "@fortawesome/react-fontawesome": "^0.2.2",
++        "@tanstack/react-router": "^1.105.0",
+         "@thewirv/react-barcode-scanner": "^3.3.5",
+         "axios": "^1.7.9",
+         "cra-template": "1.2.0",
+@@ -36,7 +37,9 @@
+         "web-vitals": "^4.2.4"
+       },
+       "devDependencies": {
+-        "@faker-js/faker": "^9.4.0"
++        "@faker-js/faker": "^9.4.0",
++        "@tanstack/router-devtools": "^1.105.0",
++        "@tanstack/router-plugin": "^1.105.0"
+       }
+     },
+     "node_modules/@alloc/quick-lru": {
+@@ -88,21 +91,21 @@
+       }
+     },
+     "node_modules/@babel/core": {
+-      "version": "7.26.7",
+-      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.26.7.tgz",
+-      "integrity": "sha512-SRijHmF0PSPgLIBYlWnG0hyeJLwXE2CgpsXaMOrtt2yp9/86ALw6oUlj9KYuZ0JN07T4eBMVIW4li/9S1j2BGA==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.26.9.tgz",
++      "integrity": "sha512-lWBYIrF7qK5+GjY5Uy+/hEgp8OJWOD/rpy74GplYRhEauvbHDeFB8t5hPOZxCZ0Oxf4Cc36tK51/l3ymJysrKw==",
+       "license": "MIT",
+       "dependencies": {
+         "@ampproject/remapping": "^2.2.0",
+         "@babel/code-frame": "^7.26.2",
+-        "@babel/generator": "^7.26.5",
++        "@babel/generator": "^7.26.9",
+         "@babel/helper-compilation-targets": "^7.26.5",
+         "@babel/helper-module-transforms": "^7.26.0",
+-        "@babel/helpers": "^7.26.7",
+-        "@babel/parser": "^7.26.7",
+-        "@babel/template": "^7.25.9",
+-        "@babel/traverse": "^7.26.7",
+-        "@babel/types": "^7.26.7",
++        "@babel/helpers": "^7.26.9",
++        "@babel/parser": "^7.26.9",
++        "@babel/template": "^7.26.9",
++        "@babel/traverse": "^7.26.9",
++        "@babel/types": "^7.26.9",
+         "convert-source-map": "^2.0.0",
+         "debug": "^4.1.0",
+         "gensync": "^1.0.0-beta.2",
+@@ -163,13 +166,13 @@
+       }
+     },
+     "node_modules/@babel/generator": {
+-      "version": "7.26.5",
+-      "resolved": "https://registry.npmjs.org/@babel/generator/-/generator-7.26.5.tgz",
+-      "integrity": "sha512-2caSP6fN9I7HOe6nqhtft7V4g7/V/gfDsC3Ag4W7kEzzvRGKqiv0pu0HogPiZ3KaVSoNDhUws6IJjDjpfmYIXw==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/generator/-/generator-7.26.9.tgz",
++      "integrity": "sha512-kEWdzjOAUMW4hAyrzJ0ZaTOu9OmpyDIQicIh0zg0EEcEkYXZb2TjtBhnHi2ViX7PKwZqF4xwqfAm299/QMP3lg==",
+       "license": "MIT",
+       "dependencies": {
+-        "@babel/parser": "^7.26.5",
+-        "@babel/types": "^7.26.5",
++        "@babel/parser": "^7.26.9",
++        "@babel/types": "^7.26.9",
+         "@jridgewell/gen-mapping": "^0.3.5",
+         "@jridgewell/trace-mapping": "^0.3.25",
+         "jsesc": "^3.0.2"
+@@ -440,25 +443,25 @@
+       }
+     },
+     "node_modules/@babel/helpers": {
+-      "version": "7.26.7",
+-      "resolved": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.26.7.tgz",
+-      "integrity": "sha512-8NHiL98vsi0mbPQmYAGWwfcFaOy4j2HY49fXJCfuDcdE7fMIsH9a7GdaeXpIBsbT7307WU8KCMp5pUVDNL4f9A==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.26.9.tgz",
++      "integrity": "sha512-Mz/4+y8udxBKdmzt/UjPACs4G3j5SshJJEFFKxlCGPydG4JAHXxjWjAwjd09tf6oINvl1VfMJo+nB7H2YKQ0dA==",
+       "license": "MIT",
+       "dependencies": {
+-        "@babel/template": "^7.25.9",
+-        "@babel/types": "^7.26.7"
++        "@babel/template": "^7.26.9",
++        "@babel/types": "^7.26.9"
+       },
+       "engines": {
+         "node": ">=6.9.0"
+       }
+     },
+     "node_modules/@babel/parser": {
+-      "version": "7.26.7",
+-      "resolved": "https://registry.npmjs.org/@babel/parser/-/parser-7.26.7.tgz",
+-      "integrity": "sha512-kEvgGGgEjRUutvdVvZhbn/BxVt+5VSpwXz1j3WYXQbXDo8KzFOPNG2GQbdAiNq8g6wn1yKk7C/qrke03a84V+w==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/parser/-/parser-7.26.9.tgz",
++      "integrity": "sha512-81NWa1njQblgZbQHxWHpxxCzNsa3ZwvFqpUg7P+NNUU6f3UU2jBEg4OlF/J6rl8+PQGh1q6/zWScd001YwcA5A==",
+       "license": "MIT",
+       "dependencies": {
+-        "@babel/types": "^7.26.7"
++        "@babel/types": "^7.26.9"
+       },
+       "bin": {
+         "parser": "bin/babel-parser.js"
+@@ -2052,30 +2055,30 @@
+       }
+     },
+     "node_modules/@babel/template": {
+-      "version": "7.25.9",
+-      "resolved": "https://registry.npmjs.org/@babel/template/-/template-7.25.9.tgz",
+-      "integrity": "sha512-9DGttpmPvIxBb/2uwpVo3dqJ+O6RooAFOS+lB+xDqoE2PVCE8nfoHMdZLpfCQRLwvohzXISPZcgxt80xLfsuwg==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/template/-/template-7.26.9.tgz",
++      "integrity": "sha512-qyRplbeIpNZhmzOysF/wFMuP9sctmh2cFzRAZOn1YapxBsE1i9bJIY586R/WBLfLcmcBlM8ROBiQURnnNy+zfA==",
+       "license": "MIT",
+       "dependencies": {
+-        "@babel/code-frame": "^7.25.9",
+-        "@babel/parser": "^7.25.9",
+-        "@babel/types": "^7.25.9"
++        "@babel/code-frame": "^7.26.2",
++        "@babel/parser": "^7.26.9",
++        "@babel/types": "^7.26.9"
+       },
+       "engines": {
+         "node": ">=6.9.0"
+       }
+     },
+     "node_modules/@babel/traverse": {
+-      "version": "7.26.7",
+-      "resolved": "https://registry.npmjs.org/@babel/traverse/-/traverse-7.26.7.tgz",
+-      "integrity": "sha512-1x1sgeyRLC3r5fQOM0/xtQKsYjyxmFjaOrLJNtZ81inNjyJHGIolTULPiSc/2qe1/qfpFLisLQYFnnZl7QoedA==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/traverse/-/traverse-7.26.9.tgz",
++      "integrity": "sha512-ZYW7L+pL8ahU5fXmNbPF+iZFHCv5scFak7MZ9bwaRPLUhHh7QQEMjZUg0HevihoqCM5iSYHN61EyCoZvqC+bxg==",
+       "license": "MIT",
+       "dependencies": {
+         "@babel/code-frame": "^7.26.2",
+-        "@babel/generator": "^7.26.5",
+-        "@babel/parser": "^7.26.7",
+-        "@babel/template": "^7.25.9",
+-        "@babel/types": "^7.26.7",
++        "@babel/generator": "^7.26.9",
++        "@babel/parser": "^7.26.9",
++        "@babel/template": "^7.26.9",
++        "@babel/types": "^7.26.9",
+         "debug": "^4.3.1",
+         "globals": "^11.1.0"
+       },
+@@ -2084,9 +2087,9 @@
+       }
+     },
+     "node_modules/@babel/types": {
+-      "version": "7.26.7",
+-      "resolved": "https://registry.npmjs.org/@babel/types/-/types-7.26.7.tgz",
+-      "integrity": "sha512-t8kDRGrKXyp6+tjUh7hw2RLyclsW4TRoRvRHtSyAX9Bb5ldlFh+90YAYY6awRXrlB4G5G2izNeGySpATlFzmOg==",
++      "version": "7.26.9",
++      "resolved": "https://registry.npmjs.org/@babel/types/-/types-7.26.9.tgz",
++      "integrity": "sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==",
+       "license": "MIT",
+       "dependencies": {
+         "@babel/helper-string-parser": "^7.25.9",
+@@ -2455,6 +2458,414 @@
+       "integrity": "sha512-KOEGMu6dmJZtpadb476IsZBclKvILjopjUii3V+7MnXIQCYh8W3NgNcgwo21n9LXZX6EDIKvqfjYxXebDwxKmQ==",
+       "license": "MIT"
+     },
++    "node_modules/@esbuild/aix-ppc64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.23.1.tgz",
++      "integrity": "sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==",
++      "cpu": [
++        "ppc64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "aix"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-arm": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.23.1.tgz",
++      "integrity": "sha512-uz6/tEy2IFm9RYOyvKl88zdzZfwEfKZmnX9Cj1BHjeSGNuGLuMD1kR8y5bteYmwqKm1tj8m4cb/aKEorr6fHWQ==",
++      "cpu": [
++        "arm"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.23.1.tgz",
++      "integrity": "sha512-xw50ipykXcLstLeWH7WRdQuysJqejuAGPd30vd1i5zSyKK3WE+ijzHmLKxdiCMtH1pHz78rOg0BKSYOSB/2Khw==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.23.1.tgz",
++      "integrity": "sha512-nlN9B69St9BwUoB+jkyU090bru8L0NA3yFvAd7k8dNsVH8bi9a8cUAUSEcEEgTp2z3dbEDGJGfP6VUnkQnlReg==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/darwin-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.23.1.tgz",
++      "integrity": "sha512-YsS2e3Wtgnw7Wq53XXBLcV6JhRsEq8hkfg91ESVadIrzr9wO6jJDMZnCQbHm1Guc5t/CdDiFSSfWP58FNuvT3Q==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/darwin-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.23.1.tgz",
++      "integrity": "sha512-aClqdgTDVPSEGgoCS8QDG37Gu8yc9lTHNAQlsztQ6ENetKEO//b8y31MMu2ZaPbn4kVsIABzVLXYLhCGekGDqw==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/freebsd-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.23.1.tgz",
++      "integrity": "sha512-h1k6yS8/pN/NHlMl5+v4XPfikhJulk4G+tKGFIOwURBSFzE8bixw1ebjluLOjfwtLqY0kewfjLSrO6tN2MgIhA==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "freebsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/freebsd-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.23.1.tgz",
++      "integrity": "sha512-lK1eJeyk1ZX8UklqFd/3A60UuZ/6UVfGT2LuGo3Wp4/z7eRTRYY+0xOu2kpClP+vMTi9wKOfXi2vjUpO1Ro76g==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "freebsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-arm": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.23.1.tgz",
++      "integrity": "sha512-CXXkzgn+dXAPs3WBwE+Kvnrf4WECwBdfjfeYHpMeVxWE0EceB6vhWGShs6wi0IYEqMSIzdOF1XjQ/Mkm5d7ZdQ==",
++      "cpu": [
++        "arm"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.23.1.tgz",
++      "integrity": "sha512-/93bf2yxencYDnItMYV/v116zff6UyTjo4EtEQjUBeGiVpMmffDNUyD9UN2zV+V3LRV3/on4xdZ26NKzn6754g==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-ia32": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.23.1.tgz",
++      "integrity": "sha512-VTN4EuOHwXEkXzX5nTvVY4s7E/Krz7COC8xkftbbKRYAl96vPiUssGkeMELQMOnLOJ8k3BY1+ZY52tttZnHcXQ==",
++      "cpu": [
++        "ia32"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-loong64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.23.1.tgz",
++      "integrity": "sha512-Vx09LzEoBa5zDnieH8LSMRToj7ir/Jeq0Gu6qJ/1GcBq9GkfoEAoXvLiW1U9J1qE/Y/Oyaq33w5p2ZWrNNHNEw==",
++      "cpu": [
++        "loong64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-mips64el": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.23.1.tgz",
++      "integrity": "sha512-nrFzzMQ7W4WRLNUOU5dlWAqa6yVeI0P78WKGUo7lg2HShq/yx+UYkeNSE0SSfSure0SqgnsxPvmAUu/vu0E+3Q==",
++      "cpu": [
++        "mips64el"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-ppc64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.23.1.tgz",
++      "integrity": "sha512-dKN8fgVqd0vUIjxuJI6P/9SSSe/mB9rvA98CSH2sJnlZ/OCZWO1DJvxj8jvKTfYUdGfcq2dDxoKaC6bHuTlgcw==",
++      "cpu": [
++        "ppc64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-riscv64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.23.1.tgz",
++      "integrity": "sha512-5AV4Pzp80fhHL83JM6LoA6pTQVWgB1HovMBsLQ9OZWLDqVY8MVobBXNSmAJi//Csh6tcY7e7Lny2Hg1tElMjIA==",
++      "cpu": [
++        "riscv64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-s390x": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.23.1.tgz",
++      "integrity": "sha512-9ygs73tuFCe6f6m/Tb+9LtYxWR4c9yg7zjt2cYkjDbDpV/xVn+68cQxMXCjUpYwEkze2RcU/rMnfIXNRFmSoDw==",
++      "cpu": [
++        "s390x"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.23.1.tgz",
++      "integrity": "sha512-EV6+ovTsEXCPAp58g2dD68LxoP/wK5pRvgy0J/HxPGB009omFPv3Yet0HiaqvrIrgPTBuC6wCH1LTOY91EO5hQ==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/netbsd-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.23.1.tgz",
++      "integrity": "sha512-aevEkCNu7KlPRpYLjwmdcuNz6bDFiE7Z8XC4CPqExjTvrHugh28QzUXVOZtiYghciKUacNktqxdpymplil1beA==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "netbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/openbsd-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.23.1.tgz",
++      "integrity": "sha512-3x37szhLexNA4bXhLrCC/LImN/YtWis6WXr1VESlfVtVeoFJBRINPJ3f0a/6LV8zpikqoUg4hyXw0sFBt5Cr+Q==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "openbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/openbsd-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.23.1.tgz",
++      "integrity": "sha512-aY2gMmKmPhxfU+0EdnN+XNtGbjfQgwZj43k8G3fyrDM/UdZww6xrWxmDkuz2eCZchqVeABjV5BpildOrUbBTqA==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "openbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/sunos-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.23.1.tgz",
++      "integrity": "sha512-RBRT2gqEl0IKQABT4XTj78tpk9v7ehp+mazn2HbUeZl1YMdaGAQqhapjGTCe7uw7y0frDi4gS0uHzhvpFuI1sA==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "sunos"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-arm64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.23.1.tgz",
++      "integrity": "sha512-4O+gPR5rEBe2FpKOVyiJ7wNDPA8nGzDuJ6gN4okSA1gEOYZ67N8JPk58tkWtdtPeLz7lBnY6I5L3jdsr3S+A6A==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-ia32": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.23.1.tgz",
++      "integrity": "sha512-BcaL0Vn6QwCwre3Y717nVHZbAa4UBEigzFm6VdsVdT/MbZ38xoj1X9HPkZhbmaBGUD1W8vxAfffbDe8bA6AKnQ==",
++      "cpu": [
++        "ia32"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-x64": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.23.1.tgz",
++      "integrity": "sha512-BHpFFeslkWrXWyUPnbKm+xYYVYruCinGcftSBaa8zoF9hZO4BcSCFUvHVTtzpIY6YzUnYtuEhZ+C9iEXjxnasg==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
+     "node_modules/@eslint-community/eslint-utils": {
+       "version": "4.4.1",
+       "resolved": "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.4.1.tgz",
+@@ -3688,6 +4099,242 @@
+         "url": "https://github.com/sponsors/gregberge"
+       }
+     },
++    "node_modules/@tanstack/history": {
++      "version": "1.99.13",
++      "resolved": "https://registry.npmjs.org/@tanstack/history/-/history-1.99.13.tgz",
++      "integrity": "sha512-JMd7USmnp8zV8BRGIjALqzPxazvKtQ7PGXQC7n39HpbqdsmfV2ePCzieO84IvN+mwsTrXErpbjI4BfKCa+ZNCg==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      }
++    },
++    "node_modules/@tanstack/react-router": {
++      "version": "1.105.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/react-router/-/react-router-1.105.0.tgz",
++      "integrity": "sha512-k4Umuy7rna/hhfHkmbq9dCmj9Hp8D0V6dPNCrCXceJb0gQWGxl1KWLXFbw8Ywe/sNyzIzPrMwrMit++MXHo8iw==",
++      "license": "MIT",
++      "dependencies": {
++        "@tanstack/history": "1.99.13",
++        "@tanstack/react-store": "^0.7.0",
++        "@tanstack/router-core": "^1.104.1",
++        "jsesc": "^3.1.0",
++        "tiny-invariant": "^1.3.3",
++        "tiny-warning": "^1.0.3"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      },
++      "peerDependencies": {
++        "react": ">=18.0.0 || >=19.0.0",
++        "react-dom": ">=18.0.0 || >=19.0.0"
++      }
++    },
++    "node_modules/@tanstack/react-store": {
++      "version": "0.7.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/react-store/-/react-store-0.7.0.tgz",
++      "integrity": "sha512-S/Rq17HaGOk+tQHV/yrePMnG1xbsKZIl/VsNWnNXt4XW+tTY8dTlvpJH2ZQ3GRALsusG5K6Q3unAGJ2pd9W/Ng==",
++      "license": "MIT",
++      "dependencies": {
++        "@tanstack/store": "0.7.0",
++        "use-sync-external-store": "^1.4.0"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      },
++      "peerDependencies": {
++        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
++        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
++      }
++    },
++    "node_modules/@tanstack/router-core": {
++      "version": "1.104.1",
++      "resolved": "https://registry.npmjs.org/@tanstack/router-core/-/router-core-1.104.1.tgz",
++      "integrity": "sha512-8nP/V5paP+S/17rlw+B2F12R2bB9PixU/+qnD2QdCjK1ajnG4qA0pVN3VSTQe2oCKND6GPZpm2ikmQWumwss9Q==",
++      "license": "MIT",
++      "dependencies": {
++        "@tanstack/history": "1.99.13",
++        "@tanstack/store": "^0.7.0"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      }
++    },
++    "node_modules/@tanstack/router-devtools": {
++      "version": "1.105.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/router-devtools/-/router-devtools-1.105.0.tgz",
++      "integrity": "sha512-X583hyUyhL30g5ax1J/lbgb3DYpgsiSUv0ERaF5Gg0PoxPYJSybmw79xwFbrTBDxXCXxfg4AFCAEcmkAQemPWA==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "clsx": "^2.1.1",
++        "goober": "^2.1.16"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      },
++      "peerDependencies": {
++        "@tanstack/react-router": "^1.105.0",
++        "csstype": "^3.0.10",
++        "react": ">=18.0.0 || >=19.0.0",
++        "react-dom": ">=18.0.0 || >=19.0.0"
++      },
++      "peerDependenciesMeta": {
++        "csstype": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@tanstack/router-generator": {
++      "version": "1.105.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/router-generator/-/router-generator-1.105.0.tgz",
++      "integrity": "sha512-P5e4S7XcaECWKDdR4Zs/FpY4Z127zGv1FcmKEzsFRSGJZm7lHshWayYJIjwkeJ+Ier2IkVN+VRaFWC5GKv0jIg==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "@tanstack/virtual-file-routes": "^1.99.0",
++        "prettier": "^3.5.0",
++        "tsx": "^4.19.2",
++        "zod": "^3.24.1"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      },
++      "peerDependencies": {
++        "@tanstack/react-router": "^1.105.0"
++      },
++      "peerDependenciesMeta": {
++        "@tanstack/react-router": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@tanstack/router-plugin": {
++      "version": "1.105.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/router-plugin/-/router-plugin-1.105.0.tgz",
++      "integrity": "sha512-iGwKZIyl8+os4PA9v57BlTtKVnQ5mCvxYT4p5TR/Q8zW1KBs4fC5F7EhL1BgH8fY12IL4ByuuJ+porzp+mfmJQ==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "@babel/core": "^7.26.8",
++        "@babel/plugin-syntax-jsx": "^7.25.9",
++        "@babel/plugin-syntax-typescript": "^7.25.9",
++        "@babel/template": "^7.26.8",
++        "@babel/traverse": "^7.26.8",
++        "@babel/types": "^7.26.8",
++        "@tanstack/router-generator": "^1.105.0",
++        "@tanstack/router-utils": "^1.102.2",
++        "@tanstack/virtual-file-routes": "^1.99.0",
++        "@types/babel__core": "^7.20.5",
++        "@types/babel__template": "^7.4.4",
++        "@types/babel__traverse": "^7.20.6",
++        "babel-dead-code-elimination": "^1.0.9",
++        "chokidar": "^3.6.0",
++        "unplugin": "^2.1.2",
++        "zod": "^3.24.1"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      },
++      "peerDependencies": {
++        "@rsbuild/core": ">=1.0.2",
++        "@tanstack/react-router": "^1.105.0",
++        "vite": ">=5.0.0 || >=6.0.0",
++        "webpack": ">=5.92.0"
++      },
++      "peerDependenciesMeta": {
++        "@rsbuild/core": {
++          "optional": true
++        },
++        "@tanstack/react-router": {
++          "optional": true
++        },
++        "vite": {
++          "optional": true
++        },
++        "webpack": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@tanstack/router-utils": {
++      "version": "1.102.2",
++      "resolved": "https://registry.npmjs.org/@tanstack/router-utils/-/router-utils-1.102.2.tgz",
++      "integrity": "sha512-Uwl2nbrxhCzviaHHBLNPhSC/OMpZLdOTxTJndUSsXTzWUP4IoQcVmngaIsxi9iriE3ArC1VXuanUAkfGmimNOQ==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "@babel/generator": "^7.26.8",
++        "@babel/parser": "^7.26.8",
++        "ansis": "^3.11.0",
++        "diff": "^7.0.0"
++      },
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      }
++    },
++    "node_modules/@tanstack/router-utils/node_modules/diff": {
++      "version": "7.0.0",
++      "resolved": "https://registry.npmjs.org/diff/-/diff-7.0.0.tgz",
++      "integrity": "sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==",
++      "dev": true,
++      "license": "BSD-3-Clause",
++      "engines": {
++        "node": ">=0.3.1"
++      }
++    },
++    "node_modules/@tanstack/store": {
++      "version": "0.7.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/store/-/store-0.7.0.tgz",
++      "integrity": "sha512-CNIhdoUsmD2NolYuaIs8VfWM467RK6oIBAW4nPEKZhg1smZ+/CwtCdpURgp7nxSqOaV9oKkzdWD80+bC66F/Jg==",
++      "license": "MIT",
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      }
++    },
++    "node_modules/@tanstack/virtual-file-routes": {
++      "version": "1.99.0",
++      "resolved": "https://registry.npmjs.org/@tanstack/virtual-file-routes/-/virtual-file-routes-1.99.0.tgz",
++      "integrity": "sha512-XvX8bfdo4CYiCW+ItVdBfCorh3PwQFqYqd7ll+XKWiWOJpqUGIG7VlziVavARZpUySiY2VBlHadiUYS7jhgjRg==",
++      "dev": true,
++      "license": "MIT",
++      "engines": {
++        "node": ">=12"
++      },
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/tannerlinsley"
++      }
++    },
+     "node_modules/@thewirv/react-barcode-scanner": {
+       "version": "3.3.5",
+       "resolved": "https://registry.npmjs.org/@thewirv/react-barcode-scanner/-/react-barcode-scanner-3.3.5.tgz",
+@@ -4817,6 +5464,16 @@
+         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+       }
+     },
++    "node_modules/ansis": {
++      "version": "3.15.0",
++      "resolved": "https://registry.npmjs.org/ansis/-/ansis-3.15.0.tgz",
++      "integrity": "sha512-zIcWDJ+Kwqxfdnogx66Gxzr0kVmCcRAdat9nlY2IHsshqTN4fBH6tMeRMPA/2w0rpBayIJvjQAaa2/4RDrNqwg==",
++      "dev": true,
++      "license": "ISC",
++      "engines": {
++        "node": ">=14"
++      }
++    },
+     "node_modules/any-promise": {
+       "version": "1.3.0",
+       "resolved": "https://registry.npmjs.org/any-promise/-/any-promise-1.3.0.tgz",
+@@ -5182,6 +5839,19 @@
+         "node": ">= 0.4"
+       }
+     },
++    "node_modules/babel-dead-code-elimination": {
++      "version": "1.0.9",
++      "resolved": "https://registry.npmjs.org/babel-dead-code-elimination/-/babel-dead-code-elimination-1.0.9.tgz",
++      "integrity": "sha512-JLIhax/xullfInZjtu13UJjaLHDeTzt3vOeomaSUdO/nAMEL/pWC/laKrSvWylXMnVWyL5bpmG9njqBZlUQOdg==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "@babel/core": "^7.23.7",
++        "@babel/parser": "^7.23.6",
++        "@babel/traverse": "^7.23.7",
++        "@babel/types": "^7.23.6"
++      }
++    },
+     "node_modules/babel-jest": {
+       "version": "27.5.1",
+       "resolved": "https://registry.npmjs.org/babel-jest/-/babel-jest-27.5.1.tgz",
+@@ -7468,6 +8138,46 @@
+         "url": "https://github.com/sponsors/ljharb"
+       }
+     },
++    "node_modules/esbuild": {
++      "version": "0.23.1",
++      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.23.1.tgz",
++      "integrity": "sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "bin": {
++        "esbuild": "bin/esbuild"
++      },
++      "engines": {
++        "node": ">=18"
++      },
++      "optionalDependencies": {
++        "@esbuild/aix-ppc64": "0.23.1",
++        "@esbuild/android-arm": "0.23.1",
++        "@esbuild/android-arm64": "0.23.1",
++        "@esbuild/android-x64": "0.23.1",
++        "@esbuild/darwin-arm64": "0.23.1",
++        "@esbuild/darwin-x64": "0.23.1",
++        "@esbuild/freebsd-arm64": "0.23.1",
++        "@esbuild/freebsd-x64": "0.23.1",
++        "@esbuild/linux-arm": "0.23.1",
++        "@esbuild/linux-arm64": "0.23.1",
++        "@esbuild/linux-ia32": "0.23.1",
++        "@esbuild/linux-loong64": "0.23.1",
++        "@esbuild/linux-mips64el": "0.23.1",
++        "@esbuild/linux-ppc64": "0.23.1",
++        "@esbuild/linux-riscv64": "0.23.1",
++        "@esbuild/linux-s390x": "0.23.1",
++        "@esbuild/linux-x64": "0.23.1",
++        "@esbuild/netbsd-x64": "0.23.1",
++        "@esbuild/openbsd-arm64": "0.23.1",
++        "@esbuild/openbsd-x64": "0.23.1",
++        "@esbuild/sunos-x64": "0.23.1",
++        "@esbuild/win32-arm64": "0.23.1",
++        "@esbuild/win32-ia32": "0.23.1",
++        "@esbuild/win32-x64": "0.23.1"
++      }
++    },
+     "node_modules/escalade": {
+       "version": "3.2.0",
+       "resolved": "https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz",
+@@ -8975,6 +9685,19 @@
+         "url": "https://github.com/sponsors/ljharb"
+       }
+     },
++    "node_modules/get-tsconfig": {
++      "version": "4.10.0",
++      "resolved": "https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.10.0.tgz",
++      "integrity": "sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "resolve-pkg-maps": "^1.0.0"
++      },
++      "funding": {
++        "url": "https://github.com/privatenumber/get-tsconfig?sponsor=1"
++      }
++    },
+     "node_modules/glob": {
+       "version": "7.2.3",
+       "resolved": "https://registry.npmjs.org/glob/-/glob-7.2.3.tgz",
+@@ -9097,6 +9820,16 @@
+         "url": "https://github.com/sponsors/sindresorhus"
+       }
+     },
++    "node_modules/goober": {
++      "version": "2.1.16",
++      "resolved": "https://registry.npmjs.org/goober/-/goober-2.1.16.tgz",
++      "integrity": "sha512-erjk19y1U33+XAMe1VTvIONHYoSqE4iS7BYUZfHaqeohLmnC0FdxEh7rQU+6MZ4OajItzjZFSRtVANrQwNq6/g==",
++      "dev": true,
++      "license": "MIT",
++      "peerDependencies": {
++        "csstype": "^3.0.10"
++      }
++    },
+     "node_modules/gopd": {
+       "version": "1.2.0",
+       "resolved": "https://registry.npmjs.org/gopd/-/gopd-1.2.0.tgz",
+@@ -14010,6 +14743,22 @@
+         "node": ">= 0.8.0"
+       }
+     },
++    "node_modules/prettier": {
++      "version": "3.5.1",
++      "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.5.1.tgz",
++      "integrity": "sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw==",
++      "dev": true,
++      "license": "MIT",
++      "bin": {
++        "prettier": "bin/prettier.cjs"
++      },
++      "engines": {
++        "node": ">=14"
++      },
++      "funding": {
++        "url": "https://github.com/prettier/prettier?sponsor=1"
++      }
++    },
+     "node_modules/pretty-bytes": {
+       "version": "5.6.0",
+       "resolved": "https://registry.npmjs.org/pretty-bytes/-/pretty-bytes-5.6.0.tgz",
+@@ -14929,6 +15678,16 @@
+         "node": ">=8"
+       }
+     },
++    "node_modules/resolve-pkg-maps": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz",
++      "integrity": "sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==",
++      "dev": true,
++      "license": "MIT",
++      "funding": {
++        "url": "https://github.com/privatenumber/resolve-pkg-maps?sponsor=1"
++      }
++    },
+     "node_modules/resolve-url-loader": {
+       "version": "4.0.0",
+       "resolved": "https://registry.npmjs.org/resolve-url-loader/-/resolve-url-loader-4.0.0.tgz",
+@@ -16844,6 +17603,18 @@
+       "integrity": "sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==",
+       "license": "MIT"
+     },
++    "node_modules/tiny-invariant": {
++      "version": "1.3.3",
++      "resolved": "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.3.3.tgz",
++      "integrity": "sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==",
++      "license": "MIT"
++    },
++    "node_modules/tiny-warning": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/tiny-warning/-/tiny-warning-1.0.3.tgz",
++      "integrity": "sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==",
++      "license": "MIT"
++    },
+     "node_modules/tmpl": {
+       "version": "1.0.5",
+       "resolved": "https://registry.npmjs.org/tmpl/-/tmpl-1.0.5.tgz",
+@@ -17049,6 +17820,26 @@
+       "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+       "license": "0BSD"
+     },
++    "node_modules/tsx": {
++      "version": "4.19.2",
++      "resolved": "https://registry.npmjs.org/tsx/-/tsx-4.19.2.tgz",
++      "integrity": "sha512-pOUl6Vo2LUq/bSa8S5q7b91cgNSjctn9ugq/+Mvow99qW6x/UZYwzxy/3NmqoT66eHYfCVvFvACC58UBPFf28g==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "esbuild": "~0.23.0",
++        "get-tsconfig": "^4.7.5"
++      },
++      "bin": {
++        "tsx": "dist/cli.mjs"
++      },
++      "engines": {
++        "node": ">=18.0.0"
++      },
++      "optionalDependencies": {
++        "fsevents": "~2.3.3"
++      }
++    },
+     "node_modules/turbo-stream": {
+       "version": "2.4.0",
+       "resolved": "https://registry.npmjs.org/turbo-stream/-/turbo-stream-2.4.0.tgz",
+@@ -17317,6 +18108,20 @@
+         "node": ">= 0.8"
+       }
+     },
++    "node_modules/unplugin": {
++      "version": "2.2.0",
++      "resolved": "https://registry.npmjs.org/unplugin/-/unplugin-2.2.0.tgz",
++      "integrity": "sha512-m1ekpSwuOT5hxkJeZGRxO7gXbXT3gF26NjQ7GdVHoLoF8/nopLcd/QfPigpCy7i51oFHiRJg/CyHhj4vs2+KGw==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "acorn": "^8.14.0",
++        "webpack-virtual-modules": "^0.6.2"
++      },
++      "engines": {
++        "node": ">=18.12.0"
++      }
++    },
+     "node_modules/unquote": {
+       "version": "1.1.1",
+       "resolved": "https://registry.npmjs.org/unquote/-/unquote-1.1.1.tgz",
+@@ -17758,6 +18563,13 @@
+         "node": ">=10.13.0"
+       }
+     },
++    "node_modules/webpack-virtual-modules": {
++      "version": "0.6.2",
++      "resolved": "https://registry.npmjs.org/webpack-virtual-modules/-/webpack-virtual-modules-0.6.2.tgz",
++      "integrity": "sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==",
++      "dev": true,
++      "license": "MIT"
++    },
+     "node_modules/webpack/node_modules/eslint-scope": {
+       "version": "5.1.1",
+       "resolved": "https://registry.npmjs.org/eslint-scope/-/eslint-scope-5.1.1.tgz",
+@@ -18486,6 +19298,16 @@
+       "funding": {
+         "url": "https://github.com/sponsors/sindresorhus"
+       }
++    },
++    "node_modules/zod": {
++      "version": "3.24.2",
++      "resolved": "https://registry.npmjs.org/zod/-/zod-3.24.2.tgz",
++      "integrity": "sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==",
++      "dev": true,
++      "license": "MIT",
++      "funding": {
++        "url": "https://github.com/sponsors/colinhacks"
++      }
+     }
+   }
+ }
+Index: Frontend/src/pages/StoredetailFlearequest/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\nimport { useNavigate,useParams } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport FleaRequestApi from \"../../api/FleaRequestApi\";\nimport './style.css';\n\nconst StoredetailFlearequest = () => {\n    const navigate = useNavigate();\n    const { storeNo } = useParams();\n    const nStoreNo = Number(storeNo)\n\n    const [formData, setFormData] = useState({\n        storeId : nStoreNo,\n        userAccount: \"\",\n        userBank: \"\",\n        accountName: \"\",\n        itemName: \"\",\n        quantity: 1,\n        price: 10000,\n        sectionNumber: 1,\n        startDate: \"\",\n        expirationDate: 30,\n        imageUrl: \"\",\n    });\n\n    // 입력값 변경 핸들러\n    const handleChange = (e) => {\n        const { name, value } = e.target;\n        setFormData({\n            ...formData,\n            [name]: value,\n        });\n    };\n\n    // 이미지 파일 업로드 핸들러\n    const handleFileChange = (e) => {\n        const file = e.target.files[0];\n        if (file) {\n            const reader = new FileReader();\n            reader.onloadend = () => {\n                setFormData({\n                    ...formData,\n                    imageUrl: reader.result, // Base64 데이터 저장\n                });\n            };\n            reader.readAsDataURL(file); // 파일을 Base64로 변환\n        }\n    };\n\n    // 폼 제출 핸들러\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        console.log(\"입력된 데이터:\", formData);\n        FleaRequestApi(formData);\n        // API 호출 또는 추가 처리\n    };\n\n    return (\n        <div className=\"storedetailpageflearequest\">\n            <div className=\"requestheader\"><HeaderContainer /></div>\n            <div className=\"requestpopup\">\n                <div className=\"storedetailflea\">\n                    <div className=\"fleanotice\">플리마켓 신청하기</div>\n                    <form onSubmit={handleSubmit} className=\"fleaform\">\n                        <ul>\n                            <li>\n                                <label>은행:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"userBank\"\n                                    value={formData.userBank}\n                                    onChange={handleChange}\n                                    placeholder=\"은행 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>계좌1:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"userAccount\"\n                                    value={formData.userAccount}\n                                    onChange={handleChange}\n                                    placeholder=\"계좌번호를 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>계좌2:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"accountName\"\n                                    value={formData.accountName}\n                                    onChange={handleChange}\n                                    placeholder=\"소유주 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>상품:</label>\n                                <input\n                                    type=\"text\"\n                                    name=\"itemName\"\n                                    value={formData.itemName}\n                                    onChange={handleChange}\n                                    placeholder=\"상품 이름을 입력하세요\"\n                                />\n                            </li>\n                            <li>\n                                <label>수량:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"quantity\"\n                                    value={formData.quantity}\n                                    onChange={handleChange}\n                                    min=\"1\"\n                                />\n                            </li>\n                            <li>\n                                <label>가격:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"price\"\n                                    value={formData.price}\n                                    onChange={handleChange}\n                                    min=\"0\"\n                                />\n                            </li>\n                            <li>\n                                <label>섹션:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"sectionNumber\"\n                                    value={formData.sectionNumber}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li className=\"datetimeinputfield\">\n                                <label>시작:</label>\n                                <input\n                                    type=\"datetime-local\"\n                                    name=\"startDate\"\n                                    value={formData.startDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            <li>\n                                <label>보관:</label>\n                                <input\n                                    type=\"number\"\n                                    name=\"expireDate\"\n                                    value={formData.expireDate}\n                                    onChange={handleChange}\n                                />\n                            </li>\n                            {/* 파일 업로드 버튼 */}\n                            <li>\n                                <label>사진:</label>\n                                <input\n                                    type=\"file\"\n                                    accept=\"image/*\" // 이미지 파일만 허용\n                                    onChange={handleFileChange} // 파일 변경 핸들러 호출\n                                />\n                            </li>\n                        </ul>\n                        {/* 제출 버튼 */}\n                        <button type=\"submit\" className=\"flearequestsubmitbutton\">제출하기</button>\n                    </form>\n\n                    {/* 뒤로가기 버튼 */}\n                    <button\n                        onClick={() => navigate(-1)}\n                        className='flearequestbackbutton'>뒤로가기</button>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default StoredetailFlearequest;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/StoredetailFlearequest/index.js b/Frontend/src/pages/StoredetailFlearequest/index.js
+--- a/Frontend/src/pages/StoredetailFlearequest/index.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/pages/StoredetailFlearequest/index.js	(date 1739762587430)
+@@ -10,7 +10,7 @@
+     const nStoreNo = Number(storeNo)
+ 
+     const [formData, setFormData] = useState({
+-        storeId : nStoreNo,
++        storeId: nStoreNo,
+         userAccount: "",
+         userBank: "",
+         accountName: "",
+@@ -19,7 +19,7 @@
+         price: 10000,
+         sectionNumber: 1,
+         startDate: "",
+-        expirationDate: 30,
++        expirationDate: 30,  // 필드명 통일
+         imageUrl: "",
+     });
+ 
+@@ -47,13 +47,12 @@
+         }
+     };
+ 
+-    // 폼 제출 핸들러
+     const handleSubmit = (e) => {
+         e.preventDefault();
+-        console.log("입력된 데이터:", formData);
++
++        // API 호출부
+         FleaRequestApi(formData);
+-        // API 호출 또는 추가 처리
+-    };
++    }
+ 
+     return (
+         <div className="storedetailpageflearequest">
+@@ -145,7 +144,7 @@
+                                 <label>보관:</label>
+                                 <input
+                                     type="number"
+-                                    name="expireDate"
++                                    name="expirationDate"
+                                     value={formData.expireDate}
+                                     onChange={handleChange}
+                                 />
+@@ -161,7 +160,10 @@
+                             </li>
+                         </ul>
+                         {/* 제출 버튼 */}
+-                        <button type="submit" className="flearequestsubmitbutton">제출하기</button>
++                        <button
++                            type="submit"
++                            className="flearequestsubmitbutton"
++                            onClick={() => navigate(-1)}>제출하기</button>
+                     </form>
+ 
+                     {/* 뒤로가기 버튼 */}
+Index: Frontend/src/api/FleaRequestApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import apiClient from \"./apiClient\";\n\nconst FleaRequestApi = async (storeId, userAccount, userBank, accountName, itemName,\n                            quantity, price, sectionNumber, StartDate, expireDate, imagePath) => {\n    try {\n        const response = await apiClient.post(`/api/fli/register`, {\n            storeId : storeId,\n            userAccount : userAccount,\n            userBank : userBank,\n            accountName : accountName,\n            itemName: itemName,\n            quantity : quantity,\n            price: price,\n            sectionNumber : sectionNumber,\n            StartDate : StartDate, //2025-02-08T15:30:00\n            expireDate : expireDate,\n            imagePath : imagePath,\n    });\n\n        if (response.status >= 200 && response.status < 300) {\n            console.log(\"API 호출 성공:\", response.data);\n            return response.data;\n        }\n        throw new Error(`HTTP error! status: ${response.status}`);\n    } catch (error) {\n        console.error(\"API 호출 오류:\", error.response?.data || error.message);\n        throw error;\n    }\n};\n\nexport default FleaRequestApi;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/FleaRequestApi.js b/Frontend/src/api/FleaRequestApi.js
+--- a/Frontend/src/api/FleaRequestApi.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/api/FleaRequestApi.js	(date 1739762540052)
+@@ -1,23 +1,13 @@
+ import apiClient from "./apiClient";
++import { useNavigate } from "react-router-dom";
+ 
+-const FleaRequestApi = async (storeId, userAccount, userBank, accountName, itemName,
+-                            quantity, price, sectionNumber, StartDate, expireDate, imagePath) => {
++const FleaRequestApi = async (formData) => {
++
+     try {
+-        const response = await apiClient.post(`/api/fli/register`, {
+-            storeId : storeId,
+-            userAccount : userAccount,
+-            userBank : userBank,
+-            accountName : accountName,
+-            itemName: itemName,
+-            quantity : quantity,
+-            price: price,
+-            sectionNumber : sectionNumber,
+-            StartDate : StartDate, //2025-02-08T15:30:00
+-            expireDate : expireDate,
+-            imagePath : imagePath,
+-    });
++        const response = await apiClient.post(`/api/fli/register`, formData);
+ 
+         if (response.status >= 200 && response.status < 300) {
++            alert("플리마켓 제품 신청이 완료되었습니다!")
+             console.log("API 호출 성공:", response.data);
+             return response.data;
+         }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/public/index.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/public/index.html\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"git-widget-placeholder\": \"FE/FIX/#116\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"ts.external.directory.path\": \"/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"63743000\" />\n      <workItem from=\"1739750470079\" duration=\"4243000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739696098939</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739696098939</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739708076864</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739708076864</updated>\n    </task>\n    <task id=\"LOCAL-00012\" summary=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739722788572</created>\n      <option name=\"number\" value=\"00012\" />\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739722788573</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"13\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/.idea/workspace.xml	(date 1739765942101)
+@@ -4,12 +4,18 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)">
++    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package-lock.json" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package.json" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/FleaRequestApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/FleaRequestApi.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskHeaderContainer/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailFlearequest/index.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -65,7 +71,7 @@
+   "keyToString": {
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "RunOnceActivity.git.unshallow": "true",
+-    "git-widget-placeholder": "FE/FIX/#116",
++    "git-widget-placeholder": "FE/FIX/#118",
+     "kotlin-language-version-configured": "true",
+     "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
+     "node.js.detected.package.eslint": "true",
+@@ -119,7 +125,7 @@
+       <workItem from="1739426451033" duration="11909000" />
+       <workItem from="1739452113566" duration="11559000" />
+       <workItem from="1739513711472" duration="63743000" />
+-      <workItem from="1739750470079" duration="4243000" />
++      <workItem from="1739750470079" duration="12985000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -217,7 +223,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739722788573</updated>
+     </task>
+-    <option name="localTasksCounter" value="13" />
++    <task id="LOCAL-00013" summary="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
++      <option name="closed" value="true" />
++      <created>1739754878271</created>
++      <option name="number" value="00013" />
++      <option name="presentableId" value="LOCAL-00013" />
++      <option name="project" value="LOCAL" />
++      <updated>1739754878271</updated>
++    </task>
++    <option name="localTasksCounter" value="14" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -240,6 +254,7 @@
+     <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
+-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
++    <MESSAGE value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
++    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* 바텀시트를 화면 맨 아래에 고정 */\n.bottom-sheet {\n    box-sizing: border-box;\n    position: fixed;\n    bottom: 0 !important; /* ✅ 하단 고정 */\n    left: 0;\n    right: 0;\n    background-color: #fff;\n    border-top-left-radius: 16px;\n    border-top-right-radius: 16px;\n    border: #4a90e2 3px solid;\n    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);\n\n    touch-action: none; /* 터치 스크롤 충돌 방지 */\n    -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */\n\n    max-height: 85vh; /* 최대 높이 제한 */\n    overflow-y: auto; /* 내용 스크롤 활성화 */\n    padding: 8px 0;\n}\n\n.drag-handle {\n    position: absolute;\n    left: 30%;\n    width: 40%;\n    height: 20px;\n    border-radius: 6px;\n    background-color: #3f72af;\n    transition: background-color 0.3s ease;\n}\n\n/* 호버 시 */\n.drag-handle:hover {\n    background-color: #9e9e9e !important;\n}\n\n/* 드래그 동작 중 */\n.drag-handle:active,\n.drag-handle.dragging {\n    background-color: #616161 !important;\n}\n\n\n/* ul 스타일 */\n.bottom-sheet-content ul {\n    list-style: none; /* 기본 불릿 제거 */\n    margin: 0;\n    padding: 0;\n    display: flex;\n    flex-direction: column; /* 아이템을 세로로 정렬 */\n    gap: 10px; /* 리스트 아이템 간 간격 추가 */\n}\n\n/* li 스타일 */\n.bottom-sheet-content li {\n    display: flex;\n    justify-content: space-between;\n    padding: 10px 15px;\n    background-color: #f9f9f9; /* 밝은 배경색으로 가독성 향상 */\n    border-radius: 8px; /* 부드러운 모서리 */\n    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가로 깊이감 제공 */\n    cursor: pointer; /* 클릭 가능하다는 표시 */\n    transition: background-color 0.2s ease; /* 부드러운 호버 효과 */\n}\n\n.store-name {\n    text-align: left;\n    width: 80%;\n    height: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.store-distance {\n    width: 20%;\n    height: 100%;\n}\n/* li 호버 효과 */\n.bottom-sheet-content li:hover {\n    background-color: #eaeaea; /* 호버 시 약간 더 어두운 배경색 */\n}\n\n/* li 텍스트 스타일 */\n.bottom-sheet-content li {\n    font-size: 16px; /* 기본 폰트 크기 */\n}\n\n/* 작은 화면에서 반응형 폰트 크기 조정 */\n@media (max-width: 768px) {\n    .bottom-sheet-content li {\n        font-size: 14px; /* 작은 화면에서는 폰트 크기 축소 */\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css
+--- a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.css	(date 1739762341837)
+@@ -2,7 +2,7 @@
+ .bottom-sheet {
+     box-sizing: border-box;
+     position: fixed;
+-    bottom: 0 !important; /* ✅ 하단 고정 */
++    bottom: 0 !important; /* 하단 고정 */
+     left: 0;
+     right: 0;
+     background-color: #fff;
+@@ -14,8 +14,8 @@
+     touch-action: none; /* 터치 스크롤 충돌 방지 */
+     -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
+ 
+-    max-height: 85vh; /* 최대 높이 제한 */
+-    overflow-y: auto; /* 내용 스크롤 활성화 */
++    max-height: 85vh;  /* 최대 높이 제한 */
++    overflow: hidden; /* 내부 컨텐츠 별도 스크롤 처리 */
+     padding: 8px 0;
+ }
+ 
+@@ -25,7 +25,7 @@
+     width: 40%;
+     height: 20px;
+     border-radius: 6px;
+-    background-color: #3f72af;
++    color: #4a90e2;
+     transition: background-color 0.3s ease;
+ }
+ 
+@@ -40,29 +40,57 @@
+     background-color: #616161 !important;
+ }
+ 
++/* bottom-sheet의 내부 콘텐츠 영역 */
++.bottom-sheet-content {
++    height: 100%;
++    display: flex;
++    flex-direction: column;
++}
++
++.fixed-header {
++    position: sticky;
++    top: 0;
++    background: #fff;
++    padding: 10px 15px;
++    z-index: 2;
++    border-bottom: 1px solid #ddd;
++}
+ 
+-/* ul 스타일 */
+-.bottom-sheet-content ul {
++/* 스크롤 가능한 영역: ul 리스트가 포함된 부분 */
++.scrollable-section {
++    flex: 1;
++    overflow-y: auto;
++    padding: 15px;
++}
++
++/* ul 리스트 스타일 */
++.scrollable-section ul {
+     list-style: none; /* 기본 불릿 제거 */
+     margin: 0;
+     padding: 0;
+     display: flex;
+-    flex-direction: column; /* 아이템을 세로로 정렬 */
+-    gap: 10px; /* 리스트 아이템 간 간격 추가 */
++    flex-direction: column;
++    gap: 10px;
+ }
+ 
+ /* li 스타일 */
+-.bottom-sheet-content li {
++.scrollable-section li {
+     display: flex;
+     justify-content: space-between;
+     padding: 10px 15px;
+-    background-color: #f9f9f9; /* 밝은 배경색으로 가독성 향상 */
+-    border-radius: 8px; /* 부드러운 모서리 */
+-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가로 깊이감 제공 */
+-    cursor: pointer; /* 클릭 가능하다는 표시 */
+-    transition: background-color 0.2s ease; /* 부드러운 호버 효과 */
++    background-color: #f9f9f9; /* 밝은 배경색 */
++    border-radius: 8px;
++    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
++    cursor: pointer;
++    transition: background-color 0.2s ease;
++    font-size: 16px;
++}
++
++.scrollable-section li:hover {
++    background-color: #eaeaea;
+ }
+ 
++/* 매장 이름과 거리 스타일 */
+ .store-name {
+     text-align: left;
+     width: 80%;
+@@ -76,19 +104,10 @@
+     width: 20%;
+     height: 100%;
+ }
+-/* li 호버 효과 */
+-.bottom-sheet-content li:hover {
+-    background-color: #eaeaea; /* 호버 시 약간 더 어두운 배경색 */
+-}
+ 
+-/* li 텍스트 스타일 */
+-.bottom-sheet-content li {
+-    font-size: 16px; /* 기본 폰트 크기 */
+-}
+-
+-/* 작은 화면에서 반응형 폰트 크기 조정 */
++/* 작은 화면을 위한 반응형 조정 */
+ @media (max-width: 768px) {
+-    .bottom-sheet-content li {
+-        font-size: 14px; /* 작은 화면에서는 폰트 크기 축소 */
++    .scrollable-section li {
++        font-size: 14px;
+     }
+ }
+Index: Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useRef, useEffect, useCallback, memo } from \"react\";\nimport { useNavigate, useLocation } from \"react-router-dom\";\nimport BottomSheetApi from \"../../api/BottomSheetApi\";\nimport resultBottomSheetApi from \"../../api/resultBottomsheetApi\";\nimport \"./DraggableBottomSheet.css\";\n\n// 성능 최적화를 위한 memoization\nconst DraggableBottomSheet = memo(({ coords, setStorelist, itemId = null }) => {\n  const location = useLocation();\n  const navigate = useNavigate();\n  const [panelHeight, setPanelHeight] = useState(10);\n  const panelRef = useRef(null);\n  const isDraggingRef = useRef(false);\n  const startYRef = useRef(0);\n  const abortControllerRef = useRef(new AbortController());\n  const [LocalStorelist, setLocalStorelist] = useState([]);\n\n  // 검색 결과[2] 참조: 드래그 핸들러 최적화\n  const handlePointerDown = useCallback((e) => {\n    e.preventDefault();\n    isDraggingRef.current = true;\n    startYRef.current = e.clientY;\n    panelRef.current.classList.add(\"dragging\");\n  }, []);\n\n  const handlePointerMove = useCallback((e) => {\n    if (!isDraggingRef.current) return;\n    const deltaY = (startYRef.current - e.clientY) / window.innerHeight * 100;\n    setPanelHeight(prev => Math.max(10, Math.min(prev + deltaY, 85)));\n    startYRef.current = e.clientY;\n  }, []);\n\n  const handlePointerUp = useCallback(() => {\n    isDraggingRef.current = false;\n    setPanelHeight(prev => prev > 70 ? 85 : prev > 20 ? 50 : 10);\n    panelRef.current?.classList.remove(\"dragging\");\n  }, []);\n\n  // 검색 결과[1][4] 참조: API 호출 최적화\n  const fetchData = useCallback(async () => {\n    abortControllerRef.current.abort();\n    abortControllerRef.current = new AbortController();\n\n    try {\n      const apiCall = location.pathname.startsWith('/search/results')\n          ? resultBottomSheetApi\n          : BottomSheetApi;\n\n      await apiCall({\n        coords,\n        itemId,\n        signal: abortControllerRef.current.signal,\n        receivedData: (data) => {\n          setLocalStorelist(data);\n          setStorelist(data);\n        }\n      });\n    } catch (err) {\n      if (err.name !== 'AbortError') console.error('API Error:', err);\n    }\n  }, [coords.lat, coords.lng, itemId, location.pathname]);\n\n  useEffect(() => {\n    fetchData();\n    return () => abortControllerRef.current.abort();\n  }, [fetchData]);\n\n  // 검색 결과[5] 참조: CSS containment 적용\n  return (\n      <div\n          ref={panelRef}\n          className=\"bottom-sheet\"\n          style={{\n            height: `${panelHeight}%`,\n            contain: 'content',  // 렌더링 최적화\n            transition: isDraggingRef.current ? \"none\" : \"height 0.3s cubic-bezier(0.4, 0, 0.2, 1)\"\n          }}\n          onPointerDown={handlePointerDown}\n          onPointerMove={handlePointerMove}\n          onPointerUp={handlePointerUp}\n      >\n        <div className=\"drag-handle\" />\n\n        <div className=\"bottom-sheet-content\">\n          <h3 style={{ marginTop: 30 }}>근처 매장 리스트</h3>\n          {LocalStorelist.length ? (\n              <ul style={{ contentVisibility: 'auto' }}>\n                {LocalStorelist.map((store) => (\n                    <li\n                        key={store.storeNo}\n                        onClick={() => navigate(`/storedetail/${store.storeNo}`)}\n                    >\n                      <span className=\"store-name\">{store.storeName}</span>\n                      <span className=\"store-distance\">\n                  {parseFloat(store.distance).toFixed(0)}m\n                </span>\n                    </li>\n                ))}\n              </ul>\n          ) : (\n              <p>근처에 매장이 없거나 검색한 제품을 가진 매장이 없어요. </p>\n          )}\n        </div>\n      </div>\n  );\n});\n\nexport default DraggableBottomSheet;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js
+--- a/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/components/DraggableBottomSheet/DraggableBottomSheet.js	(date 1739762135348)
+@@ -4,7 +4,6 @@
+ import resultBottomSheetApi from "../../api/resultBottomsheetApi";
+ import "./DraggableBottomSheet.css";
+ 
+-// 성능 최적화를 위한 memoization
+ const DraggableBottomSheet = memo(({ coords, setStorelist, itemId = null }) => {
+   const location = useLocation();
+   const navigate = useNavigate();
+@@ -13,9 +12,8 @@
+   const isDraggingRef = useRef(false);
+   const startYRef = useRef(0);
+   const abortControllerRef = useRef(new AbortController());
+-  const [LocalStorelist, setLocalStorelist] = useState([]);
++  const [localStoreList, setLocalStoreList] = useState([]);
+ 
+-  // 검색 결과[2] 참조: 드래그 핸들러 최적화
+   const handlePointerDown = useCallback((e) => {
+     e.preventDefault();
+     isDraggingRef.current = true;
+@@ -25,55 +23,53 @@
+ 
+   const handlePointerMove = useCallback((e) => {
+     if (!isDraggingRef.current) return;
+-    const deltaY = (startYRef.current - e.clientY) / window.innerHeight * 100;
+-    setPanelHeight(prev => Math.max(10, Math.min(prev + deltaY, 85)));
++    const deltaY = ((startYRef.current - e.clientY) / window.innerHeight) * 100;
++    setPanelHeight((prev) => Math.max(10, Math.min(prev + deltaY, 85)));
+     startYRef.current = e.clientY;
+   }, []);
+ 
+   const handlePointerUp = useCallback(() => {
+     isDraggingRef.current = false;
+-    setPanelHeight(prev => prev > 70 ? 85 : prev > 20 ? 50 : 10);
++    setPanelHeight((prev) => (prev > 70 ? 85 : prev > 20 ? 50 : 10));
+     panelRef.current?.classList.remove("dragging");
+   }, []);
+ 
+-  // 검색 결과[1][4] 참조: API 호출 최적화
+   const fetchData = useCallback(async () => {
+     abortControllerRef.current.abort();
+     abortControllerRef.current = new AbortController();
+-
+     try {
+       const apiCall = location.pathname.startsWith('/search/results')
+           ? resultBottomSheetApi
+           : BottomSheetApi;
+-
+       await apiCall({
+         coords,
+         itemId,
+         signal: abortControllerRef.current.signal,
+         receivedData: (data) => {
+-          setLocalStorelist(data);
++          setLocalStoreList(data);
+           setStorelist(data);
+         }
+       });
+     } catch (err) {
+       if (err.name !== 'AbortError') console.error('API Error:', err);
+     }
+-  }, [coords.lat, coords.lng, itemId, location.pathname]);
++  }, [coords.lat, coords.lng, itemId, location.pathname, setStorelist]);
+ 
+   useEffect(() => {
+     fetchData();
+     return () => abortControllerRef.current.abort();
+   }, [fetchData]);
+ 
+-  // 검색 결과[5] 참조: CSS containment 적용
+   return (
+       <div
+           ref={panelRef}
+           className="bottom-sheet"
+           style={{
+             height: `${panelHeight}%`,
+-            contain: 'content',  // 렌더링 최적화
+-            transition: isDraggingRef.current ? "none" : "height 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
++            contain: 'content',
++            transition: isDraggingRef.current
++                ? "none"
++                : "height 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+           }}
+           onPointerDown={handlePointerDown}
+           onPointerMove={handlePointerMove}
+@@ -82,24 +78,28 @@
+         <div className="drag-handle" />
+ 
+         <div className="bottom-sheet-content">
+-          <h3 style={{ marginTop: 30 }}>근처 매장 리스트</h3>
+-          {LocalStorelist.length ? (
+-              <ul style={{ contentVisibility: 'auto' }}>
+-                {LocalStorelist.map((store) => (
+-                    <li
+-                        key={store.storeNo}
+-                        onClick={() => navigate(`/storedetail/${store.storeNo}`)}
+-                    >
+-                      <span className="store-name">{store.storeName}</span>
+-                      <span className="store-distance">
+-                  {parseFloat(store.distance).toFixed(0)}m
+-                </span>
+-                    </li>
+-                ))}
+-              </ul>
+-          ) : (
+-              <p>근처에 매장이 없거나 검색한 제품을 가진 매장이 없어요. </p>
+-          )}
++          <div className="fixed-header">
++            <h3>근처 매장 리스트</h3>
++          </div>
++          <div className="scrollable-section">
++            {localStoreList.length ? (
++                <ul>
++                  {localStoreList.map((store) => (
++                      <li
++                          key={store.storeNo}
++                          onClick={() => navigate(`/storedetail/${store.storeNo}`)}
++                      >
++                        <span className="store-name">{store.storeName}</span>
++                        <span className="store-distance">
++                    {parseFloat(store.distance).toFixed(0)}m
++                  </span>
++                      </li>
++                  ))}
++                </ul>
++            ) : (
++                <p>근처에 매장이 없거나 검색한 제품을 가진 매장이 없어요.</p>
++            )}
++          </div>
+         </div>
+       </div>
+   );
+Index: Frontend/package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"name\": \"mypjt\",\r\n  \"version\": \"0.1.0\",\r\n  \"private\": true,\r\n  \"dependencies\": {\r\n    \"@babel/plugin-proposal-private-property-in-object\": \"^7.21.11\",\r\n    \"@craco/craco\": \"^7.1.0\",\r\n    \"@fortawesome/fontawesome-svg-core\": \"^6.7.2\",\r\n    \"@fortawesome/free-brands-svg-icons\": \"^6.7.2\",\r\n    \"@fortawesome/free-regular-svg-icons\": \"^6.7.2\",\r\n    \"@fortawesome/free-solid-svg-icons\": \"^6.7.2\",\r\n    \"@fortawesome/react-fontawesome\": \"^0.2.2\",\r\n    \"@thewirv/react-barcode-scanner\": \"^3.3.5\",\r\n    \"axios\": \"^1.7.9\",\r\n    \"cra-template\": \"1.2.0\",\r\n    \"env-cmd\": \"^10.1.0\",\r\n    \"openvidu-browser\": \"^2.31.0\",\r\n    \"react\": \"^18.3.1\",\r\n    \"react-barcode-scanner\": \"^3.0.1\",\r\n    \"react-cookie\": \"^7.2.2\",\r\n    \"react-datepicker\": \"^8.0.0\",\r\n    \"react-daum-postcode\": \"^3.2.0\",\r\n    \"react-dom\": \"^18.3.1\",\r\n    \"react-kakao-maps-sdk\": \"^1.1.27\",\r\n    \"react-modal\": \"^3.16.3\",\r\n    \"react-redux\": \"^9.2.0\",\r\n    \"react-router-dom\": \"^7.1.3\",\r\n    \"react-scripts\": \"5.0.1\",\r\n    \"styled-components\": \"^6.1.15\",\r\n    \"sweetalert2\": \"^11.16.1\",\r\n    \"web-vitals\": \"^4.2.4\"\r\n  },\r\n  \"scripts\": {\r\n    \"start\": \"craco start\",\r\n    \"build\": \"env-cmd -f .env.production react-scripts build\",\r\n    \"test\": \"craco test\",\r\n    \"eject\": \"craco eject\"\r\n  },\r\n  \"eslintConfig\": {\r\n    \"extends\": [\r\n      \"react-app\",\r\n      \"react-app/jest\"\r\n    ]\r\n  },\r\n  \"browserslist\": {\r\n    \"production\": [\r\n      \">0.2%\",\r\n      \"not dead\",\r\n      \"not op_mini all\"\r\n    ],\r\n    \"development\": [\r\n      \"last 1 chrome version\",\r\n      \"last 1 firefox version\",\r\n      \"last 1 safari version\"\r\n    ]\r\n  },\r\n  \"devDependencies\": {\r\n    \"@faker-js/faker\": \"^9.4.0\"\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/package.json b/Frontend/package.json
+--- a/Frontend/package.json	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/package.json	(date 1739763088218)
+@@ -10,6 +10,7 @@
+     "@fortawesome/free-regular-svg-icons": "^6.7.2",
+     "@fortawesome/free-solid-svg-icons": "^6.7.2",
+     "@fortawesome/react-fontawesome": "^0.2.2",
++    "@tanstack/react-router": "^1.105.0",
+     "@thewirv/react-barcode-scanner": "^3.3.5",
+     "axios": "^1.7.9",
+     "cra-template": "1.2.0",
+@@ -55,6 +56,8 @@
+     ]
+   },
+   "devDependencies": {
+-    "@faker-js/faker": "^9.4.0"
++    "@faker-js/faker": "^9.4.0",
++    "@tanstack/router-devtools": "^1.105.0",
++    "@tanstack/router-plugin": "^1.105.0"
+   }
+ }
+Index: Frontend/src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import \"./App.css\";\nimport { useEffect } from \"react\";\nimport { Route, Routes, useLocation, useParams } from \"react-router-dom\";\nimport MainPage from \"./pages/MainPage\";\nimport Kiosk from \"./pages/Kiosk\";\nimport KioskMainScreen from \"./pages/KioskMain\";\nimport SignUp from \"./pages/SignUpPage/SignUp\";\nimport OwnerSignUp from \"./pages/SignUpPage/OwnerSignUp\";\nimport UserSignUp from \"./pages/SignUpPage/UserSignUp\";\nimport MyPage from \"./pages/MyPage\";\nimport Coupons from \"./pages/Coupons\";\nimport Chats from \"./pages/Chats\";\nimport KakaoRedirect from \"./pages/KakaoRedirect\";\nimport SearchPage from \"./pages/Search\";\nimport StoreDetail from \"./pages/Storedetail\";\nimport MakeCoupons from \"./pages/MakeCoupons\";\nimport Notice from \"./pages/Notice\";\nimport StockRequests from \"./pages/StockRequests\";\nimport FleaRequests from \"./pages/FleaRequests\";\nimport SearchbyNurtrition from \"./pages/SearchbyNurtrition\";\nimport SearchResult from \"./pages/SearchResult\";\nimport StoredetailRequestPopup from \"./pages/StoredetailRequest\";\nimport StoreDetailFlearequest from \"./pages/StoredetailFlearequest\";\nimport { KakaoMapProvider } from \"./contexts/ KakaoMapContext\";\nimport VideoCall from \"./pages/VideoCall\";\n\nfunction App() {\n\n  const location = useLocation();\n  const params = useParams();\n\n  // 검색 결과[9] 참조: 동적 라우트 키 생성\n  const routeKey = location.pathname.startsWith(\"/search/results\")\n    ? `search-${location.search}`\n    : location.pathname;\n\n  // 지도 페이지 판별 로직\n  const isMapPage = [\"/\", \"/search/results\"].includes(location.pathname);\n\n  // 뷰포트 높이 설정 (검색 결과[5] 참조)\n  useEffect(() => {\n    const setScreenSize = () => {\n      let vh = window.innerHeight * 0.01;\n      document.documentElement.style.setProperty(\"--vh\", `${vh}px`);\n    };\n    setScreenSize();\n    window.addEventListener(\"resize\", setScreenSize);\n    return () => window.removeEventListener(\"resize\", setScreenSize);\n  }, []);\n\n  return (\n    <div className=\"App\">\n      <div>\n        <KakaoMapProvider>\n          <Routes>\n            <Route path=\"/signup\" element={<SignUp />} />\n            <Route path=\"/owner-signup\" element={<OwnerSignUp />} />\n            <Route path=\"/user-signup\" element={<UserSignUp />} />\n            <Route path=\"/mypage/user\" element={<MyPage />} />\n            <Route path=\"/mypage/user/coupons\" element={<Coupons />} />\n            <Route path=\"/mypage/user/chats\" element={<Chats />} />\n            <Route path=\"/mypage/admin\" element={<MyPage />} />\n            <Route path=\"/mypage/admin/flea\" element={<FleaRequests />} />\n            <Route path=\"/mypage/admin/stock\" element={<StockRequests />} />\n            <Route path=\"/mypage/admin/coupon\" element={<MakeCoupons />} />\n            <Route path=\"/mypage/admin/notice\" element={<Notice />} />\n\n            <Route path=\"/oauth/kakao\" element={<KakaoRedirect />} />\n\n            <Route path=\"/kiosk\" element={<Kiosk />} />\n            <Route path=\"/kiosk/main\" element={<KioskMainScreen />} />\n            {/*<Route path=\"/kiosk/:storeNo\" element={<KioskMainScreen/>}/>*/}\n\n            <Route path=\"/\" element={<MainPage />} />\n            <Route\n              path=\"/search/results\"\n              element={<SearchResult key={location.key} />}\n            />\n            <Route path=\"/search\" element={<SearchPage />} />\n            <Route path=\"/storedetail/:storeNo\" element={<StoreDetail />} />\n            <Route\n              path=\"/storedetail/:storeNo/request\"\n              element={<StoredetailRequestPopup />}\n            />\n            <Route\n              path=\"/storedetail/:storeNo/flearequest\"\n              element={<StoreDetailFlearequest />}\n            />\n            <Route path=\"/searchbynutrition\" element={<SearchbyNurtrition />} />\n            <Route path=\"/:storeNo/videocall\" element={<VideoCall />} />\n          </Routes>\n        </KakaoMapProvider>\n      </div>\n      <div\n        id=\"map-root\"\n        className={`map-container ${isMapPage ? \"visible\" : \"hidden\"}`}\n        style={{\n          opacity: isMapPage ? 1 : 0,\n          visibility: isMapPage ? \"visible\" : \"hidden\",\n          transition: \"opacity 0.3s ease, visibility 0.3s ease\",\n        }}\n      ></div>\n    </div>\n  );\n}\n\nexport default App;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.js b/Frontend/src/App.js
+--- a/Frontend/src/App.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/App.js	(date 1739764373633)
+@@ -21,14 +21,16 @@
+ import SearchResult from "./pages/SearchResult";
+ import StoredetailRequestPopup from "./pages/StoredetailRequest";
+ import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
+-import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
+ import VideoCall from "./pages/VideoCall";
++import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
++
+ 
+ function App() {
+ 
+   const location = useLocation();
+   const params = useParams();
+ 
++
+   // 검색 결과[9] 참조: 동적 라우트 키 생성
+   const routeKey = location.pathname.startsWith("/search/results")
+     ? `search-${location.search}`
+Index: Frontend/src/api/CouponGetApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import apiClient from \"./apiClient\";\n\n// 수정된 전체 코드\nconst CouponGetApi = async (nStoreNo, couponId) => {\n    try {\n        const response = await apiClient.post(`/api/coupon/receive`, {\n            storeNo: nStoreNo,\n            couponId: couponId,\n        });\n\n        if (response.status === 200) {\n            alert('쿠폰 발급 성공!')\n            return response.data // 실제 데이터 반환 추가\n        }\n\n        // 실패 처리 강화\n        const errorMessage = response.data?.message || \"쿠폰 발급 실패\"\n        alert(errorMessage)\n        throw new Error(errorMessage)\n\n    } catch (error) {\n        alert(`오류 발생: ${error.message}`) // 사용자 피드백 추가\n        throw error\n    }\n}\n\n\nexport default CouponGetApi;\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/CouponGetApi.js b/Frontend/src/api/CouponGetApi.js
+--- a/Frontend/src/api/CouponGetApi.js	(revision 45060f928c96c2514a3e8db584317186bc37b8cd)
++++ b/Frontend/src/api/CouponGetApi.js	(date 1739757939306)
+@@ -1,6 +1,5 @@
+ import apiClient from "./apiClient";
+ 
+-// 수정된 전체 코드
+ const CouponGetApi = async (nStoreNo, couponId) => {
+     try {
+         const response = await apiClient.post(`/api/coupon/receive`, {
+@@ -8,22 +7,33 @@
+             couponId: couponId,
+         });
+ 
++        // 성공 케이스
+         if (response.status === 200) {
+             alert('쿠폰 발급 성공!')
+-            return response.data // 실제 데이터 반환 추가
++            return response.data
+         }
+ 
+-        // 실패 처리 강화
++        // 에러 코드 확인
++        const errorCode = response.data?.errorCode
+         const errorMessage = response.data?.message || "쿠폰 발급 실패"
++
++        // 40930: 이미 수령한 쿠폰
++        if (errorCode) {
++            alert(errorMessage) // 서버에서 받은 메시지 바로 표시
++            return { isError: true, errorCode } // 추가 작업을 위한 정보 반환
++        }
++
++        // 기타 에러 처리
+         alert(errorMessage)
+         throw new Error(errorMessage)
+ 
+     } catch (error) {
+-        alert(`오류 발생: ${error.message}`) // 사용자 피드백 추가
++        // 네트워크 에러 등 예상치 못한 오류
++        if (!error.response) {
++            alert(`시스템 오류: ${error.message}`)
++        }
+         throw error
+     }
+ }
+ 
+-
+-export default CouponGetApi;
+-
++export default CouponGetApi;
+\ No newline at end of file

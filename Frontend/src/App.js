@@ -21,13 +21,15 @@ import SearchbyNurtrition from "./pages/SearchbyNurtrition";
 import SearchResult from "./pages/SearchResult";
 import StoredetailRequestPopup from "./pages/StoredetailRequest";
 import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
-import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
 import VideoCall from "./pages/VideoCall";
+import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
+
 
 function App() {
 
   const location = useLocation();
   const params = useParams();
+
 
   // 검색 결과[9] 참조: 동적 라우트 키 생성
   const routeKey = location.pathname.startsWith("/search/results")
