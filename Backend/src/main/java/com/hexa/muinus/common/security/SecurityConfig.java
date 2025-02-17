@@ -34,6 +34,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/items/**", "/api/item", "/api/item/detail").permitAll() // 상품 검색
                                 .requestMatchers("/api/store/list/**").permitAll() // 매장 검색
                                 // 쿠폰
+                                .requestMatchers("/api/coupon/qrcode").permitAll()
                                 .requestMatchers("/api/coupon/check").permitAll()
                                 // 매장 관련
                                 .requestMatchers("/api/store/detail").permitAll()
