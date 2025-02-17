@@ -252,8 +252,11 @@ function OwnerSignUp() {
         e.preventDefault();
         console.log("폼 제출 데이터:", formData);
         
-        // 폼의 모든 필드가 채워졌는지 확인
-        const formIsFull = Object.values(formData).every(value => value.trim() !== "");
+    // 폼의 모든 필드가 채워졌는지 확인
+    const formIsFull = Object.values(formData).every(value => {
+        // value가 문자열일 경우에만 trim()을 호출
+        return typeof value === 'string' ? value.trim() !== "" : value !== undefined && value !== null;
+    });
         if (!formIsFull) {
             // 폼이 채워지지 않으면 경고 메시지 출력
             Swal.fire({
