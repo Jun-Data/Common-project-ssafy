@@ -31,8 +31,9 @@ textarea::placeholder {
 button {
   font-family: 'CustomFont', sans-serif;
   font-size: 16px; /* 버튼 글씨 크기 (선택 사항) */
-  background-color: #4a90e2; /* 버튼 배경색 (선택 사항) */
+  background-color: #3f72af; /* 버튼 배경색 (선택 사항) */
   border: none; /* 버튼 테두리 제거 (선택 사항) */
+  border-radius: 2px;
   cursor: pointer;
 }
 

@@ -27,6 +27,10 @@ const KakaoMapMarkers = ({ storelist }) => {
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
+                border-radius: 8px;  
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                white-space: normal;  /* 줄바꿈 허용 */
+                word-wrap: break-word;  /* 긴 단어도 줄 바꿈 */
               ">
                 ${store.storeName}
                 <div style="

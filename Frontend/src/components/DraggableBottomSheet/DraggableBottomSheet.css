@@ -8,7 +8,7 @@
     background-color: #fff;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    border: #4a90e2 3px solid;
+    border: #dbe2ef 3px solid;
     box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
 
     touch-action: none; /* 터치 스크롤 충돌 방지 */
@@ -25,13 +25,8 @@
     width: 40%;
     height: 20px;
     border-radius: 6px;
-    color: #4a90e2;
+    color: #000000;
     transition: background-color 0.3s ease;
-}
-
-/* 호버 시 */
-.drag-handle:hover {
-    background-color: #9e9e9e !important;
 }
 
 /* 드래그 동작 중 */
