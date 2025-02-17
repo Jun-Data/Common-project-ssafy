@@ -16,11 +16,11 @@ public interface ESItemRepository extends ElasticsearchRepository<ESItem, Intege
     {
        "bool": {
         "should": [
-          {"match": {"item_name.synonym_graph": {"query": "?0", "fuzziness": "AUTO", "boost": 0.8, "operator": "OR"}}},
-          {"match": {"item_name.nori": {"query": "?0", "fuzziness": "AUTO", "boost": 1.2, "operator": "OR"}}},
-          {"match": {"item_name.ngram": {"query": "?0", "fuzziness": "AUTO", "boost": 1, "operator": "OR"}}},
-          {"match": {"item_name.nori_shingle": {"query": "?0", "fuzziness": "AUTO", "boost": 1.8, "operator": "OR"}}},
-          {"match": {"item_name.ngram_shingle": {"query": "?0", "fuzziness": "AUTO", "boost": 1.5, "operator": "OR"}}}
+          {"match": {"item_name.synonym_graph": {"query": "?0", "fuzziness": "2", "boost": 0.8, "operator": "OR"}}},
+          {"match": {"item_name.nori": {"query": "?0", "fuzziness": "2", "boost": 1.2, "operator": "OR"}}},
+          {"match": {"item_name.ngram": {"query": "?0", "fuzziness": "2", "boost": 1, "operator": "OR"}}},
+          {"match": {"item_name.nori_shingle": {"query": "?0", "fuzziness": "2", "boost": 1.8, "operator": "OR"}}},
+          {"match": {"item_name.ngram_shingle": {"query": "?0", "fuzziness": "2", "boost": 1.5, "operator": "OR"}}}
         ],
        "filter": [
          { "range": { "sugars": { "gte": ?1, "lte": ?2 } } },
@@ -31,4 +31,10 @@ public interface ESItemRepository extends ElasticsearchRepository<ESItem, Intege
     """)
     List<ESItem> searchItemsByQuery(String query, Integer minSugar, Integer maxSugar, Integer minCal, Integer maxCal);
 
+    @Query(
+    """
+                   
+    """
+    )
+    List<ESItem> getNoriSearchTokens(String query);
 }
