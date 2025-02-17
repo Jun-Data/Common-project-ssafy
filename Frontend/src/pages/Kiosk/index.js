@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import KioskHeaderContainer from "../../components/KioskHeaderContainer";
 import useAuth from "../../hooks/useAuth";
 import "./style.css";
 
 const Kiosk = () => {
-    const [storeNo, setStoreNo] = useState("");
+    const navigate = useNavigate();
     const { logindata } = useAuth();
 
-
+    const handleNavigate = () => {
+        if (logindata) {
+            const storeNumber = logindata.storeNo;
+            navigate(`/kiosk/${storeNumber}/main`);
+        }
+    };
 
     return (
         <div className="kiosk">
@@ -28,11 +33,10 @@ const Kiosk = () => {
                 </p>
             </section>
 
-            <a href="http://localhost:3000/kiosk/main" className="kioskstartbutton">
-                <button className={`start_button ${!logindata ? "disabled" : ""}`}>
+                <button className={`start_button ${!logindata ? "disabled" : ""}`}
+                        onClick={handleNavigate}>
                     시작하기
                 </button>
-            </a>
 
             <div className="description">
                 <img src="/Description.png" alt="kioskinstruction" />

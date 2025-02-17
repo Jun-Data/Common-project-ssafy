@@ -5,19 +5,14 @@ import apiClient from '../../api/apiClient';
 const CouponScannerComponent = ({ onConfirm }) => {
     const [isScanningAllowed, setIsScanningAllowed] = useState(true);
 
-    const couponScanSuccess = async () => {
+    const couponScanSuccess = async (scannedData) => {
         if (!isScanningAllowed) return;
         setIsScanningAllowed(false);
-        setTimeout(() => setIsScanningAllowed(true), 1000);
+        setTimeout(() => setIsScanningAllowed(true), 5000);
 
         try {
-            const storeNo = 1;
-            const couponId = 1;
-            const userNo = 1;
-
-            // apiClient를 사용하여 API 호출
-            const response = await apiClient.get('api/coupon/use', {
-                params: { storeNo, couponId, userNo },
+            const response = await apiClient.post('api/coupon/check', {
+                QRData: scannedData,
             });
 
             const product = response.data;

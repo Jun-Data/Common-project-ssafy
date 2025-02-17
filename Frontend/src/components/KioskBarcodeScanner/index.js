@@ -52,17 +52,10 @@ const BarcodeScannerComponent = ({ onAddToCart }) => {
 
     return (
         <div>
-            {isCameraActive ? (
                 <BarcodeScanner
                     onSuccess={handleScanSuccess}
                     onError={(error) => console.error('스캐너 오류:', error)}
                 />
-            ) : (
-                <p>카메라가 비활성화되었습니다.</p>
-            )}
-            <button onClick={toggleCamera}>
-                {isCameraActive ? '카메라 끄기' : '카메라 켜기'}
-            </button>
         </div>
     );
 };

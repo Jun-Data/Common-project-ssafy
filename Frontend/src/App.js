@@ -70,8 +70,7 @@ function App() {
             <Route path="/oauth/kakao" element={<KakaoRedirect />} />
 
             <Route path="/kiosk" element={<Kiosk />} />
-            <Route path="/kiosk/main" element={<KioskMainScreen />} />
-            {/*<Route path="/kiosk/:storeNo" element={<KioskMainScreen/>}/>*/}
+            <Route path="/kiosk/:storeNo/main" element={<KioskMainScreen/>}/>
 
             <Route path="/" element={<MainPage />} />
             <Route

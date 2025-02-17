@@ -1,11 +1,82 @@
-.kioskfleamarketsection {
+.flea-product-container {
+    width: 100%;
+    height: 100%;
     display: grid;
+    grid-template-rows: 15% 85%;
+}
+
+.fleanotice {
+    grid-row: 1;
     width: 100%;
     height: 100%;
 }
 
-.kioskfleamarketbutton {
-    width: 100%; /* 부모의 크기에 맞게 조정 */
+.fleaemptynotice {
+    grid-row: 2;
+    width: 100%;
     height: 100%;
     font-size: 30px;
+    align-content: center
+}
+
+.product-grid {
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.product-card {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    aspect-ratio: 1/1; /* 정사각형 비율 유지 */
+    display: flex;
+    flex-direction: column;
+}
+
+.image-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover img {
+    transform: scale(1.05);
+}
+
+.product-details {
+    padding: 15px;
+    text-align: center;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), #fff);
+}
+
+.add-cart-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 1rem;
+    margin-top: auto; /* 버튼을 하단에 고정 */
+}
+
+.add-cart-btn:hover {
+    background: #ff5252;
 }

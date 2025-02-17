@@ -84,7 +84,6 @@ const KioskMainScreen = () => {
 
     return (
         <div className="kioskmainscreen">
-            <div className="mainscreencontainer"><KioskHeaderContainer/></div>
             <div className="mainscreennotice">
                 장 바 구 니
                 {discount > 0 ? (
