@@ -8,12 +8,18 @@ function SignUp() {
     return (
         <div>
             <HeaderContainer />
+            <br/><br/><br/>
+            <h1>당신은 어떤 사용자인가요?</h1>
 
-            <h2>당신은 어떤 사용자이신가요?</h2>
-
-            <ImageWrapper> 
+            <ImageWrapper>
+            <Link to="/owner-signup">
             <img src="/owner.png" alt="Muin Logo" />
+            </Link>
+
+            <Link to="/user-signup">
             <img src="/customer.png" alt="Muin Logo" />
+            </Link>
+
             </ImageWrapper>
 
             <ButtonsWrapper>
@@ -30,14 +36,14 @@ function SignUp() {
 }
 
 const ButtonsWrapper = styled.div`
-  margin-top: 50px;
+  margin-top: 30px;
   display: flex;
-  gap: 35px;
+  gap: 55px;
   justify-content: center;
 `;
 
 const ImageWrapper = styled.div`
-  margin-top: 50px;
+  margin-top: 60px;
   display: flex;
   gap: 10px;
   justify-content: center;

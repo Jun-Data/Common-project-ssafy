@@ -9,7 +9,7 @@ const colorMap = {
 };
 
 const Button = styled.button`
-  padding: 10px 20px;
+  padding: 14px 22px;
 
   color: ${({ type }) => colorMap[type].BUTTON.DEFAULT.COLOR};
   background: ${({ type }) => colorMap[type].BUTTON.DEFAULT.BACKGROUND};

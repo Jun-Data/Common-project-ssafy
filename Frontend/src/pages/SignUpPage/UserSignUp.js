@@ -278,8 +278,9 @@ const InputGroup = styled.div`
 
 const ButtonContainer = styled.div`
 display: flex;
-justify-content: center; /* 버튼을 중앙 정렬 */
-gap: 20px; /* 버튼 사이 간격 조절 */
+justify-content: center; 
+gap: 20px;
+margin-top: 10px;
 `;
 
 const ErrorMessage = styled.div`

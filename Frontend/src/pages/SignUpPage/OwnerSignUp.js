@@ -1,5 +1,5 @@
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -297,15 +297,19 @@ function OwnerSignUp() {
                     // 각 필드에 대한 오류 메시지 확인
         Object.keys(formErrors).forEach((key) => {
             if (formErrors[key]) {
-                console.log(`${key} 필드 오류: ${formErrors[key]}`);
-            }
+                Swal.fire({
+                    icon: "error",
+                    title: "입력 오류",
+                    text: `${key} 필드 오류: ${formErrors[key]}`,
+                });            }
         });
         }
     };
     
-    useEffect(() => {
-        console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
-    }, [formData]);  // formData가 변경될 때마다 실행
+    // 제출 폼 확인용용
+    // useEffect(() => {
+    //     console.log('formData 업데이트:', formData);  // formData 변경 시마다 출력
+    // }, [formData]);  // formData가 변경될 때마다 실행
     
     const handleBack = (e) => {
         e.preventDefault();  // 기본 동작인 폼 제출을 막는다.
@@ -407,13 +411,13 @@ function OwnerSignUp() {
                     <FindButton type="button" onClick={() => setIsPopupOpen(true)}>
                         주소 찾기
                     </FindButton>
+                </InputGroup>
                     {isPopupOpen && (
                     <KakaoPostcodePopup
                         onClose={() => setIsPopupOpen(false)}
                         onComplete={handleAddressComplete}
                     />
                 )}
-                </InputGroup>
 
                 <InputGroup>
                     <label>사업자 등록번호 <span>*</span></label>
@@ -541,8 +545,9 @@ const FindButton = styled.button`
 `;
 const ButtonContainer = styled.div`
 display: flex;
-justify-content: center; /* 버튼을 중앙 정렬 */
-gap: 20px; /* 버튼 사이 간격 조절 */
+justify-content: center; 
+gap: 20px;
+margin-top: 10px;
 `;
 
 export default OwnerSignUp;
