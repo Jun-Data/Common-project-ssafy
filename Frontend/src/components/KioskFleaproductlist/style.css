@@ -3,6 +3,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: 15% 85%;
+    background-color: #fff;
 }
 
 .fleanotice {

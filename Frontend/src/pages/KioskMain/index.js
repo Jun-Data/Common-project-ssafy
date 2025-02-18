@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import KioskHeaderContainer from "../../components/KioskHeaderContainer";
 import BarcodeScannerComponent from "../../components/KioskBarcodeScanner";
 import Cartpage from "../../components/KioskCartpage";
 import KioskFleaproductlist from "../../components/KioskFleaproductlist";
@@ -15,8 +14,7 @@ const KioskMainScreen = () => {
     const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
     const [isCouponPopupOpen, setIsCouponPopupOpen] = useState(false);
     const [isPaymentFinish, setIsPaymentFinish] = useState(false);
-
-
+    const [isCouponPromptOpen, setIsCouponPromptOpen] = useState(false); // 추가된 상태
     const navigate = useNavigate();
 
     const kioskhomeclick = () => {
@@ -74,24 +72,13 @@ const KioskMainScreen = () => {
     const handleApplyCoupon = (couponAmount) => {
         setDiscount(couponAmount);
         alert(`쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`);
-        setIsCouponPopupOpen(false); // 쿠폰 팝업 닫기
+        setIsCouponPopupOpen(false);
+        setIsPaymentPopupOpen(true); // 쿠폰 적용 후 결제창 자동 호출
     };
 
-    const handleCancelCoupon = () => {
-        setDiscount(0); // 할인 초기화
-        alert("쿠폰이 취소되었습니다.");
-    };
 
     return (
         <div className="kioskmainscreen">
-            <div className="mainscreennotice">
-                장 바 구 니
-                {discount > 0 ? (
-                    <button onClick={handleCancelCoupon}>쿠폰 적용 취소</button>
-                ) : (
-                    <button onClick={() => setIsCouponPopupOpen(true)}>쿠폰 적용</button>
-                )}
-            </div>
             <div className="mainscreencartpage">
                 <Cartpage
                     cartItems={cartItems}
@@ -105,26 +92,60 @@ const KioskMainScreen = () => {
                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
                 <div className="buttonzone">
                     <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
-                    <button className="mainscreenpayment" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>
+                    <button
+                        className="mainscreenpayment"
+                        onClick={() => setIsCouponPromptOpen(true)}>결제하기
+                    </button>
                     <button className="mainscreentohome" onClick={kioskhomeclick}>홈으로</button>
                 </div>
             </div>
-
-            {isPaymentPopupOpen && (
-                <>
-                    <PaymentPopup
-                        onClose={() => setIsPaymentPopupOpen(false)}
-                        onConfirm={handleConfirmPayment}
-                    />
-                </>
+            {/* 쿠폰 적용 확인 팝업 추가 */}
+            {isCouponPromptOpen && (
+                <div className="coupon-prompt-overlay">
+                    <div className="coupon-prompt-content">
+                        <h2>쿠폰을 적용하시겠습니까?</h2>
+                        <div className="coupon-prompt-buttons">
+                            <button
+                                onClick={() => {
+                                    setIsCouponPromptOpen(false);
+                                    setIsCouponPopupOpen(true);
+                                }}
+                            >
+                                예
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setIsCouponPromptOpen(false);
+                                    setIsPaymentPopupOpen(true);
+                                }}
+                            >
+                                아니오
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
+            {/* 수정된 결제 팝업 호출 방식 */}
+            {isPaymentPopupOpen && (
+                <PaymentPopup
+                    total={calculateTotalPrice()} // 총 금액 전달
+                    onClose={() => setIsPaymentPopupOpen(false)}
+                    onConfirm={handleConfirmPayment}
+                />
+            )}
+
+            {/* 쿠폰 팝업 닫힐 때 결제창 자동 호출 */}
             {isCouponPopupOpen && (
                 <KioskCouponPopup
-                    onClose={() => setIsCouponPopupOpen(false)}
+                    onClose={() => {
+                        setIsCouponPopupOpen(false);
+                        setIsPaymentPopupOpen(true); // 쿠폰창 닫으면 결제창 호출
+                    }}
                     onApplyCoupon={handleApplyCoupon}
                 />
             )}
+
             {isPaymentFinish && (
                 <KioskPaymentFinishPopup onClose={() => {
                     setIsPaymentFinish(false);

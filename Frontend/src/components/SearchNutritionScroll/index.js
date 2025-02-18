@@ -42,9 +42,10 @@ const SearchNutritionScroll = ({ coords }) => {
     return (
         <div className="scrollcontents">
             <div className="scrollnotice">영양분으로 검색하기</div>
+
             <div className="scrollui">
                 <label>
-                    Sugar (Max): {maxSugar}&nbsp;&nbsp;&nbsp;
+                    <p>당 함유량: {maxSugar}</p>
                     <input
                         type="range"
                         min="0"
@@ -52,9 +53,9 @@ const SearchNutritionScroll = ({ coords }) => {
                         value={maxSugar}
                         onChange={(e) => setMaxSugar(Number(e.target.value))}
                     />
-                </label><br/>
+                </label>
                 <label>
-                    Calories (Max): {maxCal}
+                    <p>칼로리: {maxCal}</p>
                     <input
                         type="range"
                         min="0"
@@ -62,7 +63,7 @@ const SearchNutritionScroll = ({ coords }) => {
                         value={maxCal}
                         onChange={(e) => setMaxCal(Number(e.target.value))}
                     />
-                </label><br/>
+                </label>
             </div>
 
             <div className="nutritionsearchresult">

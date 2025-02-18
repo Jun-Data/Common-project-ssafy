@@ -116,29 +116,14 @@ const StoreDetail = () => {
         <div className="market-detail">
           <div className="market-name">{productData?.store.name}</div>
           <div className="market-location">{productData?.store.address}</div>
-          <div className="storedetail-btnlist">
-            <button
-              className="couponrequestbtn"
-              onClick={() => handleCouponGet(nStoreNo)}
-            >
-              쿠폰
-              <br />
-              수령
-            </button>
-            <button className="requestbtn" onClick={navigateRequestPage}>
-              입고
-              <br />
-              요청
-            </button>
-            <button className="flearequestbtn" onClick={navigateFlearequest}>
-              플리
-              <br />
-              신청
-            </button>
-            <button onClick={navigateToVideoCall}>화상통화</button>
-          </div>
         </div>
       </div>
+          <div className="storedetail-btnlist">
+            <button className="couponrequestbtn" onClick={() => handleCouponGet(nStoreNo)}>쿠폰수령</button>
+            <button className="requestbtn" onClick={navigateRequestPage}>입고요청</button>
+            <button className="flearequestbtn" onClick={navigateFlearequest}>플리신청</button>
+            <button className="videocallbtn" onClick={navigateToVideoCall}>화상통화</button>
+        </div>
       <div className="storedetailnavbar">
         <StoreDetailbar onTabClick={handleTabClick} />
       </div>

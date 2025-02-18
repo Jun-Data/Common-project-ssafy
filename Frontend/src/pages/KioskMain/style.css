@@ -3,25 +3,15 @@
     max-width: 800px;
     width: 100%;
     height: 100%;
-    grid-template-rows: 6vh 37vh 37vh 20vh;
+    grid-template-rows: 38vh 38vh 20vh;
     grid-template-areas:
-        "notice"
         "cartpage"
         "kioskpleaproductlist"
         "scanner";
     place-items: center;
+    background-color: #e9ecef;
 }
 
-
-.mainscreennotice {
-    grid-area: notice;
-    width: 100%;
-    height: 100%;
-    font-size: 60px;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-}
 
 .mainscreennotice button {
     width: 20%;
@@ -31,45 +21,48 @@
 }
 
 .mainscreencartpage {
+    box-sizing: border-box;
     grid-area: cartpage;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
+    margin-top: 2vh;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .kioskpleaproductlist {
+    box-sizing: border-box;
     grid-area: kioskpleaproductlist;
-    width: 100%;
-    height: 100%;
-}
+    width: 95%;
+    height: 95%;
+    margin-top: 2vh;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
 
 .barcodebuttoncontainer {
-    border-top: 2px solid black;
-    position: fixed;
-    bottom: 0;
+    margin-top: 45px;
     grid-area: scanner;
     width: 95%;
-    height: 20vh;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .mainscreenbarcodescanner {
+    box-sizing: border-box;
     width: 40%;
 }
 
 .buttonzone {
     width: 50%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 8%;
+    display: grid;
+    grid-template-rows: 1fr 0.5fr 0.5fr;
+    gap: 15px;
+    place-items: center;
 }
 
 .cartpagetotal {
-    display: grid;
+    grid-row: 1;
     align-items: center;
     width: 95%;
     height: 26%;
@@ -79,18 +72,53 @@
     color: black;
 }
 
-.mainscreenpayment,
-.mainscreentohome {
-    width: 80%;
-    height: 25%;
-    font-size: 2vw;
-    border-radius: 1vw;
+.mainscreenpayment {
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    font-size: 40px;
+    border-radius: 5px;
 }
 
+.mainscreentohome {
+    grid-row: 3;
+    width: 100%;
+    height: 100%;
+    font-size: 40px;
+    border-radius: 5px;
+}
+
+
 .mainscreenpayment {
-    background-color: #ff4444;
+    background-color: #4a90e2;
 }
 
 .mainscreentohome {
     background-color: #cccccc;
+}
+
+/* 쿠폰 확인 팝업 스타일 */
+.coupon-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.coupon-prompt-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.coupon-prompt-buttons button {
+    margin: 1rem;
+    padding: 0.5rem 2rem;
 }
