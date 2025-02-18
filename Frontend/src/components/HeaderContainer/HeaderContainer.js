@@ -1,5 +1,5 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faUser } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
@@ -87,7 +87,7 @@ function HeaderContainer() {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
-        !event.target.closest(".login-icon") // faUser 아이콘 클릭 예외 처리
+        !event.target.closest(".login-icon") // user 아이콘 클릭 예외 처리
       ) {
         setShowDropdown(false);
       }
@@ -114,7 +114,7 @@ function HeaderContainer() {
           {isLoading ? ( // 로그인 정보 로딩 중이면 아무것도 렌더링하지 않음
             <></>
           ) : logindata ? (
-            <img src="/user.png" alt="User Icon" className="login-icon"
+            <img src="/user.png" alt="User Icon" className="user-icon"
             onClick={handleDropdown}
             />
             // <FontAwesomeIcon

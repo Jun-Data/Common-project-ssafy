@@ -54,9 +54,13 @@
 }
 
 .login-icon {
+    width: 65px; 
+    margin: 8px 0px 0px; 
+}
+
+.user-icon {
     width: 30px; 
-    margin: 8px 0px 0px;
-    
+    margin: 8px 0px 0px; 
 }
 
 /* 드롭다운 메뉴 */

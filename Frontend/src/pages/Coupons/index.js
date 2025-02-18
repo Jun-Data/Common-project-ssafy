@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
-import MyPageHeader from "../../components/MyPageHeader";
 
 function Coupons() {
     const [coupons, setCoupons] = useState([]); // 쿠폰 데이터 상태
@@ -20,7 +19,7 @@ function Coupons() {
                 console.log("응답 데이터:", response.data);
                 setCoupons(response.data);
 
-            } catch (err) {
+            } catch (error) {
                 setError("쿠폰 데이터를 가져오는데 실패했습니다.");
                 console.error("Error:", error);
 
@@ -59,12 +58,12 @@ function Coupons() {
     return (
         <div>
             <HeaderContainer />
-            <MyPageHeader />
-            <h2>보유 쿠폰 목록</h2>
-            <p>쿠폰을 클릭하여 QR 코드를 생성하고, 키오스크에서 바로 사용하세요!</p>
+            <h2>보유 쿠폰</h2>
+            <p>쿠폰을 클릭하여 QR 코드를 생성하고, </p>
+            <p>키오스크에서 바로 사용하세요!</p>
             <CouponsContainer>
                 {coupons.length === 0 ? (
-                    <p>현재 보유한 쿠폰이 없습니다.</p>
+                    <h2>[ 현재 보유하신 쿠폰이 없습니다 ]</h2>
                 ) : (
                     <CouponList>
                         {coupons.map((coupon, index) => (
