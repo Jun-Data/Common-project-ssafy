@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useBaseMap } from "../../contexts/ KakaoMapContext";
+import { useBaseMap } from "../../contexts/KakaoMapContext";
 
 const KakaoMapMarkers = ({ storelist }) => {
 

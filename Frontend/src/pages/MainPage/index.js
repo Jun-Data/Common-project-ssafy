@@ -8,7 +8,7 @@ import KakaoMapMarkers from "../../components/KakaoMapMarkers";
 import useGeolocation from "../../hooks/UseGeolocation";
 import useReverseGeocoding from "../../hooks/useReverseGeocoding";
 import useGeocoding from "../../hooks/useGeocoding";
-import { useBaseMap } from "../../contexts/ KakaoMapContext";
+import { useBaseMap } from "../../contexts/KakaoMapContext";
 import "./style.css";
 
 const MainPage = () => {

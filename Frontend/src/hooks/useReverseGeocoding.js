@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useBaseMap } from "../contexts/ KakaoMapContext";
+import { useBaseMap } from "../contexts/KakaoMapContext";
 
 const useReverseGeocoding = () => {
     const { isSDKLoaded } = useBaseMap(); // ✅ BaseMap 컨텍스트 사용

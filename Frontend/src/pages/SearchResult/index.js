@@ -5,7 +5,7 @@ import DraggableBottomSheet from "../../components/DraggableBottomSheet/Draggabl
 import KakaoMapMarkers from "../../components/KakaoMapMarkers";
 import KakaoMapContainer from "../../components/KakaoMapContainer";
 import AddressSearchTrigger from "../../components/AddressSearchTrigger";
-import { useBaseMap } from "../../contexts/ KakaoMapContext";
+import { useBaseMap } from "../../contexts/KakaoMapContext";
 import useReverseGeocoding from "../../hooks/useReverseGeocoding";
 import useGeocoding from "../../hooks/useGeocoding";
 import './style.css'

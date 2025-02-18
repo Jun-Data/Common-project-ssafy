@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
-import { Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Kiosk from "./pages/Kiosk";
 import KioskMainScreen from "./pages/KioskMain";
@@ -21,19 +21,11 @@ import SearchResult from "./pages/SearchResult";
 import StoredetailRequestPopup from "./pages/StoredetailRequest";
 import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
 import VideoCall from "./pages/VideoCall";
-import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
-
+import { KakaoMapProvider } from "./contexts/KakaoMapContext";
 
 function App() {
 
   const location = useLocation();
-  const params = useParams();
-
-
-  // 검색 결과[9] 참조: 동적 라우트 키 생성
-  const routeKey = location.pathname.startsWith("/search/results")
-    ? `search-${location.search}`
-    : location.pathname;
 
   // 지도 페이지 판별 로직
   const isMapPage = ["/", "/search/results"].includes(location.pathname);

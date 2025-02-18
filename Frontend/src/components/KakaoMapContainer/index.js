@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useBaseMap } from "../../contexts/ KakaoMapContext";
+import { useBaseMap } from "../../contexts/KakaoMapContext";
 import './style.css'
 
 
