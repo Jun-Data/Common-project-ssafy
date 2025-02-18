@@ -23,48 +23,37 @@ public interface PreferenceRepository extends JpaRepository<Preference, Preferen
      * @return
      */
     @Query(value = """
-        SELECT
-            me.item_id AS itemId,
-            i.item_name AS itemName,
-            me.count_mine AS purchaseCount, 
-            (sm.sum_every / t.total_count) * 100 AS trendRating 
-        FROM ( 
-                SELECT
-                    p.item_id,
-                    COUNT(p.daily_score) AS count_mine 
-                FROM preference p
-                JOIN users u
-                ON   u.user_no = p.user_no
-                WHERE p.updated_at >= :monthAgo
-                AND   u.email = :userEmail
-                GROUP BY p.item_id
-            ) me
-        JOIN (
-                SELECT
-                    item_id,
-                    SUM(daily_score) AS sum_every   
-                FROM preference
-                WHERE updated_at >= :monthAgo
-                GROUP BY item_id
-            ) sm
-        ON me.item_id = sm.item_id
-        JOIN (
-            SELECT
-                SUM(daily_score) AS total_count
-            FROM preference
-            WHERE updated_at >= :monthAgo
-        ) t
-        
-        JOIN item i
-            ON i.item_id = me.item_id
-        
-        ORDER BY me.item_id;
+        select lp.item_id AS itemId, lp.item_name AS itemName, lp.purchase_count AS purchaseCount, (lp.item_score / lp.all_total_score) as trendRating
+        from
+        (
+            (
+            select mp.item_id, mp.item_name, mp.purchase_count, op.item_score, ap.all_total_score
+            from (
+                select p.item_id, i.item_name, count(*) as purchase_count from preference p
+                join users u on u.user_no = p.user_no
+                join item i on i.item_id = p.item_id
+                where u.email = :userEmail
+                and p.updated_at >= :monthAgo
+                and p.daily_score > 0
+                group by item_id
+            ) mp
+            left join (
+                select item_id, sum(daily_score) AS item_score
+                from preference p
+                where updated_at >= :monthAgo
+                group by item_id
+                ) op
+            on mp.item_id = op.item_id
+            join (
+                select sum(a.daily_score) AS all_total_score from preference a where a.updated_at >= :monthAgo) ap
+            )
+        )  lp
     """, nativeQuery = true)
     List<PreferTrendsProjection> findItemsByScore(String userEmail, LocalDate monthAgo);
 
     @Query(value = """
         SELECT distinct p.item_id FROM preference p JOIN users u ON u.user_no = p.user_no
-        WHERE u.email = :userEmail AND  p.updated_at >= :data ORDER BY p.item_id;
+        WHERE u.email = :userEmail AND  p.updated_at >= :date AND daily_score > 0 ORDER BY p.item_id;
     """, nativeQuery = true)
     List<Integer> getRecentItems(String userEmail, LocalDate date);
 

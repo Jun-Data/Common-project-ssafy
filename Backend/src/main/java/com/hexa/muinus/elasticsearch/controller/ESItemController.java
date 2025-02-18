@@ -1,5 +1,6 @@
 package com.hexa.muinus.elasticsearch.controller;
 
+import com.hexa.muinus.common.security.Authorization;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.domain.ESStoreItem;
 import com.hexa.muinus.elasticsearch.service.ESItemService;
@@ -85,8 +86,7 @@ public class ESItemController {
      * @return
      */
     @GetMapping("/recommand")
-    public ResponseEntity<List<ESItem>> getRecommandedItems(/*@Authorization String userEmail*/) {
-        String userEmail = "s@s";
+    public ResponseEntity<List<ESItem>> getRecommandedItems(@Authorization String userEmail) {
         log.info("Getting Recommanded Items - user: {}", userEmail);
         return ResponseEntity.ok(recommandService.getRecommendedItems(userEmail));
     }
