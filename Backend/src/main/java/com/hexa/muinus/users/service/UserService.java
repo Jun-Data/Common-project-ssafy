@@ -4,6 +4,7 @@ import com.hexa.muinus.common.exception.user.InvalidRefreshTokenException;
 import com.hexa.muinus.common.exception.user.RefreshTokenRequiredException;
 import com.hexa.muinus.common.exception.user.UserEmailDuplicateException;
 import com.hexa.muinus.common.jwt.JwtProvider;
+import com.hexa.muinus.common.s3.service.S3ImageService;
 import com.hexa.muinus.store.domain.store.Store;
 import com.hexa.muinus.store.domain.store.repository.StoreRepository;
 import com.hexa.muinus.store.service.StoreService;
@@ -30,6 +31,7 @@ public class UserService {
     private final StoreRepository storeRepository;
     private final FliUserRepository fliUserRepository;
     private final JwtProvider jwtProvider;
+    private final S3ImageService s3ImageService;
 
     @Transactional
     public Users registerConsumer(ConsumerRegisterRequestDto requestDto, HttpServletResponse response) {
@@ -60,7 +62,9 @@ public class UserService {
 
         Users savedUser = userRepository.save(user);
         // 신규 매장 생성
+        String imageUrl = s3ImageService.Base64toImageUrl(requestDto.getStoreImageUrl());
         Store store = Store.create(savedUser, requestDto);
+        store.setStoreImageUrl(imageUrl);
 
         return storeRepository.save(store);
     }
