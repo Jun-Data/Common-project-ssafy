@@ -1,5 +1,3 @@
-// import { faUser } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"; // useAuth 훅 가져오기
@@ -45,9 +43,9 @@ function HeaderContainer() {
   // userType에 따라 마이페이지 이동 경로 설정
   const handleNavigateToMyPage = () => {
     if (logindata?.userType === "A") {
-      navigate("/mypage/admin");
+      navigate("/mypage/admin/flea");
     } else if (logindata?.userType === "U") {
-      navigate("/mypage/user");
+      navigate("/mypage/user/coupons");
     }
   };
 
@@ -55,11 +53,15 @@ function HeaderContainer() {
     if (logindata?.userType === "A") {
       return (
         <>
-          <Link to ="/mypage/admin/flea">
-          <p className="welcome-text">
-            {logindata ? `${logindata.userName}님 환영합니다.` : "환영합니다."}
+          <p className="welcome-text" onClick={handleNavigateToMyPage}>
+            {logindata ? (
+              <>
+                <strong>{logindata.userName}</strong>님 환영합니다!
+              </>
+            ) : (
+              "환영합니다."
+            )}
           </p>
-          </Link>
           <Link to="/mypage/admin/flea">플리마켓</Link>
           <Link to="/mypage/admin/stock">입고</Link>
           <Link to="/mypage/admin/coupon">쿠폰</Link>
@@ -70,7 +72,13 @@ function HeaderContainer() {
       return (
         <>
           <p className="welcome-text" onClick={handleNavigateToMyPage}>
-            {logindata ? `${logindata.userName}님 환영합니다.` : "환영합니다."}
+            {logindata ? (
+              <>
+                <strong>{logindata.userName}</strong>님 환영합니다!
+              </>
+            ) : (
+              "환영합니다."
+            )}
           </p>
           <Link to="/mypage/user/coupons">쿠폰함</Link>
         </>
@@ -89,7 +97,8 @@ function HeaderContainer() {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
-        !event.target.closest(".login-icon") // user 아이콘 클릭 예외 처리
+        !event.target.closest(".login-icon") &&// faUser 아이콘 클릭 예외 처리
+        !event.target.closest(".user-icon") // user 추가
       ) {
         setShowDropdown(false);
       }

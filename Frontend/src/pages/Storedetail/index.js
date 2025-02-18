@@ -7,7 +7,7 @@ import CouponGetApi from "../../api/CouponGetApi";
 import CouponListApi from "../../api/CouponListApi";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
-
+import Button from "../../components/Button";
 import "./style.css";
 
 const StoreDetail = () => {
@@ -216,44 +216,60 @@ const StoreDetail = () => {
       {/* 팝업 */}
       {selectedItem && (
         <div className="popup-overlay" onClick={closePopup}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-content" style={selectedType === "store" ? { width: "300px", height: "300px", padding: "15px" } : {}} onClick={(e) => e.stopPropagation()}>
             {selectedType === "store" && (
               <>
-                <h3>{selectedItem.itemName}</h3>
-                <p>가격: {selectedItem.finalPrice}원</p>
-                <p>수량: {selectedItem.quantity}</p>
+                <h3 className="store-item-title">{selectedItem.itemName}</h3>
+                <img
+                  src={selectedItem.itemImageUrl || "/logo.png"}
+                  alt={selectedItem.itemName || "상품 이미지"}
+                  style={{width:"100px", height:"100px", objectFit:"cover" , borderRadius: "10px", border: "2px solid #dbe2ef"}}
+                  onError={(e) => {
+                    e.target.src = "/logo.png";
+                  }}
+                />                
+                <div>
+                  <p className="store-item-price">💰 가격 :  <strong>{selectedItem.finalPrice}원</strong></p>
+                  <p className="store-item-quantity">📦 수량 :  <strong>{selectedItem.quantity}</strong></p>
+                </div>
               </>
             )}
             {selectedType === "fli" && (
               <>
-                <h3>{selectedItem.fliItemName}</h3>
+                <h2 className="fliitem-title">{selectedItem.fliItemName}</h2>
                 <img
                   src={selectedItem.imagePath || "/logo.png"}
+                  alt={selectedItem.fliItemName || "상품 이미지"}
                   className="fliitemdetailimage"
+                  style={{width:"300px", height:"300px", objectFit:"cover" , borderRadius: "10px", border: "2px solid #ddd"}}
                   onError={(e) => {
                     e.target.src = "/logo.png";
                   }}
                 />
-                <p>가격: {selectedItem.price}원</p>
-                <p>수량: {selectedItem.quantity}</p>
+                <div className="fliitem-info">
+                  <h3 className="fliitem-price">💰 가격 : <strong>{selectedItem.price}원</strong></h3>
+                  <h3 className="fliitem-quantity">📦 수량 : <strong>{selectedItem.quantity}</strong></h3>
+                  <br />
+                </div>
               </>
             )}
             {selectedType === "announcement" && (
               <>
-                <h3>{selectedItem.title}</h3>
-                <p>{selectedItem.content}</p>
+                <h1 className="announcement-title">{selectedItem.title}</h1>
+                <p className="announcement-date">작성일 : {formatDate(selectedItem.createdAt)}</p>{" "}
+                {/* 날짜 변환 적용 */}
+                <p className="announcement-content">{selectedItem.content}</p>
                 <img
                     src={selectedItem.boardImageUrl || "/logo.png"}
                     className="announcementdetailimage"
+                    style={{width:"250px", height:"250px", objectFit:"cover" , borderRadius: "10px", border: "2px solid #ddd", marginBottom:"20px"}}
                     onError={(e) => {
                       e.target.src = "/logo.png";
                     }}
                 />
-                <p>작성일: {formatDate(selectedItem.createdAt)}</p>{" "}
-                {/* 날짜 변환 적용 */}
               </>
             )}
-            <button onClick={closePopup}>닫기</button>
+            <Button type="SECONDARY" onClick={closePopup}>닫기</Button>
           </div>
         </div>
       )}

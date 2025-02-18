@@ -6,6 +6,7 @@ import RequestApi from "../../api/RequestApi";
 import SearchBar from "../../components/SearchBar";
 import SearchDropdownList from "../../components/SearchDropdownList";
 import './style.css';
+import Button from "../../components/Button";
 
 
 // 디바운스 함수 정의
@@ -113,8 +114,8 @@ const StoredetailRequestPopup = () => {
                         <div className="requestitemimagetxt">{ message }</div>
                     </div>
                     <div className="requestbuttonzone">
-                        <button className="requestbuttons" onClick={handleSubmit}>제출하기</button>
-                        <button className="requestbuttons" onClick={() => navigate(-1)}>닫기</button>
+                        <Button type="SECONDARY" className="requestbuttons" onClick={() => navigate(-1)}>닫기</Button>
+                        <Button type="PRIMARY" className="requestbuttons" onClick={handleSubmit}>제출하기</Button>
                     </div>
                 </div>
             </div>

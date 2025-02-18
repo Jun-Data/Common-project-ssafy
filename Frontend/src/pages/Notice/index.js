@@ -442,9 +442,9 @@ const NoticeItem = styled.div`
 `;
 
 const EditButtonSmall = styled.button`
-    padding: 5px 10px;
+    padding: 10px 15px;
     font-size: 0.8rem;
-    background-color: #ff9800;
+    background-color: #3f72af;
     color: white;
     border: none;
     border-radius: 5px;
@@ -452,7 +452,7 @@ const EditButtonSmall = styled.button`
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #e68900;
+        background-color: #3f72af;
     }
 `;
 

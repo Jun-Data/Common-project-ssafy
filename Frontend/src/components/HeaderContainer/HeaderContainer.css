@@ -91,6 +91,8 @@
     font-size: 14px;
     color: #333; /* 기본 텍스트 색상 */
     transition: background-color 0.3s, color 0.3s; /* 호버시 색상 변화 */
+    text-decoration: none;
+
 }
 
 /* 드롭다운 항목 호버 효과 */
@@ -101,7 +103,6 @@
 
 /* 로그아웃 버튼 스타일 */
 .logout {
-    background-color: #ff5c5c; /* 빨간색 배경 */
     color: white; /* 텍스트 흰색 */
     border-radius: 4px; /* 모서리 둥글게 */
     border: none; /* 기본 테두리 제거 */
@@ -109,12 +110,6 @@
     text-align: center;
     cursor: pointer;
 }
-
-/* 로그아웃 버튼 호버 효과 */
-.logout:hover {
-    background-color: #e04e4e; /* 호버 시 배경 색상 */
-}
-
 
 /* 말풍선 뾰족한 부분을 만들기 위한 삼각형 */
 .dropdown::after {
@@ -127,3 +122,16 @@
     border-right: 10px solid transparent;
     border-bottom: 10px solid white; /* 삼각형을 아래쪽으로 향하게 함 */
 }
+
+.welcome-text {
+    display: inline-block; /* 가로 정렬 유지 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    font-size: 14px; /* 적절한 크기 */
+    color: #333;
+  }
+  
+  .welcome-text strong {
+    font-weight: bold;
+    color: #3f72af; 
+  }
+  

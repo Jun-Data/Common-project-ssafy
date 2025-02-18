@@ -1,13 +1,18 @@
 import apiClient from "./apiClient";
-import { useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2";
 const FleaRequestApi = async (formData) => {
 
     try {
         const response = await apiClient.post(`/api/fli/register`, formData);
 
         if (response.status >= 200 && response.status < 300) {
-            alert("플리마켓 제품 신청이 완료되었습니다!")
+            // alert("플리마켓 제품 신청이 완료되었습니다!")
+            Swal.fire({
+                icon: 'success',
+                title: '신청 성공',
+                text: '플리마켓 신청이 완료되었습니다!',
+                confirmButtonText: '확인',
+            });
             console.log("API 호출 성공:", response.data);
             return response.data;
         }

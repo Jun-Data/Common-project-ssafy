@@ -23,10 +23,10 @@ export const SECONDARY = {
   BUTTON: {
     DEFAULT: {
       COLOR: '#3A3A3A',
-      BACKGROUND: '#FFFFFF',
+      BACKGROUND: '#EDEDED',
     },
     HOVER: {
-      COLOR: '#3A3A3A',
+      COLOR: '#B8B7B9',
       BACKGROUND: '#F3F3F3',
     },
     PRESSED: {

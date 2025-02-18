@@ -43,6 +43,7 @@
   place-items: center;
   background-color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 5px;
 }
 
 .market-image img {
@@ -53,7 +54,7 @@
 
 .market-detail {
   display: grid;
-  grid-template-rows: 60% 40%;
+  grid-template-rows: 70% 0%;
   place-items: center;
 }
 
@@ -93,7 +94,7 @@
 .flearequestbtn,
 .videocallbtn{
   box-sizing: border-box;
-  border: #4a90e2 2px solid;
+  border: #dbe2ef 1px solid;
   border-radius: 15px;
   width: auto; /* 30% → auto로 변경 */
   flex: 1 1 0%; /* 추가 */
@@ -126,7 +127,7 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 12px;
+  gap: 2px;
 }
 
 .storedetailmarketli {
@@ -135,7 +136,6 @@
   gap: 16px;
   padding: 12px;
   background: #fff;
-  border: 1px solid #4a90e2;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
@@ -157,7 +157,6 @@
   width: 30%;
   height: 100%;
   border-radius: 6px;
-  border: 1px solid #4a90e2;
   object-fit: scale-down;
   flex-shrink: 0;
 }
@@ -181,8 +180,14 @@
   padding: 24px;
   border-radius: 12px;
   max-width: 400px;
-  width: 90%;
+  width: 80%;
+  height: 65%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 가로 중앙 정렬 */
+  justify-content: center; /* 세로 중앙 정렬 */
+  text-align: center; /* 텍스트도 중앙 정렬 */
 }
 
 .popup-field {
@@ -331,3 +336,66 @@
   padding: 5px 10px;
   border-radius: 4px;
 }
+
+.fliitem-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.fliitem-price,
+.fliitem-quantity {
+  margin: 12px 0;
+  font-weight: 500;
+}
+
+.fliitem-quantity strong {
+  color: #2a9d8f; /* 수량 강조 (녹색) */
+}
+
+.announcement-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.announcement-date {
+  font-size: 1rem;
+  color: #777;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.announcement-content {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.store-item-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+
+
+/* 가격 스타일 */
+.store-item-price {
+  font-size: 1rem;
+  margin: 3;
+}
+
+/* 수량 스타일 */
+.store-item-quantity {
+  font-size: 1rem;
+  color: #2a9d8f; /* 수량 강조 (녹색) */
+  margin: 3;
+}
+
+

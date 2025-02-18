@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import FleaRequestApi from "../../api/FleaRequestApi";
 // import './style.css';
 import styled from "styled-components";
+import Swal from "sweetalert2";
+import Button from "../../components/Button";
 
 const StoredetailFlearequest = () => {
     const navigate = useNavigate();
     const { storeNo } = useParams();
     const nStoreNo = Number(storeNo)
-
     const [formData, setFormData] = useState({
         storeId: nStoreNo,
         userAccount: "",
@@ -66,10 +67,50 @@ const StoredetailFlearequest = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+    // 입력값 검사
+    if (!formData.userBank || !formData.userAccount || !formData.accountName || 
+        !formData.itemName || !formData.quantity || !formData.price || 
+        !formData.sectionNumber || !formData.expirationDate || !formData.startDate || 
+        !formData.imageUrl) {
+        Swal.fire({
+            icon: 'warning',
+            title: '입력 오류',
+            text: '모든 필드를 입력해 주세요.',
+            confirmButtonText: '확인',
+        });        
+            return; // 제출을 막음
+    }
         // API 호출부
         FleaRequestApi(formData);
+        navigate(-1); // 제출 후 이전 페이지로 이동
     }
+
+    const getTomorrowDate = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); // 내일 날짜로 설정
+    
+        // 내일 날짜를 로컬 시간대 기준으로 "YYYY-MM-DDTHH:mm" 형식으로 반환
+        const year = tomorrow.getFullYear();
+        const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); // 월을 2자리로 맞추기
+        const day = String(tomorrow.getDate()).padStart(2, '0');
+        const hours = String(tomorrow.getHours()).padStart(2, '0');
+        const minutes = String(tomorrow.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    // 내일 날짜로 초기화
+    useEffect(() => {
+        setFormData((prev) => ({
+        ...prev,
+        startDate: getTomorrowDate(),
+        }));
+    }, []);
+
+    const handleBack = (e) => {
+        e.preventDefault();  // 기본 동작인 폼 제출을 막는다.
+        navigate(-1);  // 이전 페이지로 이동
+    };
 
     return (
         <div>
@@ -149,7 +190,7 @@ const StoredetailFlearequest = () => {
                                     name="sectionNumber"
                                     value={formData.sectionNumber}
                                     onChange={handleChange}
-                                    placeholder="1번부터 4번 섹션중에 선택해주세요"
+                                    placeholder="1 ~ 4번 섹션중에 선택해주세요"
                                     />
                             </ListContainer>
                             <ListContainer>
@@ -168,6 +209,7 @@ const StoredetailFlearequest = () => {
                                     type="datetime-local"
                                     name="startDate"
                                     value={formData.startDate}
+                                    min={getTomorrowDate()}  // 최소값을 내일로 설정
                                     onChange={handleChange}
                                 />
                             </ListContainer>
@@ -184,8 +226,8 @@ const StoredetailFlearequest = () => {
                             </ListContainer>
                         </ul>
                         <ButtonContainer>
-                        <CloseButton onClick={() => navigate(-1)}>닫기</CloseButton>
-                                <Button type="submit" onClick={() => navigate(-1)}>제출하기</Button>
+                        <Button type="PRIMARY" onClick={handleBack}>닫기</Button>
+                                <Button type="SECONDARY">신청하기</Button>
                         </ButtonContainer>
                     </form>
                 </div>
@@ -285,25 +327,25 @@ const ButtonContainer = styled.div`
     gap: 30px;
 `;
 
-const Button = styled.button`
-    padding: 12px 20px;
-    font-size: 1rem;
-    background-color: rgb(117, 153, 202);
-    color: white;
-    border: none;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+// const Button = styled.button`
+//     padding: 12px 20px;
+//     font-size: 1rem;
+//     background-color: rgb(117, 153, 202);
+//     color: white;
+//     border: none;
+//     border-radius: 7px;
+//     cursor: pointer;
+//     transition: background-color 0.3s ease;
 
-    &:hover {
-        background-color: #3f72af;
-    }
-`;
+//     &:hover {
+//         background-color: #3f72af;
+//     }
+// `;
 
-const CloseButton = styled(Button)`
-    background-color: rgb(82, 80, 80);
+// const CloseButton = styled(Button)`
+//     background-color: rgb(82, 80, 80);
 
-    &:hover {
-        background-color: rgb(57, 57, 57);
-    }
-`;
+//     &:hover {
+//         background-color: rgb(57, 57, 57);
+//     }
+// `;
