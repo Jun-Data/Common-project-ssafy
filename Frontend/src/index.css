@@ -27,16 +27,6 @@ textarea::placeholder {
   font-size: 14px; /* placeholder 글씨 크기 (선택 사항) */
 }
 
-/* 버튼 스타일 */
-button {
-  font-family: 'CustomFont', sans-serif;
-  font-size: 16px; /* 버튼 글씨 크기 (선택 사항) */
-  background-color: #3f72af; /* 버튼 배경색 (선택 사항) */
-  border: none; /* 버튼 테두리 제거 (선택 사항) */
-  border-radius: 2px;
-  cursor: pointer;
-}
-
 /* input 필드 스타일 */
 input, textarea {
   font-family: 'CustomFont', sans-serif;

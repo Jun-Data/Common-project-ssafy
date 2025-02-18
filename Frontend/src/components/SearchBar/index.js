@@ -59,7 +59,7 @@ const SearchBar = ({
                     <input
                         type="text"
                         className="search-input-mainpage"
-                        placeholder="제품 이름으로 검색해보세요!"
+                        placeholder="원하는 제품을 이름으로 검색해보세요"
                         onClick={handleSearch}
                     />
                     <AddressSearchTrigger

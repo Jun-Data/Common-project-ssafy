@@ -40,19 +40,25 @@
     height: 100%;
     background: #fff;
     border: 2px solid #f9f7f7;
+    border-radius: 15px;
     display: grid;
-    place-items: center;
+    align-items: center;
     grid-template-columns: 5fr 1fr;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* 그림자 효과 추가 */
+    transition: box-shadow 0.3s ease-in-out; /* 호버시 그림자 변화 */
+}
+
+.main-search-container:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.12); /* 호버시 입체감 강조 */
 }
 
 .search-input-mainpage {
     height: 100%;
-    overflow: hidden;
     font-size: 16px;
     border: none;
     outline: none;
-    padding: 0;
     background-color: transparent;
+    margin-left: 10px;
 }
 
 .search-input-address-search {

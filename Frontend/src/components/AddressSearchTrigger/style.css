@@ -14,6 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 7px;
 }
 
 .addressTriggerButton img {
@@ -79,32 +80,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
 }
 
 .popup-close-btn {
     width: 28px;
     height: 28px;
     border: none;
-    background: #4a90e2;
+    background: #F5F5F5;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 10px;
 
     /* 폰트/아이콘 스타일 */
-    font-size: 1.2rem;
-    line-height: 1;
-
-    /* 인터랙션 효과 */
-    transition: background 0.2s ease;
+    font-size: 1.3rem;
 }
 
 .address-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 15px 0;
+    margin: 20px 0;
 }
 
 .address-marker {
@@ -113,11 +110,12 @@
 }
 
 .address-search-btn {
-    width: 100%;
+    width: 95%;
     padding: 12px;
-    background: #3182f6;
+    background: #3f72af;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    font-size: medium;
 }

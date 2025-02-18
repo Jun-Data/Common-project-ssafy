@@ -1,6 +1,7 @@
 import React from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import "./style.css";
+import Button from "../Button"
 
 const KakaoPostcodePopup = ({ onClose, onComplete }) => {
     const handleComplete = (data) => {
@@ -13,7 +14,7 @@ const KakaoPostcodePopup = ({ onClose, onComplete }) => {
     return (
         <div className="mainkakaoaddresspopup">
             <DaumPostcodeEmbed onComplete={handleComplete} />
-            <button onClick={onClose} style={{ marginTop: "10px" }}>닫기</button>
+            <Button type="SECONDARY" onClick={onClose} style={{ padding: "5px 17px", marginTop: "5px"}}>닫기</Button>
         </div>
     );
 };
