@@ -1,4 +1,4 @@
-package com.hexa.muinus.elasticsearch.service;
+package com.hexa.muinus.elasticsearch.config;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.indices.ReloadSearchAnalyzersResponse;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyzerReloader implements ApplicationRunner {
 
-    // es 색인에 필요한 데이터 업데이트 후 app 재시작 시 es에 재로드
     private final ElasticsearchClient elasticsearchClient;
     private final String indexName = "items";
 
@@ -22,7 +21,6 @@ public class AnalyzerReloader implements ApplicationRunner {
         try {
             ReloadSearchAnalyzersResponse response = elasticsearchClient.indices()
                     .reloadSearchAnalyzers(r -> r.index(indexName));
-            // 만약 acknowledged() 메서드가 없다면, 예외 없이 호출 완료되면 성공으로 간주
             log.info("Search analyzers reloaded successfully for index: {}", indexName);
         } catch (Exception e) {
             log.error("Failed to reload search analyzers for index: {}", indexName);

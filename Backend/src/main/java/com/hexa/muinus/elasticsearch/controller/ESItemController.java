@@ -5,13 +5,18 @@ import com.hexa.muinus.elasticsearch.domain.ESStoreItem;
 import com.hexa.muinus.elasticsearch.service.ESItemService;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
 import com.hexa.muinus.elasticsearch.service.ItemSearchEngine;
+import com.hexa.muinus.elasticsearch.service.SimpleRecommandService;
+import com.hexa.muinus.store.domain.item.Item;
+import com.hexa.muinus.store.domain.item.repository.ItemRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -21,6 +26,7 @@ public class ESItemController {
 
     private final ESItemService esItemService;
     private final ItemSearchEngine searchEngine;
+    private final SimpleRecommandService recommandService;
 
     @GetMapping("/autocomplete")
     public List<ESItem> autocomplete(@RequestParam String prefix) {
@@ -62,10 +68,42 @@ public class ESItemController {
         return ResponseEntity.ok(results);
     }
 
+    /**
+     * 검색
+     * @param searchNativeDTO
+     * @return
+     */
     @GetMapping("/search-native")
     public ResponseEntity<List<ESItem>> searchByQuery(@Valid @ModelAttribute SearchNativeDTO searchNativeDTO) {
         log.info("Search Item: {}", searchNativeDTO);
         return ResponseEntity.ok(searchEngine.searchByQuery(searchNativeDTO));
     }
+
+    /**
+     * 추천
+     * @param userEmail
+     * @return
+     */
+    @GetMapping("/recommand")
+    public ResponseEntity<List<ESItem>> getRecommandedItems(/*@Authorization String userEmail*/) {
+        String userEmail = "s@s";
+        log.info("Getting Recommanded Items - user: {}", userEmail);
+        return ResponseEntity.ok(recommandService.getRecommendedItems(userEmail));
+    }
+
+    private final ItemRepository itemRepository;
+
+    @GetMapping("/recommand-test")
+    public ResponseEntity<List<Optional<Item>>> getRecommandTest(/*@Authorization String userEmail*/) {
+        List<Optional<Item>> list = new ArrayList<>();
+        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        return ResponseEntity.ok(list);
+    }
+
+
 }
 

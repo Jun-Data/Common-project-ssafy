@@ -30,7 +30,7 @@ public class ItemAnalyzer {
             AnalyzeRequest request = AnalyzeRequest.of(a -> a
                     .index(index)                           // 인덱스 지정
                     .analyzer(analyzer)       // 사용할 analyzer 지정
-                    .text(query)
+                    .text(query.toLowerCase())
             );
 
             AnalyzeResponse response = elasticsearchClient.indices().analyze(request);

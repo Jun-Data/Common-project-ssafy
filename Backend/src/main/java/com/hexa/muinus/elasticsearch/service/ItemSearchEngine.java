@@ -1,6 +1,5 @@
 package com.hexa.muinus.elasticsearch.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.ConstantScoreQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.util.ObjectBuilder;
 import com.hexa.muinus.common.exception.ESErrorCode;
@@ -49,7 +48,7 @@ public class ItemSearchEngine {
     public List<ESItem> searchByQuery(SearchNativeDTO dto) {
         String query = dto.getQuery();
 
-        List<String> tokens = esAnalyzer.getAnalyzedTokens(query, "items", "custom_search_analyzer");
+        List<String> tokens = esAnalyzer.getAnalyzedTokens(query, "items", "custom_analyzer");
         log.debug("tokens: {}", tokens);
 
         if(tokens.isEmpty()){
@@ -115,20 +114,9 @@ public class ItemSearchEngine {
         return finalItemList;
     }
 
-    private Function<ConstantScoreQuery.Builder, ObjectBuilder<ConstantScoreQuery>> buildConstantScoreQuery(String field, String text, float boost) {
-        return csq -> csq
-                .filter(f -> f.match(m -> m.field(field).query(text)))
-                .boost(boost);
-    }
-
-    private Function<RangeQuery.Builder, ObjectBuilder<RangeQuery>> buildRangeFilter(String field, double min, double max) {
-        return r -> r.number(rn -> rn.field(field).gte(min).lte(max));
-    }
-
-
     public List<ESItem> searchNoriOperation(List<String> tokens, String field, SearchNativeDTO condition, int page, int pageSize) throws IOException {
         NativeQuery query = createNativeQueryForSearch(tokens, field, condition, page, pageSize);
-        log.info("query: {}", query.getQuery().toString());
+        log.info("query: {}", query.getQuery());
         SearchHits<ESItem> hits = elasticsearchOperations.search(query, ESItem.class, IndexCoordinates.of("items"));
 
         return shuffleSameScore(hits.getSearchHits());
@@ -144,17 +132,17 @@ public class ItemSearchEngine {
                                 : BRAND_KEYWORDS.contains(token)
                                 ? BRAND_SCORE
                                 : MAIN_SCORE;
-                        b.should(s -> s.constantScore(buildConstantScoreQuery(field, token, boost)));
+                        b.should(s -> s.constantScore(QueryCreator.buildConstantScoreQuery(field, token, boost)));
                     });
 
-                    b.filter(f -> f.range(buildRangeFilter("sugars", condition.getMinSugar(), condition.getMaxSugar())));
-                    b.filter(f -> f.range(buildRangeFilter("calories", condition.getMinCal(), condition.getMaxCal())));
+                    b.filter(f -> f.range(QueryCreator.buildRangeFilter("sugars", condition.getMinSugar(), condition.getMaxSugar())));
+                    b.filter(f -> f.range(QueryCreator.buildRangeFilter("calories", condition.getMinCal(), condition.getMaxCal())));
 
                     // 최소 매치 수
                     b.minimumShouldMatch("1");
                     return b;
                 }))
-                .withPageable(PageRequest.of(page, pageSize))
+//                .withPageable(PageRequest.of(page, pageSize))
                 .build();
 
     }
