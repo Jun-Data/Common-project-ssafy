@@ -55,7 +55,6 @@ function OwnerSignUp() {
             // 좌표 업데이트트
             const newCoords = await addressToCoord(newAddress);
             if (newCoords) {
-                // console.log('좌표:', newCoords)
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     locationX: newCoords.lat,
@@ -136,11 +135,9 @@ function OwnerSignUp() {
         } else if (name === "storeImageUrl") {
             const file = files[0];
             if (file) {
-                console.log("이미지 파일 선택됨:", file);
                 const reader = new FileReader();
                 reader.readAsDataURL(file); // Base64 변환
                 reader.onloadend = () => {
-                    console.log("Base64 인코딩된 이미지:", reader.result);
                     setFormData((prevData) => ({
                         ...prevData,
                         storeImageUrl: reader.result, // Base64 데이터 저장

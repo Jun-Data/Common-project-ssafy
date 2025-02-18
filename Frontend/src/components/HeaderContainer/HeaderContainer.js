@@ -55,9 +55,11 @@ function HeaderContainer() {
     if (logindata?.userType === "A") {
       return (
         <>
+          <Link to ="/mypage/admin/flea">
           <p className="welcome-text">
             {logindata ? `${logindata.userName}님 환영합니다.` : "환영합니다."}
           </p>
+          </Link>
           <Link to="/mypage/admin/flea">플리마켓</Link>
           <Link to="/mypage/admin/stock">입고</Link>
           <Link to="/mypage/admin/coupon">쿠폰</Link>
