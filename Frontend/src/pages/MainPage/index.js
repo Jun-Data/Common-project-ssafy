@@ -1,7 +1,7 @@
+// MainPage.jsx (수정된 버전)
 import { useState, useEffect } from "react";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchBar from "../../components/SearchBar";
-import KakaoPostcodePopup from "../../components/KakaoPostcodePopup";
 import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
 import KakaoMapContainer from "../../components/KakaoMapContainer";
 import KakaoMapMarkers from "../../components/KakaoMapMarkers";
@@ -12,7 +12,6 @@ import { useBaseMap } from "../../contexts/ KakaoMapContext";
 import "./style.css";
 
 const MainPage = () => {
-
     const { isSDKLoaded } = useBaseMap();
     const { coordToAddress } = useReverseGeocoding();
     const { addressToCoord } = useGeocoding();
@@ -20,11 +19,10 @@ const MainPage = () => {
 
     const [coords, setCoords] = useState({ lat: 37.5015376, lng: 127.0397208 });
     const [address, setAddress] = useState("인재의 산실 멀티캠퍼스");
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [storelist, setStorelist] = useState([]);
     const [isManualAddress, setIsManualAddress] = useState(false);
+    const [storelist, setStorelist] = useState([]);
 
-    // 자동 위치 추적: geolocation 결과로 좌표와 주소 업데이트
+    // 자동 위치 추적 효과
     useEffect(() => {
         if (isSDKLoaded && !isManualAddress && geoCoords) {
             (async () => {
@@ -40,12 +38,10 @@ const MainPage = () => {
         }
     }, [geoCoords, isSDKLoaded, isManualAddress, coordToAddress]);
 
-    // 주소 검색 완료 시 핸들러
-    const handleAddressComplete = async (data) => {
+    // 주소 검색 핸들러
+    const handleAddressComplete = async (fullAddress) => {
         try {
-            const fullAddress = data.fullAddress;
             setAddress(fullAddress);
-            setIsManualAddress(true);
             const newCoords = await addressToCoord(fullAddress);
             if (newCoords) {
                 setCoords(prev => ({ ...prev, ...newCoords }));
@@ -63,22 +59,14 @@ const MainPage = () => {
                 </div>
 
                 <div className="mainpagesearchbar">
-                    <SearchBar coords={coords} />
+                    <SearchBar
+                        coords={coords}
+                        address={address}
+                        error={error}
+                        onAddressComplete={handleAddressComplete}
+                        setIsManualAddress={setIsManualAddress}
+                    />
                 </div>
-
-                <div className="mainpagecurrentaddress">
-                        <img src='/mylocation.png' className="mainpageaddressimg" />
-                    <div className="mainpageaddressdetail">
-                        {error ? "위치 찾는 중...." : `${address}`}
-                    </div>
-                    <button
-                        onClick={() => setIsPopupOpen(true)}
-                        className="addressSearchButton"
-                    >
-                        주소 찾기
-                    </button>
-                </div>
-
 
                 <div className="mainpagebottomsheet">
                     <DraggableBottomSheet
@@ -92,13 +80,6 @@ const MainPage = () => {
                         <KakaoMapContainer coords={coords} />
                         <KakaoMapMarkers storelist={storelist} />
                     </>
-                )}
-
-                {isPopupOpen && (
-                    <KakaoPostcodePopup
-                        onClose={() => setIsPopupOpen(false)}
-                        onComplete={handleAddressComplete}
-                    />
                 )}
             </div>
         </div>

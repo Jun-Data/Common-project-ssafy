@@ -1,9 +1,17 @@
-// SearchBar.jsx (컴포넌트)
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation, useMatch } from "react-router-dom";
+import AddressSearchTrigger from "../AddressSearchTrigger";
 import './style.css';
 
-const SearchBar = ({ coords, setQuery, onClear }) => {
+const SearchBar = ({
+                       coords,
+                       setQuery,
+                       onClear,
+                       address,
+                       error,
+                       onAddressComplete,
+                       setIsManualAddress
+                   }) => {
     const [localQuery, setLocalQuery] = useState("");
     const navigate = useNavigate();
     const isStoreDetailPage = useMatch('/storedetail/*');
@@ -17,18 +25,18 @@ const SearchBar = ({ coords, setQuery, onClear }) => {
 
     const handleInputChange = (e) => {
         setLocalQuery(e.target.value);
-        setQuery(e.target.value);
+        setQuery?.(e.target.value);
     };
 
     const handleClear = () => {
-        onClear();
+        onClear?.();
         setLocalQuery("");
-    }
+    };
 
     return (
         <div className="searchbar">
             {(isSearchPage || isStoreDetailPage) && (
-                <div className="search-input-container">
+                <div className="search-container">
                     <input
                         type="text"
                         className="search-input-searchpage"
@@ -37,20 +45,31 @@ const SearchBar = ({ coords, setQuery, onClear }) => {
                         onChange={handleInputChange}
                     />
                     <button
-                    className="clear-button"
+                        className="clear-btn"
                         onClick={handleClear}
-                        aria-label="검색어 지우기">
-                            ×
-                        </button>
+                        aria-label="검색어 지우기"
+                    >
+                        ×
+                    </button>
                 </div>
             )}
+
             {!isSearchPage && !isStoreDetailPage && (
-                <input
-                    type="text"
-                    className="search-input-mainpage"
-                    placeholder="제품 이름으로 검색해보세요!"
-                    onClick={handleSearch}
-                />
+                <div className="main-search-container">
+                    <input
+                        type="text"
+                        className="search-input-mainpage"
+                        placeholder="제품 이름으로 검색해보세요!"
+                        onClick={handleSearch}
+                    />
+                    <AddressSearchTrigger
+                        className="search-input-address-search"
+                        address={address}
+                        error={error}
+                        onAddressComplete={onAddressComplete}
+                        setIsManualAddress={setIsManualAddress}
+                    />
+                </div>
             )}
         </div>
     );

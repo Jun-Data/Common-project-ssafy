@@ -1,65 +1,60 @@
 .searchbar {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    z-index: 99;
 }
 
-.search-input-container {
+.search-container {
     box-sizing: border-box;
-    width: 100%;
+    width: 100vw;
     height: 100%;
-    border: 2px solid #3f72af;
-    outline: none;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-
+    border: 2px solid #4a90e2;
+    background: #fff;
 }
 
-/* 검색 입력창 스타일 */
 .search-input-searchpage {
-    box-sizing: inherit;
-    width: 85%; /* 가로 비율 설정 */
-    font-size: 16px;
-    border: none;
-    padding: 10px;
-}
-
-.search-input-searchpage:focus {
-    outline: none; /* 기본 브라우저 아웃라인 제거 */
-}
-
-.clear-button {
-    box-sizing: inherit;
-    width: 15%;
     height: 100%;
+    border: none;
+    font-size: 16px;
+    padding-left: 10px;
+    background: transparent;
+    outline: none;
 }
 
-/* .search-input-mainpage {
-    box-sizing: border-box;
+.clear-btn {
+    flex: 0 0 60px;
+    width: 30px;
+    height: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    margin: 0;
+    padding: 0;
+}
+
+.main-search-container {
     width: 100%;
+    height: 100%;
+    background: #fff;
+    border: 2px solid #f9f7f7;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 5fr 1fr;
+}
+
+.search-input-mainpage {
     height: 100%;
     overflow: hidden;
     font-size: 16px;
-    border: 2px solid #f9f7f7;
+    border: none;
     outline: none;
-    background-color: white;
-    box-sizing: border-box;
-    padding-left: 10px;
-} */
-
-.search-input-mainpage {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    font-size: 16px;
-    border: 2px solid #e0e0e0;
-    outline: none;
-    background-color: white;
-    padding-left: 12px;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    padding: 0;
+    background-color: transparent;
 }
 
+.search-input-address-search {
+    height: 100%;
+}

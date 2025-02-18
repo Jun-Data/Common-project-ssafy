@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SearchApi from "../../api/searchApi";
 import SearchBar from "../../components/SearchBar";
-import RecommendList from "../../components/RecommendList";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchDropdownList from "../../components/SearchDropdownList";
 import SearchNavbar from "../../components/SearchNavbar";
@@ -78,7 +77,11 @@ const Search = () => {
                 <SearchNavbar lat={lat} lng={lng} />
             </div>
             <div className="searchpagerecommend">
-                <RecommendList userNo={logindata?.userNo} />
+                <ul>
+                    <li>원하시는 제품을 검색하면 해당 제품을 보유한<br/> 근처 가게를 볼 수 있어요.</li>
+                    <li>메인페이지에서 <img src="/mylocation.png"/>을 눌러 위치를 설정할 수 있어요.</li>
+                    <li>영양분으로도 제품을 검색해보세요!</li>
+                </ul>
             </div>
         </div>
     );

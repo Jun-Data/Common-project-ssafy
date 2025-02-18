@@ -51,6 +51,7 @@ function App() {
 
   return (
     <div className="App">
+      <div className="appcontainer">
       <div>
         <KakaoMapProvider>
           <Routes>
@@ -99,6 +100,7 @@ function App() {
           transition: "opacity 0.3s ease, visibility 0.3s ease",
         }}
       ></div>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,8 @@
     background-color: rgba(211,211,211,0.9);
     position: fixed;
     top: 0;
-    z-index: 200;
+    left: 0;
+    z-index: 1200;
     place-items: center;
 }
 

@@ -17,6 +17,7 @@
     max-height: 85vh;  /* 최대 높이 제한 */
     overflow: hidden; /* 내부 컨텐츠 별도 스크롤 처리 */
     padding: 8px 0;
+    z-index: 150;
 }
 
 .drag-handle {
@@ -105,4 +106,9 @@
     .scrollable-section li {
         font-size: 14px;
     }
+}
+
+.bottomsheetimg {
+    width: 20px;
+    height: 20px;
 }

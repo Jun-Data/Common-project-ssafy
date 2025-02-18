@@ -97,7 +97,9 @@ const DraggableBottomSheet = memo(({ coords, setStorelist, itemId = null }) => {
                   ))}
                 </ul>
             ) : (
-                <p>근처에 매장이 없거나 검색한 제품을 가진 매장이 없어요.</p>
+                <p>주변 매장이 없거나 검색한 제품이 근처에 없어요.<br/><br/>
+                  <img src="/mylocation.png" className="bottomsheetimg"/>을 통해 위치를 바꾸거나 다른 제품은 어때요?
+                </p>
             )}
           </div>
         </div>

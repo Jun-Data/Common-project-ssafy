@@ -3,7 +3,8 @@
     left: 0;
     width: 100%;
     height: 6vh;
-    z-index: 99; /* zIndex를 z-index로 변경 */
+    z-index: 99;
     transition: bottom 0.3s ease; /* 부드러운 이동 효과 */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 상단 그림자 추가 (선택 사항) */
+    padding: 0;
+    margin: 0;
 }

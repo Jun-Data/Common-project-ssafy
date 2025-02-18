@@ -1,0 +1,410 @@
+Index: Frontend/src/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.App {\n    width: 100%;\n    height: 100vh;\n    padding: 0;\n    margin: 0;\n    text-align: center;\n  }\n\n.map-container {\n    position: fixed;\n    width: 100vw;\n    height: 100vh;\n    z-index: 1;\n}\n\n.map-container.visible {\n    display: block;\n    pointer-events: auto;\n}\n\n.map-container.hidden {\n    display: none;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.css b/Frontend/src/App.css
+--- a/Frontend/src/App.css	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/Frontend/src/App.css	(date 1739797959778)
+@@ -6,6 +6,14 @@
+     text-align: center;
+   }
+ 
++.App-container {
++    position: fixed;
++    width: 100%;
++    height: 100%;
++    top: 0;
++    z-index: 100;
++}
++
+ .map-container {
+     position: fixed;
+     width: 100vw;
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/App.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/App.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponScanner/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponScanner/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPENED&quot;,\n    &quot;assignee&quot;: {\n      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,\n      &quot;username&quot;: &quot;project_888884_bot_5460f612fc7da9ccd36545f9da4341e6&quot;,\n      &quot;fullname&quot;: &quot;sooho&quot;\n    }\n  }\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FEAT/#122&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"63743000\" />\n      <workItem from=\"1739750470079\" duration=\"12985000\" />\n      <workItem from=\"1739781327516\" duration=\"6000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739696098939</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739696098939</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739708076864</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739708076864</updated>\n    </task>\n    <task id=\"LOCAL-00012\" summary=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739722788572</created>\n      <option name=\"number\" value=\"00012\" />\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739722788573</updated>\n    </task>\n    <task id=\"LOCAL-00013\" summary=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739754878271</created>\n      <option name=\"number\" value=\"00013\" />\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739754878271</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"14\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/.idea/workspace.xml	(date 1739840182879)
+@@ -6,16 +6,9 @@
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCouponScanner/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCouponScanner/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentPopup/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" afterDir="false" />
+     </list>
+@@ -128,6 +121,7 @@
+       <workItem from="1739513711472" duration="63743000" />
+       <workItem from="1739750470079" duration="12985000" />
+       <workItem from="1739781327516" duration="6000" />
++      <workItem from="1739781579575" duration="14952000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -233,7 +227,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739754878271</updated>
+     </task>
+-    <option name="localTasksCounter" value="14" />
++    <task id="LOCAL-00014" summary="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)">
++      <option name="closed" value="true" />
++      <created>1739781802847</created>
++      <option name="number" value="00014" />
++      <option name="presentableId" value="LOCAL-00014" />
++      <option name="project" value="LOCAL" />
++      <updated>1739781802847</updated>
++    </task>
++    <option name="localTasksCounter" value="15" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -256,8 +258,8 @@
+     <MESSAGE value="[FE/FIX] 키오스크 ui 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)" />
+     <MESSAGE value="[FE/FIX] 제품 입고요청 Api 정상작동 (#113)" />
+-    <MESSAGE value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
+     <MESSAGE value="[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)" />
+-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)" />
++    <MESSAGE value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
++    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: Frontend/src/pages/KioskMain/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.kioskmainscreen {\n    display: grid;\n    max-width: 800px;\n    width: 100%;\n    height: 100%;\n    grid-template-rows: 6vh 37vh 37vh 20vh;\n    grid-template-areas:\n        \"notice\"\n        \"cartpage\"\n        \"kioskpleaproductlist\"\n        \"scanner\";\n    place-items: center;\n}\n\n\n.mainscreennotice {\n    grid-area: notice;\n    width: 100%;\n    height: 100%;\n    font-size: 60px;\n    display: flex;\n    justify-content: space-between;\n    text-align: center;\n}\n\n.mainscreennotice button {\n    width: 20%;\n    height: 100%;\n    font-size: 20px;\n    border-radius: 1px;\n}\n\n.mainscreencartpage {\n    grid-area: cartpage;\n    width: 100%;\n    height: 100%;\n}\n\n.kioskpleaproductlist {\n    grid-area: kioskpleaproductlist;\n    width: 100%;\n    height: 100%;\n}\n\n.barcodebuttoncontainer {\n    border-top: 2px solid black;\n    position: fixed;\n    bottom: 0;\n    grid-area: scanner;\n    width: 95%;\n    height: 20vh;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.mainscreenbarcodescanner {\n    width: 40%;\n}\n\n.buttonzone {\n    width: 50%;\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: space-evenly;\n    gap: 8%;\n}\n\n.cartpagetotal {\n    display: grid;\n    align-items: center;\n    width: 95%;\n    height: 26%;\n    text-align: left;\n    font-size: 40px;\n    margin-right: 5%;\n    color: black;\n}\n\n.mainscreenpayment,\n.mainscreentohome {\n    width: 80%;\n    height: 25%;\n    font-size: 2vw;\n    border-radius: 1vw;\n}\n\n.mainscreenpayment {\n    background-color: #ff4444;\n}\n\n.mainscreentohome {\n    background-color: #cccccc;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/KioskMain/style.css b/Frontend/src/pages/KioskMain/style.css
+--- a/Frontend/src/pages/KioskMain/style.css	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/Frontend/src/pages/KioskMain/style.css	(date 1739801659511)
+@@ -3,25 +3,15 @@
+     max-width: 800px;
+     width: 100%;
+     height: 100%;
+-    grid-template-rows: 6vh 37vh 37vh 20vh;
++    grid-template-rows: 38vh 38vh 20vh;
+     grid-template-areas:
+-        "notice"
+         "cartpage"
+         "kioskpleaproductlist"
+         "scanner";
+     place-items: center;
++    background-color: #e9ecef;
+ }
+ 
+-
+-.mainscreennotice {
+-    grid-area: notice;
+-    width: 100%;
+-    height: 100%;
+-    font-size: 60px;
+-    display: flex;
+-    justify-content: space-between;
+-    text-align: center;
+-}
+ 
+ .mainscreennotice button {
+     width: 20%;
+@@ -31,45 +21,49 @@
+ }
+ 
+ .mainscreencartpage {
++    box-sizing: border-box;
+     grid-area: cartpage;
+-    width: 100%;
+-    height: 100%;
++    width: 95%;
++    height: 95%;
++    margin-top: 2vh;
++    border: 4px solid #4a90e2;
+ }
+ 
+ .kioskpleaproductlist {
++    box-sizing: border-box;
+     grid-area: kioskpleaproductlist;
+-    width: 100%;
+-    height: 100%;
++    width: 95%;
++    height: 95%;
++    margin-top: 2vh;
++    border: 4px solid #4a90e2;
+ }
+ 
+ .barcodebuttoncontainer {
+-    border-top: 2px solid black;
+-    position: fixed;
+-    bottom: 0;
++    margin-top: 45px;
+     grid-area: scanner;
+     width: 95%;
+-    height: 20vh;
++    height: 100%;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+ }
+ 
+ .mainscreenbarcodescanner {
++    box-sizing: border-box;
+     width: 40%;
+ }
+ 
+ .buttonzone {
+     width: 50%;
+     height: 100%;
+-    display: flex;
+-    flex-direction: column;
+-    align-items: center;
+-    justify-content: space-evenly;
+-    gap: 8%;
++    display: grid;
++    grid-template-rows: 1fr 0.5fr 0.5fr;
++    gap: 15px;
++    place-items: center;
+ }
+ 
+ .cartpagetotal {
+-    display: grid;
++    grid-row: 1;
+     align-items: center;
+     width: 95%;
+     height: 26%;
+@@ -79,13 +73,22 @@
+     color: black;
+ }
+ 
+-.mainscreenpayment,
++.mainscreenpayment {
++    grid-row: 2;
++    width: 100%;
++    height: 100%;
++    font-size: 40px;
++    border-radius: 5px;
++}
++
+ .mainscreentohome {
+-    width: 80%;
+-    height: 25%;
+-    font-size: 2vw;
+-    border-radius: 1vw;
++    grid-row: 3;
++    width: 100%;
++    height: 100%;
++    font-size: 40px;
++    border-radius: 5px;
+ }
++
+ 
+ .mainscreenpayment {
+     background-color: #ff4444;
+@@ -94,3 +97,29 @@
+ .mainscreentohome {
+     background-color: #cccccc;
+ }
++
++/* 쿠폰 확인 팝업 스타일 */
++.coupon-prompt-overlay {
++    position: fixed;
++    top: 0;
++    left: 0;
++    right: 0;
++    bottom: 0;
++    background: rgba(0,0,0,0.5);
++    display: flex;
++    justify-content: center;
++    align-items: center;
++    z-index: 1000;
++}
++
++.coupon-prompt-content {
++    background: white;
++    padding: 2rem;
++    border-radius: 10px;
++    text-align: center;
++}
++
++.coupon-prompt-buttons button {
++    margin: 1rem;
++    padding: 0.5rem 2rem;
++}
+Index: Frontend/src/pages/KioskMain/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from 'react';\nimport { useNavigate } from \"react-router-dom\";\nimport KioskHeaderContainer from \"../../components/KioskHeaderContainer\";\nimport BarcodeScannerComponent from \"../../components/KioskBarcodeScanner\";\nimport Cartpage from \"../../components/KioskCartpage\";\nimport KioskFleaproductlist from \"../../components/KioskFleaproductlist\";\nimport PaymentPopup from '../../components/KioskPaymentPopup';\nimport KioskCouponPopup from \"../../components/KioskCouponPopup\";\nimport KioskPaymentFinishPopup from \"../../components/KioskPaymentFinishPopup\";\nimport './style.css';\n\nconst KioskMainScreen = () => {\n    const [cartItems, setCartItems] = useState([]);\n    const [discount, setDiscount] = useState(0);\n    const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);\n    const [isCouponPopupOpen, setIsCouponPopupOpen] = useState(false);\n    const [isPaymentFinish, setIsPaymentFinish] = useState(false);\n\n\n    const navigate = useNavigate();\n\n    const kioskhomeclick = () => {\n        navigate('/kiosk');\n    };\n\n    const handleAddToCart = (product) => {\n        setCartItems((prevItems) => {\n            const existingItem = prevItems.find((item) => item.itemName === product.itemName);\n            if (existingItem) {\n                return prevItems.map((item) =>\n                    item.itemName === product.itemName\n                        ? { ...item, quantity: item.quantity + 1 }\n                        : item\n                );\n            } else {\n                return [...prevItems, { ...product, quantity: 1 }];\n            }\n        });\n    };\n\n    const handleIncrement = (itemName) => {\n        setCartItems((prevItems) =>\n            prevItems.map((item) =>\n                item.itemName === itemName ? { ...item, quantity: item.quantity + 1 } : item\n            )\n        );\n    };\n\n    const handleDecrement = (itemName) => {\n        setCartItems((prevItems) =>\n            prevItems.map((item) =>\n                item.itemName === itemName && item.quantity > 1\n                    ? { ...item, quantity: item.quantity - 1 }\n                    : item\n            )\n        );\n    };\n\n    const handleRemove = (itemName) => {\n        setCartItems((prevItems) => prevItems.filter((item) => item.itemName !== itemName));\n    };\n\n    const calculateTotalPrice = () => {\n        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;\n    };\n\n    const handleConfirmPayment = (method) => {\n        setIsPaymentPopupOpen(false); // 결제 팝업 닫기\n        setCartItems([]); // 결제 후 장바구니 초기화\n        setDiscount(0); // 할인 초기화\n        setIsPaymentFinish(true);\n    };\n\n    const handleApplyCoupon = (couponAmount) => {\n        setDiscount(couponAmount);\n        alert(`쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`);\n        setIsCouponPopupOpen(false); // 쿠폰 팝업 닫기\n    };\n\n    const handleCancelCoupon = () => {\n        setDiscount(0); // 할인 초기화\n        alert(\"쿠폰이 취소되었습니다.\");\n    };\n\n    return (\n        <div className=\"kioskmainscreen\">\n            <div className=\"mainscreennotice\">\n                장 바 구 니\n                {discount > 0 ? (\n                    <button onClick={handleCancelCoupon}>쿠폰 적용 취소</button>\n                ) : (\n                    <button onClick={() => setIsCouponPopupOpen(true)}>쿠폰 적용</button>\n                )}\n            </div>\n            <div className=\"mainscreencartpage\">\n                <Cartpage\n                    cartItems={cartItems}\n                    onIncrement={handleIncrement}\n                    onDecrement={handleDecrement}\n                    onRemove={handleRemove}\n                />\n            </div>\n            <div className=\"kioskpleaproductlist\"><KioskFleaproductlist onAddToCart={handleAddToCart}/></div>\n            <div className=\"barcodebuttoncontainer\">\n                <div className=\"mainscreenbarcodescanner\"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>\n                <div className=\"buttonzone\">\n                    <div className=\"cartpagetotal\">총 금액: {calculateTotalPrice().toLocaleString()}원</div>\n                    <button className=\"mainscreenpayment\" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>\n                    <button className=\"mainscreentohome\" onClick={kioskhomeclick}>홈으로</button>\n                </div>\n            </div>\n\n            {isPaymentPopupOpen && (\n                <>\n                    <PaymentPopup\n                        onClose={() => setIsPaymentPopupOpen(false)}\n                        onConfirm={handleConfirmPayment}\n                    />\n                </>\n            )}\n\n            {isCouponPopupOpen && (\n                <KioskCouponPopup\n                    onClose={() => setIsCouponPopupOpen(false)}\n                    onApplyCoupon={handleApplyCoupon}\n                />\n            )}\n            {isPaymentFinish && (\n                <KioskPaymentFinishPopup onClose={() => {\n                    setIsPaymentFinish(false);\n                    navigate('/kiosk');\n                }} />\n            )}\n        </div>\n    );\n};\n\nexport default KioskMainScreen;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/KioskMain/index.js b/Frontend/src/pages/KioskMain/index.js
+--- a/Frontend/src/pages/KioskMain/index.js	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/Frontend/src/pages/KioskMain/index.js	(date 1739801566862)
+@@ -1,6 +1,5 @@
+ import React, { useState } from 'react';
+ import { useNavigate } from "react-router-dom";
+-import KioskHeaderContainer from "../../components/KioskHeaderContainer";
+ import BarcodeScannerComponent from "../../components/KioskBarcodeScanner";
+ import Cartpage from "../../components/KioskCartpage";
+ import KioskFleaproductlist from "../../components/KioskFleaproductlist";
+@@ -15,8 +14,7 @@
+     const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+     const [isCouponPopupOpen, setIsCouponPopupOpen] = useState(false);
+     const [isPaymentFinish, setIsPaymentFinish] = useState(false);
+-
+-
++    const [isCouponPromptOpen, setIsCouponPromptOpen] = useState(false); // 추가된 상태
+     const navigate = useNavigate();
+ 
+     const kioskhomeclick = () => {
+@@ -74,24 +72,13 @@
+     const handleApplyCoupon = (couponAmount) => {
+         setDiscount(couponAmount);
+         alert(`쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`);
+-        setIsCouponPopupOpen(false); // 쿠폰 팝업 닫기
++        setIsCouponPopupOpen(false);
++        setIsPaymentPopupOpen(true); // 쿠폰 적용 후 결제창 자동 호출
+     };
+ 
+-    const handleCancelCoupon = () => {
+-        setDiscount(0); // 할인 초기화
+-        alert("쿠폰이 취소되었습니다.");
+-    };
+ 
+     return (
+         <div className="kioskmainscreen">
+-            <div className="mainscreennotice">
+-                장 바 구 니
+-                {discount > 0 ? (
+-                    <button onClick={handleCancelCoupon}>쿠폰 적용 취소</button>
+-                ) : (
+-                    <button onClick={() => setIsCouponPopupOpen(true)}>쿠폰 적용</button>
+-                )}
+-            </div>
+             <div className="mainscreencartpage">
+                 <Cartpage
+                     cartItems={cartItems}
+@@ -105,26 +92,60 @@
+                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
+                 <div className="buttonzone">
+                     <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
+-                    <button className="mainscreenpayment" onClick={() => setIsPaymentPopupOpen(true)}>결제하기</button>
++                    <button
++                        className="mainscreenpayment"
++                        onClick={() => setIsCouponPromptOpen(true)}>결제하기
++                    </button>
+                     <button className="mainscreentohome" onClick={kioskhomeclick}>홈으로</button>
+                 </div>
+             </div>
++            {/* 쿠폰 적용 확인 팝업 추가 */}
++            {isCouponPromptOpen && (
++                <div className="coupon-prompt-overlay">
++                    <div className="coupon-prompt-content">
++                        <h2>쿠폰을 적용하시겠습니까?</h2>
++                        <div className="coupon-prompt-buttons">
++                            <button
++                                onClick={() => {
++                                    setIsCouponPromptOpen(false);
++                                    setIsCouponPopupOpen(true);
++                                }}
++                            >
++                                예
++                            </button>
++                            <button
++                                onClick={() => {
++                                    setIsCouponPromptOpen(false);
++                                    setIsPaymentPopupOpen(true);
++                                }}
++                            >
++                                아니오
++                            </button>
++                        </div>
++                    </div>
++                </div>
++            )}
+ 
++            {/* 수정된 결제 팝업 호출 방식 */}
+             {isPaymentPopupOpen && (
+-                <>
+-                    <PaymentPopup
+-                        onClose={() => setIsPaymentPopupOpen(false)}
+-                        onConfirm={handleConfirmPayment}
+-                    />
+-                </>
++                <PaymentPopup
++                    total={calculateTotalPrice()} // 총 금액 전달
++                    onClose={() => setIsPaymentPopupOpen(false)}
++                    onConfirm={handleConfirmPayment}
++                />
+             )}
+ 
++            {/* 쿠폰 팝업 닫힐 때 결제창 자동 호출 */}
+             {isCouponPopupOpen && (
+                 <KioskCouponPopup
+-                    onClose={() => setIsCouponPopupOpen(false)}
++                    onClose={() => {
++                        setIsCouponPopupOpen(false);
++                        setIsPaymentPopupOpen(true); // 쿠폰창 닫으면 결제창 호출
++                    }}
+                     onApplyCoupon={handleApplyCoupon}
+                 />
+             )}
++
+             {isPaymentFinish && (
+                 <KioskPaymentFinishPopup onClose={() => {
+                     setIsPaymentFinish(false);
+Index: Frontend/src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import \"./App.css\";\nimport { useEffect } from \"react\";\nimport { Route, Routes, useLocation, useParams } from \"react-router-dom\";\nimport MainPage from \"./pages/MainPage\";\nimport Kiosk from \"./pages/Kiosk\";\nimport KioskMainScreen from \"./pages/KioskMain\";\nimport SignUp from \"./pages/SignUpPage/SignUp\";\nimport OwnerSignUp from \"./pages/SignUpPage/OwnerSignUp\";\nimport UserSignUp from \"./pages/SignUpPage/UserSignUp\";\nimport MyPage from \"./pages/MyPage\";\nimport Coupons from \"./pages/Coupons\";\nimport Chats from \"./pages/Chats\";\nimport KakaoRedirect from \"./pages/KakaoRedirect\";\nimport SearchPage from \"./pages/Search\";\nimport StoreDetail from \"./pages/Storedetail\";\nimport MakeCoupons from \"./pages/MakeCoupons\";\nimport Notice from \"./pages/Notice\";\nimport StockRequests from \"./pages/StockRequests\";\nimport FleaRequests from \"./pages/FleaRequests\";\nimport SearchbyNurtrition from \"./pages/SearchbyNurtrition\";\nimport SearchResult from \"./pages/SearchResult\";\nimport StoredetailRequestPopup from \"./pages/StoredetailRequest\";\nimport StoreDetailFlearequest from \"./pages/StoredetailFlearequest\";\nimport VideoCall from \"./pages/VideoCall\";\nimport { KakaoMapProvider } from \"./contexts/ KakaoMapContext\";\n\n\nfunction App() {\n\n  const location = useLocation();\n  const params = useParams();\n\n\n  // 검색 결과[9] 참조: 동적 라우트 키 생성\n  const routeKey = location.pathname.startsWith(\"/search/results\")\n    ? `search-${location.search}`\n    : location.pathname;\n\n  // 지도 페이지 판별 로직\n  const isMapPage = [\"/\", \"/search/results\"].includes(location.pathname);\n\n  // 뷰포트 높이 설정 (검색 결과[5] 참조)\n  useEffect(() => {\n    const setScreenSize = () => {\n      let vh = window.innerHeight * 0.01;\n      document.documentElement.style.setProperty(\"--vh\", `${vh}px`);\n    };\n    setScreenSize();\n    window.addEventListener(\"resize\", setScreenSize);\n    return () => window.removeEventListener(\"resize\", setScreenSize);\n  }, []);\n\n  return (\n    <div className=\"App\">\n      <div>\n        <KakaoMapProvider>\n          <Routes>\n            <Route path=\"/signup\" element={<SignUp />} />\n            <Route path=\"/owner-signup\" element={<OwnerSignUp />} />\n            <Route path=\"/user-signup\" element={<UserSignUp />} />\n            <Route path=\"/mypage/user\" element={<MyPage />} />\n            <Route path=\"/mypage/user/coupons\" element={<Coupons />} />\n            <Route path=\"/mypage/user/chats\" element={<Chats />} />\n            <Route path=\"/mypage/admin\" element={<MyPage />} />\n            <Route path=\"/mypage/admin/flea\" element={<FleaRequests />} />\n            <Route path=\"/mypage/admin/stock\" element={<StockRequests />} />\n            <Route path=\"/mypage/admin/coupon\" element={<MakeCoupons />} />\n            <Route path=\"/mypage/admin/notice\" element={<Notice />} />\n\n            <Route path=\"/oauth/kakao\" element={<KakaoRedirect />} />\n\n            <Route path=\"/kiosk\" element={<Kiosk />} />\n            <Route path=\"/kiosk/:storeNo/main\" element={<KioskMainScreen/>}/>\n\n            <Route path=\"/\" element={<MainPage />} />\n            <Route\n              path=\"/search/results\"\n              element={<SearchResult key={location.key} />}\n            />\n            <Route path=\"/search\" element={<SearchPage />} />\n            <Route path=\"/storedetail/:storeNo\" element={<StoreDetail />} />\n            <Route\n              path=\"/storedetail/:storeNo/request\"\n              element={<StoredetailRequestPopup />}\n            />\n            <Route\n              path=\"/storedetail/:storeNo/flearequest\"\n              element={<StoreDetailFlearequest />}\n            />\n            <Route path=\"/searchbynutrition\" element={<SearchbyNurtrition />} />\n            <Route path=\"/:storeNo/videocall\" element={<VideoCall />} />\n          </Routes>\n        </KakaoMapProvider>\n      </div>\n      <div\n        id=\"map-root\"\n        className={`map-container ${isMapPage ? \"visible\" : \"hidden\"}`}\n        style={{\n          opacity: isMapPage ? 1 : 0,\n          visibility: isMapPage ? \"visible\" : \"hidden\",\n          transition: \"opacity 0.3s ease, visibility 0.3s ease\",\n        }}\n      ></div>\n    </div>\n  );\n}\n\nexport default App;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.js b/Frontend/src/App.js
+--- a/Frontend/src/App.js	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/Frontend/src/App.js	(date 1739795640899)
+@@ -52,7 +52,7 @@
+ 
+   return (
+     <div className="App">
+-      <div>
++      <div className="App-container">
+         <KakaoMapProvider>
+           <Routes>
+             <Route path="/signup" element={<SignUp />} />
+Index: Frontend/src/components/KioskFleaproductlist/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.flea-product-container {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    grid-template-rows: 15% 85%;\n}\n\n.fleanotice {\n    grid-row: 1;\n    width: 100%;\n    height: 100%;\n}\n\n.fleaemptynotice {\n    grid-row: 2;\n    width: 100%;\n    height: 100%;\n    font-size: 30px;\n    align-content: center\n}\n\n.product-grid {\n    grid-row: 2;\n    width: 100%;\n    height: 100%;\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));\n    gap: 20px;\n    padding: 0;\n    list-style: none;\n}\n\n.product-card {\n    position: relative;\n    background: white;\n    border-radius: 12px;\n    overflow: hidden;\n    overflow-y: auto;\n    box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n    aspect-ratio: 1/1; /* 정사각형 비율 유지 */\n    display: flex;\n    flex-direction: column;\n}\n\n.image-container {\n    flex: 1;\n    overflow: hidden;\n    position: relative;\n}\n\n.image-container img {\n    width: 100%;\n    height: 100%;\n    object-fit: scale-down;\n    transition: transform 0.3s ease;\n}\n\n.image-container:hover img {\n    transform: scale(1.05);\n}\n\n.product-details {\n    padding: 15px;\n    text-align: center;\n    background: linear-gradient(to bottom, rgba(255,255,255,0.9), #fff);\n}\n\n.add-cart-btn {\n    width: 100%;\n    padding: 12px;\n    background: #ff6b6b;\n    color: white;\n    border: none;\n    cursor: pointer;\n    transition: background 0.3s;\n    font-size: 1rem;\n    margin-top: auto; /* 버튼을 하단에 고정 */\n}\n\n.add-cart-btn:hover {\n    background: #ff5252;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskFleaproductlist/style.css b/Frontend/src/components/KioskFleaproductlist/style.css
+--- a/Frontend/src/components/KioskFleaproductlist/style.css	(revision 918f5387f9dd3e897ad9d37c475b905e158eca31)
++++ b/Frontend/src/components/KioskFleaproductlist/style.css	(date 1739795841900)
+@@ -3,6 +3,7 @@
+     height: 100%;
+     display: grid;
+     grid-template-rows: 15% 85%;
++    background-color: #fff;
+ }
+ 
+ .fleanotice {
