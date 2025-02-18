@@ -89,6 +89,8 @@ const StoreDetail = () => {
     StoreDetailApi(storeNo, setProductData);
   }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정
 
+  console.log(productData)
+
   return (
     <div className="searchpagedom">
       <div className="storedetailheadercontainer">
@@ -192,6 +194,13 @@ const StoreDetail = () => {
                   className="storedetailmarketli"
                   onClick={() => handleItemClick(announcement, "announcement")}
                 >
+                  <img
+                      src={announcement.boardImageUrl || "/logo.png"}
+                      className="storedetailitemimage"
+                      onError={(e) => {
+                        e.target.src = "/logo.png";
+                      }}
+                  />
                   <div className="item-info">
                     <span>{announcement.title}</span>
                     <span>{formatDate(announcement.createdAt)}</span>
@@ -233,6 +242,13 @@ const StoreDetail = () => {
               <>
                 <h3>{selectedItem.title}</h3>
                 <p>{selectedItem.content}</p>
+                <img
+                    src={selectedItem.boardImageUrl || "/logo.png"}
+                    className="announcementdetailimage"
+                    onError={(e) => {
+                      e.target.src = "/logo.png";
+                    }}
+                />
                 <p>작성일: {formatDate(selectedItem.createdAt)}</p>{" "}
                 {/* 날짜 변환 적용 */}
               </>

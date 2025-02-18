@@ -71,7 +71,9 @@ const SearchResult = () => {
             <div className="resultpagecontents">
                 <div className="resultheader"><HeaderContainer/></div>
                     <div className="resultsearchbar">
-                        <button className="resultbackbutton" onClick={() => navigate(-1)}>뒤로</button>
+                        <button className="resultbackbutton" onClick={() => navigate(-1)}>
+                            <img src="/back-button.png" />
+                        </button>
                         <p className="resultsearchinput">{itemName}</p>
                         <div className="search-result-controls">
                             <AddressSearchTrigger

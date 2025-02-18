@@ -1,0 +1,579 @@
+Index: Frontend/src/components/KakaoMapContainer/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useRef } from 'react';\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\nimport './style.css'\n\n\nconst KakaoMapContainer = ({ coords }) => {\n    const { baseMap, isSDKLoaded } = useBaseMap();\n    const markerRef = useRef(null); // 마커 인스턴스 추적용 ref\n\n    useEffect(() => {\n        if (!isSDKLoaded || !baseMap || !coords) return;\n\n        // 1. 기존 마커 제거\n        if (markerRef.current) {\n            markerRef.current.setMap(null);\n        }\n\n        // 2. 새 마커 생성\n        const markerImage = new window.kakao.maps.MarkerImage(\n            '/mylocation.png',\n            new window.kakao.maps.Size(40, 40),\n            { offset: new window.kakao.maps.Point(20, 0) }\n        );\n\n        const newMarker = new window.kakao.maps.Marker({\n            position: new window.kakao.maps.LatLng(coords.lat, coords.lng),\n            image: markerImage,\n            map: baseMap,\n            clickable: true,\n        });\n\n        // 3. 마커 참조 업데이트\n        markerRef.current = newMarker;\n\n        const iwContent = `\n          <div style=\"\n            width: 100px;\n            padding: 15px;\n            text-align: center;\n            font-size: 14px;\n            color: #333;\n            position: relative;\n          \">\n            \uD83D\uDCCD 내 위치\n            <div style=\"\n              position: absolute;\n              width: 0;\n              height: 0;\n            \"></div>\n          </div>\n        `;\n\n        const infowindow = new window.kakao.maps.InfoWindow({\n            content: iwContent,\n            removable: true,\n        });\n\n        // 클릭 이벤트 핸들러\n        window.kakao.maps.event.addListener(newMarker, 'click', () => {\n            infowindow.open(baseMap, newMarker);\n            baseMap.setCenter(newMarker)\n        });\n\n        // 4. 지도 중심 이동\n        const position = new window.kakao.maps.LatLng(coords.lat, coords.lng);\n        baseMap.setCenter(position);\n\n\n        // 클린업 함수\n        return () => {\n            if (markerRef.current) {\n                markerRef.current.setMap(null);\n            }\n        };\n    }, [coords, baseMap, isSDKLoaded]); // coords 변경 시 재실행\n\n\n    return null;\n};\n\nexport default KakaoMapContainer;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapContainer/index.js b/Frontend/src/components/KakaoMapContainer/index.js
+--- a/Frontend/src/components/KakaoMapContainer/index.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/components/KakaoMapContainer/index.js	(date 1739858098342)
+@@ -1,5 +1,5 @@
+ import { useEffect, useRef } from 'react';
+-import { useBaseMap } from "../../contexts/ KakaoMapContext";
++import { useBaseMap } from "../../contexts/KakaoMapContext";
+ import './style.css'
+ 
+ 
+@@ -42,11 +42,6 @@
+             position: relative;
+           ">
+             📍 내 위치
+-            <div style="
+-              position: absolute;
+-              width: 0;
+-              height: 0;
+-            "></div>
+           </div>
+         `;
+ 
+@@ -58,7 +53,7 @@
+         // 클릭 이벤트 핸들러
+         window.kakao.maps.event.addListener(newMarker, 'click', () => {
+             infowindow.open(baseMap, newMarker);
+-            baseMap.setCenter(newMarker)
++            baseMap.setCenter(newMarker.getPosition())
+         });
+ 
+         // 4. 지도 중심 이동
+Index: Frontend/src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import \"./App.css\";\nimport { useEffect } from \"react\";\nimport { Route, Routes, useLocation, useParams } from \"react-router-dom\";\nimport MainPage from \"./pages/MainPage\";\nimport Kiosk from \"./pages/Kiosk\";\nimport KioskMainScreen from \"./pages/KioskMain\";\nimport SignUp from \"./pages/SignUpPage/SignUp\";\nimport OwnerSignUp from \"./pages/SignUpPage/OwnerSignUp\";\nimport UserSignUp from \"./pages/SignUpPage/UserSignUp\";\nimport MyPage from \"./pages/MyPage\";\nimport Coupons from \"./pages/Coupons\";\nimport KakaoRedirect from \"./pages/KakaoRedirect\";\nimport SearchPage from \"./pages/Search\";\nimport StoreDetail from \"./pages/Storedetail\";\nimport MakeCoupons from \"./pages/MakeCoupons\";\nimport Notice from \"./pages/Notice\";\nimport StockRequests from \"./pages/StockRequests\";\nimport FleaRequests from \"./pages/FleaRequests\";\nimport SearchbyNurtrition from \"./pages/SearchbyNurtrition\";\nimport SearchResult from \"./pages/SearchResult\";\nimport StoredetailRequestPopup from \"./pages/StoredetailRequest\";\nimport StoreDetailFlearequest from \"./pages/StoredetailFlearequest\";\nimport VideoCall from \"./pages/VideoCall\";\nimport { KakaoMapProvider } from \"./contexts/ KakaoMapContext\";\n\n\nfunction App() {\n\n  const location = useLocation();\n  const params = useParams();\n\n\n  // 검색 결과[9] 참조: 동적 라우트 키 생성\n  const routeKey = location.pathname.startsWith(\"/search/results\")\n    ? `search-${location.search}`\n    : location.pathname;\n\n  // 지도 페이지 판별 로직\n  const isMapPage = [\"/\", \"/search/results\"].includes(location.pathname);\n\n  // 뷰포트 높이 설정 (검색 결과[5] 참조)\n  useEffect(() => {\n    const setScreenSize = () => {\n      let vh = window.innerHeight * 0.01;\n      document.documentElement.style.setProperty(\"--vh\", `${vh}px`);\n    };\n    setScreenSize();\n    window.addEventListener(\"resize\", setScreenSize);\n    return () => window.removeEventListener(\"resize\", setScreenSize);\n  }, []);\n\n  return (\n    <div className=\"App\">\n      <div className=\"appcontainer\">\n      <div>\n        <KakaoMapProvider>\n          <Routes>\n            <Route path=\"/signup\" element={<SignUp />} />\n            <Route path=\"/owner-signup\" element={<OwnerSignUp />} />\n            <Route path=\"/user-signup\" element={<UserSignUp />} />\n            <Route path=\"/mypage/user\" element={<MyPage />} />\n            <Route path=\"/mypage/user/coupons\" element={<Coupons />} />\n            <Route path=\"/mypage/admin\" element={<MyPage />} />\n            <Route path=\"/mypage/admin/flea\" element={<FleaRequests />} />\n            <Route path=\"/mypage/admin/stock\" element={<StockRequests />} />\n            <Route path=\"/mypage/admin/coupon\" element={<MakeCoupons />} />\n            <Route path=\"/mypage/admin/notice\" element={<Notice />} />\n\n            <Route path=\"/oauth/kakao\" element={<KakaoRedirect />} />\n\n            <Route path=\"/kiosk\" element={<Kiosk />} />\n            <Route path=\"/kiosk/:storeNo/main\" element={<KioskMainScreen/>}/>\n\n            <Route path=\"/\" element={<MainPage />} />\n            <Route\n              path=\"/search/results\"\n              element={<SearchResult key={location.key} />}\n            />\n            <Route path=\"/search\" element={<SearchPage />} />\n            <Route path=\"/storedetail/:storeNo\" element={<StoreDetail />} />\n            <Route\n              path=\"/storedetail/:storeNo/request\"\n              element={<StoredetailRequestPopup />}\n            />\n            <Route\n              path=\"/storedetail/:storeNo/flearequest\"\n              element={<StoreDetailFlearequest />}\n            />\n            <Route path=\"/searchbynutrition\" element={<SearchbyNurtrition />} />\n            <Route path=\"/:storeNo/videocall\" element={<VideoCall />} />\n          </Routes>\n        </KakaoMapProvider>\n      </div>\n      <div\n        id=\"map-root\"\n        className={`map-container ${isMapPage ? \"visible\" : \"hidden\"}`}\n        style={{\n          opacity: isMapPage ? 1 : 0,\n          visibility: isMapPage ? \"visible\" : \"hidden\",\n          transition: \"opacity 0.3s ease, visibility 0.3s ease\",\n        }}\n      ></div>\n      </div>\n    </div>\n  );\n}\n\nexport default App;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.js b/Frontend/src/App.js
+--- a/Frontend/src/App.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/App.js	(date 1739858330614)
+@@ -1,6 +1,7 @@
+ import "./App.css";
+ import { useEffect } from "react";
+-import { Route, Routes, useLocation, useParams } from "react-router-dom";
++import { Route, Routes, useLocation } from "react-router-dom";
++import { KakaoMapProvider } from "./contexts/KakaoMapContext";
+ import MainPage from "./pages/MainPage";
+ import Kiosk from "./pages/Kiosk";
+ import KioskMainScreen from "./pages/KioskMain";
+@@ -21,19 +22,11 @@
+ import StoredetailRequestPopup from "./pages/StoredetailRequest";
+ import StoreDetailFlearequest from "./pages/StoredetailFlearequest";
+ import VideoCall from "./pages/VideoCall";
+-import { KakaoMapProvider } from "./contexts/ KakaoMapContext";
+ 
+ 
+ function App() {
+ 
+   const location = useLocation();
+-  const params = useParams();
+-
+-
+-  // 검색 결과[9] 참조: 동적 라우트 키 생성
+-  const routeKey = location.pathname.startsWith("/search/results")
+-    ? `search-${location.search}`
+-    : location.pathname;
+ 
+   // 지도 페이지 판별 로직
+   const isMapPage = ["/", "/search/results"].includes(location.pathname);
+Index: Frontend/src/pages/SearchResult/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.result-page {\n    width: 100%;\n    height: 100%;\n    position: fixed;\n    z-index: 100;\n    top: 0;\n}\n\n.resultpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh auto;\n    position: relative;\n    z-index: 100;\n}\n\n.resultheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.resultsearchbar {\n    box-sizing: border-box;\n    border: 2px solid #3f72af;\n    background-color: white;\n    grid-row: 2;\n    width: 100%;\n    height: 100%;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n\n.resultsearchinput {\n    box-sizing: inherit;\n    width: 75%;\n    height: 100%;\n    background-color: transparent;\n    text-align: left;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    align-content: center;\n    padding-left: 10px;\n}\n\n.resultbackbutton {\n    box-sizing: inherit;\n    width: 25%;\n    height: 100%;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/style.css b/Frontend/src/pages/SearchResult/style.css
+--- a/Frontend/src/pages/SearchResult/style.css	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/SearchResult/style.css	(date 1739854700502)
+@@ -4,6 +4,7 @@
+     position: fixed;
+     z-index: 100;
+     top: 0;
++    pointer-events: none;
+ }
+ 
+ .resultpagecontents {
+@@ -14,6 +15,14 @@
+     grid-template-rows: 8vh 6vh auto;
+     position: relative;
+     z-index: 100;
++    pointer-events: none;
++}
++
++/* 하위 요소에서 터치 필요한 부분만 활성화 */
++.resultheader,
++.resultsearchbar,
++.resultpagecontents > * {
++    pointer-events: auto; /* 추가: 필수 인터랙션 요소만 터치 활성화 */
+ }
+ 
+ .resultheader {
+Index: Frontend/src/pages/SearchResult/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useMemo, useEffect } from \"react\";\nimport { useLocation, useNavigate } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport AddressSearchTrigger from \"../../components/AddressSearchTrigger\";\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport './style.css'\n\nconst SearchResult = () => {\n    const { isSDKLoaded } = useBaseMap()\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const navigate = useNavigate();\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n    // 상태 관리 추가\n    const [address, setAddress] = useState(\"\");\n    const [isManualAddress, setIsManualAddress] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n\n    // 좌표 객체 메모이제이션\n    const coords = useMemo(() => ({\n        lat: parseFloat(queryParams.get('lat')),\n        lng: parseFloat(queryParams.get('lng'))\n    }), [queryParams.get('lat'), queryParams.get('lng')]);\n\n    const itemId = queryParams.get('itemId');\n    const itemName = queryParams.get('itemName');\n\n    // 주소 초기화 효과\n    useEffect(() => {\n        const fetchAddress = async () => {\n            try {\n                const newAddress = await coordToAddress(coords);\n                setAddress(newAddress);\n            } catch (err) {\n                console.error(\"주소 변환 실패:\", err);\n                setAddress(\"주소 정보 불러오기 실패\");\n            }\n        };\n\n        if (isSDKLoaded) {\n            fetchAddress();\n        }\n    }, [coords, isSDKLoaded, coordToAddress]);\n\n    // 주소 변경 핸들러\n    const handleAddressComplete = async (fullAddress) => {\n        try {\n            const newCoords = await addressToCoord(fullAddress);\n            if (newCoords) {\n                navigate({\n                    pathname: location.pathname,\n                    search: `?lat=${newCoords.lat}&lng=${newCoords.lng}&itemId=${itemId}&itemName=${itemName}`\n                });\n                setAddress(fullAddress);\n                setIsManualAddress(true);\n            }\n        } catch (err) {\n            console.error(\"주소 변환 오류:\", err);\n        }\n    };\n\n    return (\n        <div className=\"result-page\">\n            <div className=\"resultpagecontents\">\n                <div className=\"resultheader\"><HeaderContainer/></div>\n                    <div className=\"resultsearchbar\">\n                        <button className=\"resultbackbutton\" onClick={() => navigate(-1)}>뒤로</button>\n                        <p className=\"resultsearchinput\">{itemName}</p>\n                        <div className=\"search-result-controls\">\n                            <AddressSearchTrigger\n                                address={address}\n                                onAddressComplete={handleAddressComplete}\n                                setIsManualAddress={setIsManualAddress}\n                            />\n                    </div>\n                </div>\n                <DraggableBottomSheet\n                    coords={coords}\n                    setStorelist={setStorelist}\n                    itemId={itemId}\n                />\n            </div>\n            {isSDKLoaded && (\n                <>\n                    <KakaoMapContainer coords={coords} />\n                    <KakaoMapMarkers storelist={storelist} />\n                </>\n            )}\n        </div>\n    )\n}\n\nexport default SearchResult;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/index.js b/Frontend/src/pages/SearchResult/index.js
+--- a/Frontend/src/pages/SearchResult/index.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/SearchResult/index.js	(date 1739858098346)
+@@ -5,7 +5,7 @@
+ import KakaoMapMarkers from "../../components/KakaoMapMarkers";
+ import KakaoMapContainer from "../../components/KakaoMapContainer";
+ import AddressSearchTrigger from "../../components/AddressSearchTrigger";
+-import { useBaseMap } from "../../contexts/ KakaoMapContext";
++import { useBaseMap } from "../../contexts/KakaoMapContext";
+ import useReverseGeocoding from "../../hooks/useReverseGeocoding";
+ import useGeocoding from "../../hooks/useGeocoding";
+ import './style.css'
+Index: Frontend/src/pages/Storedetail/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* ============ 메인 레이아웃 ============ */\n.searchpagedom {\n  display: grid;\n  width: 100%;\n  min-height: 100vh;\n  gap: 8px;\n  background: #f5f5f5;\n  grid-template-rows: 8vh 19vh 6vh 6vh auto;\n  grid-template-areas:\n    \"detailheader\"\n    \"photoinfo\"\n    \"btnlist\"\n    \"storedetailnavbar\"\n    \"storedetailinfo\";\n}\n\n/* ============ 헤더 영역 ============ */\n.storedetailheadercontainer {\n  grid-area: detailheader;\n  width: 100%;\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n  background: #f5f5f5;\n  z-index: 1;\n}\n\n/* ============ 가게 정보 섹션 ============ */\n.storedetailphotoinfo {\n  grid-area: photoinfo;\n  width: 100%;\n  height: 100%;\n  background: #f5f5f5;\n  display: grid;\n  grid-template-columns: 150px 1fr;\n  gap: 8px;\n}\n\n.market-image {\n  width: 150px;\n  height: 150px;\n  border-radius: 8px;\n  overflow: hidden;\n  display: grid;\n  place-items: center;\n  background-color: white;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n}\n\n.market-image img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.market-detail {\n  display: grid;\n  grid-template-rows: 60% 40%;\n  place-items: center;\n}\n\n.market-name {\n  grid-row: 1;\n  font-size: 1.2rem;\n  font-weight: 600;\n  color: #333;\n  margin-bottom: 8px;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n\n.market-location {\n  grid-row: 2;\n  font-size: 0.9rem;\n  color: #666;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n\n/* ============ 버튼 그룹 ============ */\n.storedetail-btnlist {\n  grid-area: btnlist;\n  display: flex;\n  gap: 8px;\n  width: 100%;\n  height: 100%;\n}\n\n.couponrequestbtn,\n.requestbtn,\n.flearequestbtn,\n.videocallbtn{\n  box-sizing: border-box;\n  border: #4a90e2 2px solid;\n  border-radius: 15px;\n  width: auto; /* 30% → auto로 변경 */\n  flex: 1 1 0%; /* 추가 */\n  min-width: 0; /* 추가 */\n  background-color: #f0f0ff;\n}\n\n/* ============ 네비게이션 바 ============ */\n.storedetailnavbar {\n  grid-area: storedetailnavbar;\n  width: 100%;\n  height: 100%;\n  background: white;\n}\n\n/* ============ 메인 컨텐츠 영역 ============ */\n.storedetailmarketinfo {\n  grid-area: storedetailinfo;\n  width: 100%;\n  height: 100%;\n  max-height: 70vh;\n  overflow-y: auto;\n  background: #f5f5f5;\n  position: relative;\n}\n\n/* ============ 공통 리스트 스타일 ============ */\n.storedetailul {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  display: grid;\n  gap: 12px;\n}\n\n.storedetailmarketli {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  padding: 12px;\n  background: #fff;\n  border: 1px solid #4a90e2;\n  border-radius: 8px;\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);\n  transition: transform 0.2s ease;\n  cursor: pointer;\n  height: 80px;\n  overflow: hidden;\n}\n\n/* 이미지가 없는 항목 (공지사항) */\n.storedetailmarketli.announcement {\n  flex-direction: column;\n  align-items: flex-start;\n  justify-content: center;\n  background: #f8f9fa;\n  border-color: #e0e0e0;\n}\n\n/* 텍스트 컨테이너 */\n.item-info {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n\n.storedetailitemimage {\n  width: 30%;\n  height: 100%;\n  border-radius: 6px;\n  border: 1px solid #4a90e2;\n  object-fit: scale-down;\n  flex-shrink: 0;\n}\n\n/* ============ 팝업 스타일 ============ */\n.popup-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n}\n\n.popup-content {\n  background: white;\n  padding: 24px;\n  border-radius: 12px;\n  max-width: 400px;\n  width: 90%;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);\n}\n\n.popup-field {\n  margin: 12px 0;\n  padding: 8px;\n  background: #f8f9fa;\n  border-radius: 6px;\n}\n\n.popup-field label {\n  display: block;\n  font-size: 0.9rem;\n  color: #666;\n  margin-bottom: 4px;\n}\n\n/* VideoChat.css */\n.video-chat {\n  max-width: 1200px;\n  margin: 0 auto;\n  padding: 20px;\n}\n\n.session-form {\n  max-width: 500px;\n  margin: 0 auto 20px;\n  padding: 20px;\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  background-color: #f9f9f9;\n}\n\n.mode-selector {\n  display: flex;\n  gap: 10px;\n  margin-bottom: 20px;\n}\n\n.mode-button {\n  flex: 1;\n  padding: 10px;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  background-color: #fff;\n  cursor: pointer;\n}\n\n.mode-button.active {\n  background-color: #4caf50;\n  color: white;\n  border-color: #4caf50;\n}\n\n.input-group {\n  margin-bottom: 20px;\n}\n\n.session-input {\n  width: 100%;\n  padding: 10px;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  font-size: 16px;\n}\n\n.button-container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 20px;\n  margin-bottom: 20px;\n}\n\n.session-info {\n  margin: 0;\n  padding: 10px;\n  background-color: #e3f2fd;\n  border-radius: 4px;\n  font-size: 14px;\n}\n\n.join-button,\n.leave-button {\n  padding: 10px 20px;\n  border: none;\n  border-radius: 4px;\n  cursor: pointer;\n  font-size: 16px;\n  width: 100%;\n}\n\n.join-button {\n  background-color: #4caf50;\n  color: white;\n}\n\n.join-button:disabled {\n  background-color: #cccccc;\n  cursor: not-allowed;\n}\n\n.leave-button {\n  background-color: #f44336;\n  color: white;\n}\n\n.leave-button:disabled {\n  background-color: #cccccc;\n  cursor: not-allowed;\n}\n\n.error-message {\n  background-color: #ffebee;\n  color: #c62828;\n  padding: 10px;\n  border-radius: 4px;\n  margin-bottom: 20px;\n}\n\n.video-container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));\n  gap: 20px;\n}\n\n.video-box {\n  position: relative;\n  aspect-ratio: 16/9;\n  background-color: #1a1a1a;\n  border-radius: 8px;\n  overflow: hidden;\n}\n\n.video-element {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.user-label {\n  position: absolute;\n  bottom: 10px;\n  left: 10px;\n  background-color: rgba(0, 0, 0, 0.5);\n  color: white;\n  padding: 5px 10px;\n  border-radius: 4px;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Storedetail/style.css b/Frontend/src/pages/Storedetail/style.css
+--- a/Frontend/src/pages/Storedetail/style.css	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/Storedetail/style.css	(date 1739852927982)
+@@ -340,3 +340,87 @@
+   padding: 5px 10px;
+   border-radius: 4px;
+ }
++
++
++/* 쿠폰 팝업 스타일 */
++.coupon-popup-overlay {
++  position: fixed;
++  top: 0;
++  left: 0;
++  right: 0;
++  bottom: 0;
++  background: rgba(0, 0, 0, 0.5);
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  z-index: 1000;
++}
++
++.coupon-popup-content {
++  background: white;
++  padding: 2rem;
++  border-radius: 12px;
++  width: 90%;
++  max-width: 500px;
++  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
++}
++
++.coupon-list {
++  list-style: none;
++  padding: 0;
++  margin: 1rem 0;
++}
++
++.coupon-item {
++  padding: 1rem;
++  margin: 0.5rem 0;
++  background: #f8f9fa;
++  border-radius: 8px;
++  cursor: pointer;
++  transition: all 0.2s;
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++}
++
++.coupon-item:hover {
++  background: #e9ecef;
++  transform: translateY(-2px);
++}
++
++.coupon-info {
++  display: flex;
++  flex-direction: column;
++}
++
++.coupon-name {
++  font-weight: 600;
++  font-size: 1.1rem;
++}
++
++.coupon-discount {
++  color: #2b8a3e;
++  font-size: 0.9rem;
++}
++
++.coupon-expiry {
++  color: #868e96;
++  font-size: 0.8rem;
++}
++
++.close-btn {
++  display: block;
++  width: 100%;
++  padding: 0.8rem;
++  background: #4c6ef5;
++  color: white;
++  border: none;
++  border-radius: 6px;
++  cursor: pointer;
++  margin-top: 1rem;
++  transition: background 0.2s;
++}
++
++.close-btn:hover {
++  background: #364fc7;
++}
+Index: Frontend/src/pages/Storedetail/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useEffect } from \"react\";\nimport { useNavigate, useParams } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport StoreDetailbar from \"../../components/StoreDetailBar\";\nimport StoreDetailApi from \"../../api/StoreDetailApi\";\nimport CouponGetApi from \"../../api/CouponGetApi\";\nimport CouponListApi from \"../../api/CouponListApi\";\nimport useAuth from \"../../hooks/useAuth\";\nimport axios from \"axios\";\n\nimport \"./style.css\";\n\nconst StoreDetail = () => {\n  const [productData, setProductData] = useState(null); // API 데이터를 저장할 상태\n  const [activeTab, setActiveTab] = useState(\"storeItems\"); // 활성화된 탭 상태\n  const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 데이터\n  const [selectedType, setSelectedType] = useState(\"\"); // 선택된 아이템 타입\n  const { storeNo } = useParams();\n  const nStoreNo = Number(storeNo);\n  const navigate = useNavigate();\n  const { logindata } = useAuth();\n  const apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\n  const handleTabClick = (tab) => {\n    setActiveTab(tab); // 활성화된 탭 업데이트\n  };\n\n  // 수정 필요\n  const checkLogin = () => {\n    if (!logindata) {\n      alert(\"로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.\");\n      axios.get(`${apiUrl}/api/users/login`, {});\n      return false;\n    }\n    return true;\n  };\n\n  const handleCouponGet = async (nStoreNo) => {\n    // if (!checkLogin()) return;\n\n    try {\n      const couponList = await CouponListApi(nStoreNo);\n      if (!couponList || couponList.length === 0 || !couponList[0]?.couponId) {\n        alert(\"사용 가능한 쿠폰이 없습니다\");\n        return;\n      }\n\n      const couponId = couponList[0].couponId;\n      const receivedCoupon = await CouponGetApi(nStoreNo, couponId); // 순서 변경\n      return receivedCoupon;\n    } catch (error) {\n      console.error(\"쿠폰 처리 실패:\", error);\n    }\n  };\n\n  // 3. 페이지 이동 함수들\n  const navigateRequestPage = () => {\n    // if (!checkLogin()) return; // 로그인 체크\n    navigate(`/storedetail/${storeNo}/request`);\n  };\n\n  const navigateFlearequest = () => {\n    // if (!checkLogin()) return; // 로그인 체크\n    navigate(`/storeDetail/${storeNo}/flearequest`);\n  };\n\n  const navigateToVideoCall = () => {\n    navigate(`/${storeNo}/videocall`);\n  };\n\n  const handleItemClick = (item, type) => {\n    setSelectedItem(item); // 선택된 아이템 데이터 저장\n    setSelectedType(type); // 선택된 타입 저장 (store, fli, announcement)\n  };\n\n  const closePopup = () => {\n    setSelectedItem(null); // 팝업 닫기\n    setSelectedType(\"\");\n  };\n\n  // 날짜 형식 변환 함수\n  const formatDate = (dateString) => {\n    const options = { year: \"numeric\", month: \"long\", day: \"numeric\" }; // 예시: \"2025년 2월 6일\"\n    return new Date(dateString).toLocaleDateString(\"ko-KR\", options);\n  };\n\n  useEffect(() => {\n    // API 호출 및 데이터 설정\n    StoreDetailApi(storeNo, setProductData);\n  }, []); // 빈 배열을 의존성으로 전달하여 한 번만 실행되도록 설정\n\n  return (\n    <div className=\"searchpagedom\">\n      <div className=\"storedetailheadercontainer\">\n        <HeaderContainer />\n      </div>\n      <div className=\"storedetailphotoinfo\">\n        <div className=\"market-image\">\n          {productData?.store?.storeImageUrl ? (\n            <img\n              src={productData.store.storeImageUrl}\n              alt=\"StoreImage\"\n              onError={(e) => {\n                e.target.style.display = \"none\"; // 이미지 숨기기\n              }}\n            />\n          ) : (\n            <div className=\"image-fallback\">\n              <span>\n                등록된 이미지가\n                <br /> 없습니다.\n              </span>\n            </div>\n          )}\n        </div>\n        <div className=\"market-detail\">\n          <div className=\"market-name\">{productData?.store.name}</div>\n          <div className=\"market-location\">{productData?.store.address}</div>\n        </div>\n      </div>\n          <div className=\"storedetail-btnlist\">\n            <button className=\"couponrequestbtn\" onClick={() => handleCouponGet(nStoreNo)}>쿠폰수령</button>\n            <button className=\"requestbtn\" onClick={navigateRequestPage}>입고요청</button>\n            <button className=\"flearequestbtn\" onClick={navigateFlearequest}>플리신청</button>\n            <button className=\"videocallbtn\" onClick={navigateToVideoCall}>화상통화</button>\n        </div>\n      <div className=\"storedetailnavbar\">\n        <StoreDetailbar onTabClick={handleTabClick} />\n      </div>\n\n      <div className=\"storedetailmarketinfo\">\n        {/* 상점 상품 탭 */}\n        {activeTab === \"storeItems\" &&\n          (productData?.storeItems?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.storeItems.map((storeItem) => (\n                <li\n                  key={storeItem.itemId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(storeItem, \"store\")}\n                >\n                  <img\n                    src={storeItem.itemImageUrl}\n                    alt=\"상품 이미지\"\n                    className=\"storedetailitemimage\"\n                  />\n                  <div className=\"item-info\">\n                    <span>{storeItem.itemName}</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">등록된 상품이 없습니다</div>\n          ))}\n\n        {/* FLI 상품 탭 */}\n        {activeTab === \"fliItems\" &&\n          (productData?.fliItems?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.fliItems.map((fliItem) => (\n                <li\n                  key={fliItem.fliItemId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(fliItem, \"fli\")}\n                >\n                  <img\n                    src={fliItem.imagePath || \"/logo.png\"}\n                    className=\"storedetailitemimage\"\n                    onError={(e) => {\n                      e.target.src = \"/logo.png\";\n                    }}\n                  />\n                  <div className=\"item-info\">\n                    <span>{fliItem.fliItemName}</span>\n                    <span>{fliItem.price.toLocaleString()}원</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">플리마켓 상품이 존재하지 않습니다.</div>\n          ))}\n\n        {/* 공지사항 탭 */}\n        {activeTab === \"announcements\" &&\n          (productData?.announcements?.length ? (\n            <ul className=\"storedetailul\">\n              {productData.announcements.map((announcement) => (\n                <li\n                  key={announcement.boardId}\n                  className=\"storedetailmarketli\"\n                  onClick={() => handleItemClick(announcement, \"announcement\")}\n                >\n                  <div className=\"item-info\">\n                    <span>{announcement.title}</span>\n                    <span>{formatDate(announcement.createdAt)}</span>\n                  </div>\n                </li>\n              ))}\n            </ul>\n          ) : (\n            <div className=\"no-items\">등록된 공지사항이 없습니다</div>\n          ))}\n      </div>\n\n      {/* 팝업 */}\n      {selectedItem && (\n        <div className=\"popup-overlay\" onClick={closePopup}>\n          <div className=\"popup-content\" onClick={(e) => e.stopPropagation()}>\n            {selectedType === \"store\" && (\n              <>\n                <h3>{selectedItem.itemName}</h3>\n                <p>가격: {selectedItem.finalPrice}원</p>\n                <p>수량: {selectedItem.quantity}</p>\n              </>\n            )}\n            {selectedType === \"fli\" && (\n              <>\n                <h3>{selectedItem.fliItemName}</h3>\n                <img\n                  src={selectedItem.imagePath || \"/logo.png\"}\n                  className=\"fliitemdetailimage\"\n                  onError={(e) => {\n                    e.target.src = \"/logo.png\";\n                  }}\n                />\n                <p>가격: {selectedItem.price}원</p>\n                <p>수량: {selectedItem.quantity}</p>\n              </>\n            )}\n            {selectedType === \"announcement\" && (\n              <>\n                <h3>{selectedItem.title}</h3>\n                <p>{selectedItem.content}</p>\n                <p>작성일: {formatDate(selectedItem.createdAt)}</p>{\" \"}\n                {/* 날짜 변환 적용 */}\n              </>\n            )}\n            <button onClick={closePopup}>닫기</button>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default StoreDetail;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Storedetail/index.js b/Frontend/src/pages/Storedetail/index.js
+--- a/Frontend/src/pages/Storedetail/index.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/Storedetail/index.js	(date 1739852968995)
+@@ -15,10 +15,12 @@
+   const [activeTab, setActiveTab] = useState("storeItems"); // 활성화된 탭 상태
+   const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 데이터
+   const [selectedType, setSelectedType] = useState(""); // 선택된 아이템 타입
++  const [couponList, setCouponList] = useState([]);
++  const [showCouponPopup, setShowCouponPopup] = useState(false);
++  const { logindata } = useAuth();
+   const { storeNo } = useParams();
+   const nStoreNo = Number(storeNo);
+   const navigate = useNavigate();
+-  const { logindata } = useAuth();
+   const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+ 
+   const handleTabClick = (tab) => {
+@@ -35,21 +37,34 @@
+     return true;
+   };
+ 
++// 수정된 쿠폰 처리 함수
+   const handleCouponGet = async (nStoreNo) => {
+     // if (!checkLogin()) return;
+ 
+     try {
+-      const couponList = await CouponListApi(nStoreNo);
+-      if (!couponList || couponList.length === 0 || !couponList[0]?.couponId) {
++      const coupons = await CouponListApi(nStoreNo);
++      if (!coupons || coupons.length === 0) {
+         alert("사용 가능한 쿠폰이 없습니다");
+         return;
+       }
+ 
+-      const couponId = couponList[0].couponId;
+-      const receivedCoupon = await CouponGetApi(nStoreNo, couponId); // 순서 변경
+-      return receivedCoupon;
++      setCouponList(coupons);
++      setShowCouponPopup(true);
+     } catch (error) {
+-      console.error("쿠폰 처리 실패:", error);
++      console.error("쿠폰 조회 실패:", error);
++    }
++  };
++
++// 쿠폰 선택 핸들러 추가
++  const handleCouponSelect = async (couponId) => {
++    try {
++      const result = await CouponGetApi(nStoreNo, couponId);
++      if (result) {
++        alert("쿠폰이 성공적으로 발급되었습니다!");
++        setShowCouponPopup(false);
++      }
++    } catch (error) {
++      console.error("쿠폰 수령 실패:", error);
+     }
+   };
+ 
+@@ -240,6 +255,37 @@
+             <button onClick={closePopup}>닫기</button>
+           </div>
+         </div>
++      )}
++      {/* 쿠폰 팝업 추가 */}
++      {showCouponPopup && (
++          <div className="coupon-popup-overlay" onClick={() => setShowCouponPopup(false)}>
++            <div className="coupon-popup-content" onClick={(e) => e.stopPropagation()}>
++              <h3>수령 가능한 쿠폰</h3>
++              <ul className="coupon-list">
++                {couponList.map((coupon) => (
++                    <li
++                        key={coupon.couponId}
++                        className="coupon-item"
++                        onClick={() => handleCouponSelect(coupon.couponId)}
++                    >
++                      <div className="coupon-info">
++                        <span className="coupon-name">{coupon.couponName}</span>
++                        <span className="coupon-discount">{coupon.discountValue}% 할인</span>
++                      </div>
++                      <span className="coupon-expiry">
++              ~{new Date(coupon.expiryDate).toLocaleDateString('ko-KR')}까지
++            </span>
++                    </li>
++                ))}
++              </ul>
++              <button
++                  className="close-btn"
++                  onClick={() => setShowCouponPopup(false)}
++              >
++                닫기
++              </button>
++            </div>
++          </div>
+       )}
+     </div>
+   );
+Index: Frontend/src/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.App {\n    width: 100%;\n    height: 100vh;\n    padding: 0;\n    margin: 0;\n    text-align: center;\n  }\n\n.appcontainer {\n    width: 100%;\n    height: 100vh;\n    z-index: 1;\n    position: fixed;\n    top: 0;\n}\n\n.map-container {\n    position: fixed;\n    top: 0;\n    width: 100vw;\n    height: 100vh;\n    z-index: 1;\n}\n\n.map-container.visible {\n    display: block;\n    pointer-events: auto;\n}\n\n.map-container.hidden {\n    display: none;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/App.css b/Frontend/src/App.css
+--- a/Frontend/src/App.css	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/App.css	(date 1739857042068)
+@@ -9,8 +9,9 @@
+ .appcontainer {
+     width: 100%;
+     height: 100vh;
+-    z-index: 1;
+     position: fixed;
++    overflow-y: auto;
++    z-index: 1;
+     top: 0;
+ }
+ 
+Index: Frontend/src/pages/MainPage/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// MainPage.jsx (수정된 버전)\nimport { useState, useEffect } from \"react\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchBar from \"../../components/SearchBar\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport useGeolocation from \"../../hooks/UseGeolocation\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\nimport \"./style.css\";\n\nconst MainPage = () => {\n    const { isSDKLoaded } = useBaseMap();\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const { geoCoords, error } = useGeolocation();\n\n    const [coords, setCoords] = useState({ lat: 37.5015376, lng: 127.0397208 });\n    const [address, setAddress] = useState(\"인재의 산실 멀티캠퍼스\");\n    const [isManualAddress, setIsManualAddress] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n\n    // 자동 위치 추적 효과\n    useEffect(() => {\n        if (isSDKLoaded && !isManualAddress && geoCoords) {\n            (async () => {\n                try {\n                    const newAddress = await coordToAddress(geoCoords);\n                    setCoords(geoCoords);\n                    setAddress(newAddress);\n                } catch (err) {\n                    console.error(\"위치 업데이트 실패:\", err);\n                    setAddress(\"위치 정보 불러오기 실패\");\n                }\n            })();\n        }\n    }, [geoCoords, isSDKLoaded, isManualAddress, coordToAddress]);\n\n    // 주소 검색 핸들러\n    const handleAddressComplete = async (fullAddress) => {\n        try {\n            setAddress(fullAddress);\n            const newCoords = await addressToCoord(fullAddress);\n            if (newCoords) {\n                setCoords(prev => ({ ...prev, ...newCoords }));\n            }\n        } catch (err) {\n            console.error(\"주소 변환 오류:\", err);\n        }\n    };\n\n    return (\n        <div className=\"mainpagebackground\">\n            <div className=\"mainpagecontents\">\n                <div className=\"mainpageheader\">\n                    <HeaderContainer />\n                </div>\n\n                <div className=\"mainpagesearchbar\">\n                    <SearchBar\n                        coords={coords}\n                        address={address}\n                        error={error}\n                        onAddressComplete={handleAddressComplete}\n                        setIsManualAddress={setIsManualAddress}\n                    />\n                </div>\n\n                <div className=\"mainpagebottomsheet\">\n                    <DraggableBottomSheet\n                        coords={coords}\n                        setStorelist={setStorelist}\n                    />\n                </div>\n\n                {isSDKLoaded && (\n                    <>\n                        <KakaoMapContainer coords={coords} />\n                        <KakaoMapMarkers storelist={storelist} />\n                    </>\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default MainPage;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/MainPage/index.js b/Frontend/src/pages/MainPage/index.js
+--- a/Frontend/src/pages/MainPage/index.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/MainPage/index.js	(date 1739858098344)
+@@ -8,7 +8,7 @@
+ import useGeolocation from "../../hooks/UseGeolocation";
+ import useReverseGeocoding from "../../hooks/useReverseGeocoding";
+ import useGeocoding from "../../hooks/useGeocoding";
+-import { useBaseMap } from "../../contexts/ KakaoMapContext";
++import { useBaseMap } from "../../contexts/KakaoMapContext";
+ import "./style.css";
+ 
+ const MainPage = () => {
+Index: Frontend/src/hooks/useGeocoding.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect, useRef } from \"react\";\nimport { useBaseMap } from \"../contexts/ KakaoMapContext\";\n\nconst useGeocoding = () => {\n    const { isSDKLoaded } = useBaseMap(); // ✅ BaseMap 컨텍스트 사용\n    const [geocoder, setGeocoder] = useState(null);\n    const cache = useRef(new Map());\n\n    // 지오코더 초기화\n    useEffect(() => {\n        if (isSDKLoaded && window.kakao?.maps?.services?.Geocoder) {\n            setGeocoder(new window.kakao.maps.services.Geocoder());\n        }\n    }, [isSDKLoaded]);\n\n    // 주소 → 좌표 변환\n    const addressToCoord = async (address) => {\n        if (!geocoder || !address) return null;\n\n        // 정규화된 주소 키 생성\n        const normalizedAddress = address.trim().replace(/\\s+/g, ' ');\n\n        // 캐시 히트 검사\n        if (cache.current.has(normalizedAddress)) {\n            return cache.current.get(normalizedAddress);\n        }\n\n        return new Promise((resolve, reject) => {\n            geocoder.addressSearch(normalizedAddress, (result, status) => {\n                if (status === window.kakao.maps.services.Status.OK && result[0]) {\n                    const coords = {\n                        lat: parseFloat(result[0].y),\n                        lng: parseFloat(result[0].x)\n                    };\n                    cache.current.set(normalizedAddress, coords);\n                    resolve(coords);\n                } else {\n                    reject(new Error(`주소 변환 실패: ${status}`));\n                }\n            });\n        });\n    };\n\n    return { addressToCoord };\n};\n\nexport default useGeocoding;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/hooks/useGeocoding.js b/Frontend/src/hooks/useGeocoding.js
+--- a/Frontend/src/hooks/useGeocoding.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/hooks/useGeocoding.js	(date 1739858098351)
+@@ -1,5 +1,5 @@
+ import { useState, useEffect, useRef } from "react";
+-import { useBaseMap } from "../contexts/ KakaoMapContext";
++import { useBaseMap } from "../contexts/KakaoMapContext";
+ 
+ const useGeocoding = () => {
+     const { isSDKLoaded } = useBaseMap(); // ✅ BaseMap 컨텍스트 사용
+Index: Frontend/src/pages/StoredetailRequest/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* ====== 팝업 레이아웃 ====== */\n.storedetailpagerequestpopup {\n    display: grid;\n    place-items: center;\n    width: 100%;\n    height: 100%;\n    position: fixed;\n    top: 0;\n    z-index: 300;\n    background-color: rgba(211, 211, 211, 0.9);\n}\n\n.storedetailrequest {\n    display: grid;\n    place-items: center;\n    width: 80%; /* 페이지의 80% 너비 */\n    height: 80%; /* 페이지의 80% 높이 */\n    background-color: white;\n    border-radius: 12px;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);\n    padding: 16px;\n    grid-template-rows: 10vh 8vh 50vh auto; /* 행 높이를 자동 조정 */\n}\n\n/* ====== 공지 메시지 ====== */\n.requestnotice {\n    grid-row: 1;\n    text-align: center;\n    font-size: 30px;\n    font-weight: bold;\n    margin-bottom: 16px; /* 공지와 검색 바 간격 */\n}\n\n/* ====== 검색 바 ====== */\n.requestsearchbar {\n    grid-row: 2;\n    width: 100%;\n    height: 80%;\n    margin-bottom: 16px; /* 검색 바와 드롭다운 간격 */\n}\n\n.requestdropdown {\n    box-sizing: border-box;\n    position: fixed;\n    z-index: 301; /* 드롭다운이 팝업 위에 표시되도록 설정 */\n    width: 80%;\n}\n\n/* ====== 선택된 아이템 이미지 ====== */\n\n.requestitemimage {\n    grid-row: 3;\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 85% 15%;\n}\n\n.requestitemimageimg {\n    box-sizing: border-box;\n    grid-row: 1;\n    width: 100%;\n    height: 100%;\n    object-fit: scale-down;\n    border-radius: 8px;\n    border: #4a90e2 2px solid;\n}\n\n.requestitemimagetxt {\n    grid-row: 2;\n    width: 100%;\n    height: 15%;\n}\n\n.requestbuttonzone {\n    grid-row: 4;\n    width: 100%;\n    display: flex;\n    justify-content: space-evenly;\n    gap: 16px;\n}\n\n.requestbuttons {\n    width: 40%;\n    height: 100%;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/StoredetailRequest/style.css b/Frontend/src/pages/StoredetailRequest/style.css
+--- a/Frontend/src/pages/StoredetailRequest/style.css	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/pages/StoredetailRequest/style.css	(date 1739855378708)
+@@ -6,15 +6,16 @@
+     height: 100%;
+     position: fixed;
+     top: 0;
+-    z-index: 300;
++    left: 0;
++    z-index: 600;
+     background-color: rgba(211, 211, 211, 0.9);
+ }
+ 
+ .storedetailrequest {
+     display: grid;
+     place-items: center;
+-    width: 80%; /* 페이지의 80% 너비 */
+-    height: 80%; /* 페이지의 80% 높이 */
++    width: 80% !important;
++    height: 80%;
+     background-color: white;
+     border-radius: 12px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+Index: Frontend/src/components/KakaoMapMarkers/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect } from 'react';\nimport { useBaseMap } from \"../../contexts/ KakaoMapContext\";\n\nconst KakaoMapMarkers = ({ storelist }) => {\n\n    const { baseMap, isSDKLoaded } = useBaseMap();\n\n    useEffect(() => {\n        if (!baseMap || !storelist || !isSDKLoaded) return;\n\n        // storelist 기반으로 마커 생성\n        const markers = storelist.map((store) => {\n            const marker = new window.kakao.maps.Marker({\n                position: new window.kakao.maps.LatLng(store.locationX, store.locationY),\n                map: baseMap,\n                clickable: true,\n            });\n\n            const iwContent = `\n              <div style=\"\n                width: 100px;\n                padding: 15px;\n                text-align: center;\n                color: #333;\n                position: relative;\n                overflow: hidden;\n                text-overflow: ellipsis;\n                border-radius: 8px;  \n                white-space: normal;  /* 줄바꿈 허용 */\n                word-wrap: break-word;  /* 긴 단어도 줄 바꿈 */\n              \">\n                ${store.storeName}\n                <div style=\"\n                  position: absolute;\n                  width: 0;\n                  height: 0;\n                \"></div>\n              </div>\n            `;\n\n            const infowindow = new window.kakao.maps.InfoWindow({\n                content: iwContent,\n                removable: true,\n            });\n\n            // 클릭 시 해당 마커 위치로 지도 중심 이동\n            window.kakao.maps.event.addListener(marker, 'click', () => {\n                baseMap.panTo(marker.getPosition());\n                infowindow.open(baseMap, marker);\n            });\n\n            return marker;\n        });\n\n        // 컴포넌트 언마운트 시 생성한 마커 제거\n        return () => {\n            markers.forEach((marker) => marker.setMap(null));\n        };\n    }, [storelist, baseMap, isSDKLoaded]);\n\n    return null;\n};\n\nexport default KakaoMapMarkers;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KakaoMapMarkers/index.js b/Frontend/src/components/KakaoMapMarkers/index.js
+--- a/Frontend/src/components/KakaoMapMarkers/index.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/components/KakaoMapMarkers/index.js	(date 1739858098348)
+@@ -1,8 +1,9 @@
+ import { useEffect } from 'react';
+-import { useBaseMap } from "../../contexts/ KakaoMapContext";
++import { useNavigate } from "react-router-dom";
++import { useBaseMap } from "../../contexts/KakaoMapContext";
+ 
+ const KakaoMapMarkers = ({ storelist }) => {
+-
++    const navigate = useNavigate();
+     const { baseMap, isSDKLoaded } = useBaseMap();
+ 
+     useEffect(() => {
+@@ -29,26 +30,37 @@
+                 white-space: normal;  /* 줄바꿈 허용 */
+                 word-wrap: break-word;  /* 긴 단어도 줄 바꿈 */
+               ">
+-                ${store.storeName}
+-                <div style="
+-                  position: absolute;
+-                  width: 0;
+-                  height: 0;
+-                "></div>
+-              </div>
+-            `;
++                 <button id="storeButton_${store.storeId}" 
++                    style="cursor:pointer;
++                        border:none;
++                        background:#4A90E2;
++                        color:white;
++                        padding:8px 12px;
++                        border-radius:4px;">
++                    ${store.storeName}</button>
++        </div>`;
+ 
+             const infowindow = new window.kakao.maps.InfoWindow({
+                 content: iwContent,
+                 removable: true,
+             });
+ 
+-            // 클릭 시 해당 마커 위치로 지도 중심 이동
+             window.kakao.maps.event.addListener(marker, 'click', () => {
+                 baseMap.panTo(marker.getPosition());
+                 infowindow.open(baseMap, marker);
+             });
+ 
++            // 인포윈도우 렌더링 완료 후 DOM 요소 접근
++            setTimeout(() => {
++                const button = document.getElementById(`storeButton_${store.storeId}`);
++                if (button) {
++                    button.addEventListener('click', (e) => {
++                        e.stopPropagation();
++                        navigate(`/store-detail/${store.id}`);
++                    });
++                }
++            }, 50);
++
+             return marker;
+         });
+ 
+Index: Frontend/src/hooks/useReverseGeocoding.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect, useRef } from \"react\";\nimport { useBaseMap } from \"../contexts/ KakaoMapContext\";\n\nconst useReverseGeocoding = () => {\n    const { isSDKLoaded } = useBaseMap(); // ✅ BaseMap 컨텍스트 사용\n    const [geocoder, setGeocoder] = useState(null);\n    const cache = useRef(new Map());\n\n    // 역지오코더 초기화\n    useEffect(() => {\n        if (isSDKLoaded && window.kakao?.maps?.services?.Geocoder) {\n            setGeocoder(new window.kakao.maps.services.Geocoder());\n        }\n    }, [isSDKLoaded]);\n\n    // 좌표 → 주소 변환\n    const coordToAddress = async (coords) => {\n        if (!geocoder || !coords) return null;\n\n        // 캐시 키 생성 (소수점 7자리까지)\n        const cacheKey = `${coords.lat.toFixed(7)},${coords.lng.toFixed(7)}`;\n\n        // 캐시 히트 검사\n        if (cache.current.has(cacheKey)) {\n            return cache.current.get(cacheKey);\n        }\n\n        return new Promise((resolve, reject) => {\n            geocoder.coord2Address(coords.lng, coords.lat, (result, status) => {\n                if (status === window.kakao.maps.services.Status.OK && result[0]) {\n                    const address = result[0].address?.address_name || '주소 정보 없음';\n                    cache.current.set(cacheKey, address);\n                    resolve(address);\n                } else {\n                    reject(new Error(`역지오코딩 실패: ${status}`));\n                }\n            });\n        });\n    };\n\n    return { coordToAddress };\n};\n\nexport default useReverseGeocoding;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/hooks/useReverseGeocoding.js b/Frontend/src/hooks/useReverseGeocoding.js
+--- a/Frontend/src/hooks/useReverseGeocoding.js	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/Frontend/src/hooks/useReverseGeocoding.js	(date 1739858098350)
+@@ -1,5 +1,5 @@
+ import { useState, useEffect, useRef } from "react";
+-import { useBaseMap } from "../contexts/ KakaoMapContext";
++import { useBaseMap } from "../contexts/KakaoMapContext";
+ 
+ const useReverseGeocoding = () => {
+     const { isSDKLoaded } = useBaseMap(); // ✅ BaseMap 컨텍스트 사용
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 메인페이지 css 수정 (#122)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {}\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"git-widget-placeholder\": \"FE/FIX/#129\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"ts.external.directory.path\": \"/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"63743000\" />\n      <workItem from=\"1739750470079\" duration=\"12985000\" />\n      <workItem from=\"1739781327516\" duration=\"6000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739696098939</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739696098939</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739708076864</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739708076864</updated>\n    </task>\n    <task id=\"LOCAL-00012\" summary=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739722788572</created>\n      <option name=\"number\" value=\"00012\" />\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739722788573</updated>\n    </task>\n    <task id=\"LOCAL-00013\" summary=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739754878271</created>\n      <option name=\"number\" value=\"00013\" />\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739754878271</updated>\n    </task>\n    <task id=\"LOCAL-00014\" summary=\"[FE/FIX] 메인페이지 css 수정 (#122)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739844698225</created>\n      <option name=\"number\" value=\"00014\" />\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739844698225</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"15\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)\" />\n    <MESSAGE value=\"[FE/FIX] 메인페이지 css 수정 (#122)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 메인페이지 css 수정 (#122)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision f5767d6225c4cd5db14802601a57ae99b3c34d62)
++++ b/.idea/workspace.xml	(date 1739858310657)
+@@ -4,17 +4,21 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 메인페이지 css 수정 (#122)">
++    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 메인페이지 css 수정 (#129)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/StoreDetailBar/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapContainer/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KakaoMapMarkers/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/contexts/ KakaoMapContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/contexts/KakaoMapContext.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/hooks/useGeocoding.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/hooks/useGeocoding.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/hooks/useReverseGeocoding.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/hooks/useReverseGeocoding.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/MainPage/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/style.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -62,7 +66,7 @@
+   "keyToString": {
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "RunOnceActivity.git.unshallow": "true",
+-    "git-widget-placeholder": "FE/FIX/#129",
++    "git-widget-placeholder": "FE/FIX/#131",
+     "kotlin-language-version-configured": "true",
+     "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
+     "node.js.detected.package.eslint": "true",
+@@ -231,7 +235,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739844698225</updated>
+     </task>
+-    <option name="localTasksCounter" value="15" />
++    <task id="LOCAL-00015" summary="[FE/FIX] 메인페이지 css 수정 (#129)">
++      <option name="closed" value="true" />
++      <created>1739852240829</created>
++      <option name="number" value="00015" />
++      <option name="presentableId" value="LOCAL-00015" />
++      <option name="project" value="LOCAL" />
++      <updated>1739852240829</updated>
++    </task>
++    <option name="localTasksCounter" value="16" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -257,6 +269,7 @@
+     <MESSAGE value="[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)" />
+     <MESSAGE value="[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)" />
+     <MESSAGE value="[FE/FIX] 메인페이지 css 수정 (#122)" />
+-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 메인페이지 css 수정 (#122)" />
++    <MESSAGE value="[FE/FIX] 메인페이지 css 수정 (#129)" />
++    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 메인페이지 css 수정 (#129)" />
+   </component>
+ </project>
+\ No newline at end of file

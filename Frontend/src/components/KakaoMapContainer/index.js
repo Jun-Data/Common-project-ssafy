@@ -58,7 +58,7 @@ const KakaoMapContainer = ({ coords }) => {
         // 클릭 이벤트 핸들러
         window.kakao.maps.event.addListener(newMarker, 'click', () => {
             infowindow.open(baseMap, newMarker);
-            baseMap.setCenter(newMarker)
+            baseMap.setCenter(newMarker.getPosition())
         });
 
         // 4. 지도 중심 이동

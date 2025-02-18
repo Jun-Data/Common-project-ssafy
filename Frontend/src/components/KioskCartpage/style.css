@@ -29,53 +29,63 @@
     background: lightgray;
     display: grid;
     place-items: center;
-    grid-template-columns: 48% 20% 5% 8% 5% 14%;
     border-radius: 10px;
     align-content: center;
 }
 
 .item-name {
     grid-column: 1;
-    width: 100%;
+    width: 120px;
     padding-left: 30px;
     font-size: 20px;
     text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
+
 
 .eachitemprice {
     grid-column: 2;
-    width: 100%;
+    width: 90px;
     height: 100%;
     font-size: 20px;
 }
 
-.cartpageplmi1 {
+.pricecontrol {
     grid-column: 3;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cartpageplmi1 {
+    width: 40px;
     height: 100%;
     font-size: 20px;
 }
 
 .item-quantity {
-    grid-column: 4;
-    width: 100%;
+    width: 40px;
     height: 100%;
     font-size: 20px;
 }
 
 
 .cartpageplmi2 {
-    grid-column: 5;
-    width: 100%;
+    width: 40px;
     height: 100%;
     font-size: 20px;
 }
 
-    /* 삭제 버튼 크기 축소 */
 .cartpagedelete {
-    grid-column: 6;
+    grid-column: 4;
     background-color: red;
-    width: 40%;
-    height: 100%;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    width: 30px;
+    height: 30px;
     font-size: 20px;
 }

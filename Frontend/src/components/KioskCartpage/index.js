@@ -13,9 +13,11 @@ const CartPage = ({ cartItems, onIncrement, onDecrement, onRemove }) => {
                             <li key={item.id} className="cartpageli">
                                 <div className="item-name">{item.itemName}</div>
                                 <div className="eachitemprice">{item.price}원</div>
-                                <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
-                                <span className="item-quantity">{item.quantity}</span>
-                                <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
+                                <div className="pricecontrol">
+                                    <button onClick={() => onDecrement(item.itemName)} className="cartpageplmi1">-</button>
+                                    <span className="item-quantity">{item.quantity}</span>
+                                    <button onClick={() => onIncrement(item.itemName)} className="cartpageplmi2">+</button>
+                                </div>
                                 <button onClick={() => onRemove(item.itemName)} className="cartpagedelete">×</button>
                             </li>
 

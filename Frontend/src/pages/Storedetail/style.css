@@ -144,15 +144,6 @@
   overflow: hidden;
 }
 
-/* 이미지가 없는 항목 (공지사항) */
-.storedetailmarketli.announcement {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  background: #f8f9fa;
-  border-color: #e0e0e0;
-}
-
 /* 텍스트 컨테이너 */
 .item-info {
   flex: 1;

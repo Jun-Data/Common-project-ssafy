@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { BarcodeScanner } from '@thewirv/react-barcode-scanner';
 import apiClient from '../../api/apiClient';
+import useAuth from "../../hooks/useAuth";
 
 const BarcodeScannerComponent = ({ onAddToCart }) => {
     const [isCameraActive, setIsCameraActive] = useState(true);
     const [isScanningAllowed, setIsScanningAllowed] = useState(true);
+    const { logindata } = useAuth();
 
-    const handleScanSuccess = async () => {
+    const handleScanSuccess = async (scannedData) => {
         if (!isScanningAllowed) return;
 
         setIsScanningAllowed(false);
-        setTimeout(() => setIsScanningAllowed(true), 1000);
+        setTimeout(() => setIsScanningAllowed(true), 3000);
 
         try {
-            const storeNo = 1;
-            const barcode = 8801118250590;
+            const storeNo = logindata.storeNo;
+            const barcode = scannedData;
 
             // apiClient를 사용하여 API 호출
             const response = await apiClient.get('api/kiosk/scan', {

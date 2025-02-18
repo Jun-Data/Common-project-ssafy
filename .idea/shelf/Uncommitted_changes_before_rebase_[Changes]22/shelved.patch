@@ -1,0 +1,3 @@
+diff --git a/Frontend/src/contexts/ KakaoMapContext.js b/Frontend/src/contexts/KakaoMapContext.js
+rename from Frontend/src/contexts/ KakaoMapContext.js
+rename to Frontend/src/contexts/KakaoMapContext.js
