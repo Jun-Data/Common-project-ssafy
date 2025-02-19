@@ -2,9 +2,13 @@ package com.hexa.muinus.elasticsearch.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -44,4 +48,10 @@ public class ESStoreItem {
 
     @Field(name = "lon", type = FieldType.Double)
     private Double lon;
+
+    @GeoPointField
+    private GeoPoint location;
+
+    @Transient
+    private Double distance;
 }
