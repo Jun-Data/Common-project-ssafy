@@ -1,6 +1,7 @@
 package com.hexa.muinus.store.dto.store;
 
 
+import com.hexa.muinus.store.domain.store.repository.StoreRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class StoreMapDTO {
     private Double locationY; // 경도
     private Double distance; // 검색 위치와의 거리(m)
 
-    public StoreMapDTO(StoreMapProjection projection) {
+    public StoreMapDTO(StoreRepository.StoreMapProjection projection) {
         this.storeNo = projection.getStoreNo();
         this.storeName = projection.getName();
         this.locationX = projection.getLocationX();

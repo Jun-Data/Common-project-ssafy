@@ -1,5 +1,6 @@
 package com.hexa.muinus.elasticsearch.service;
 
+import com.hexa.muinus.elasticsearch.config.KeywordDataLoader;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.dto.PreferTrends;
 import com.hexa.muinus.users.domain.preference.repository.PreferenceRepository;
@@ -20,15 +21,28 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SimpleRecommandService {
     private final ItemAnalyzer itemAnalyzer;
     private final PreferenceRepository preferenceRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
+    private static Set<String> TYPE_KEYWORDS;
+    private static Set<String> BRAND_KEYWORDS;
+
     private static final String INDEX = "items";
     private static final String ANALYZER = "custom_analyzer";
     private static final String NAME_SEARCH_FILED = "item_name.nori";
+
+    public SimpleRecommandService(ItemAnalyzer itemAnalyzer,
+                                  PreferenceRepository preferenceRepository,
+                                  ElasticsearchOperations elasticsearchOperations) {
+        this.itemAnalyzer = itemAnalyzer;
+        this.preferenceRepository = preferenceRepository;
+        this.elasticsearchOperations = elasticsearchOperations;
+
+        TYPE_KEYWORDS = KeywordDataLoader.getTypeKeywords();
+        BRAND_KEYWORDS = KeywordDataLoader.getBrandKeywords();
+    }
 
     public List<ESItem> getRecommendedItems(String userEmail) {
         log.debug("getRecommendedItems userEmail:{}", userEmail);
@@ -143,14 +157,15 @@ public class SimpleRecommandService {
         HashMap<String, Float> tokenScoreMap = new HashMap<>();
 
         for (PreferTrends item : preferItems) {
-            List<String> tokens = itemAnalyzer.getAnalyzedTokens(
-                    item.getItemName(), "items", "custom_analyzer");
+            List<String> tokens = itemAnalyzer.getAnalyzedTokens(item.getItemName(), "items", "custom_analyzer");
 
             log.info("tokens:{}", tokens);
 
             Float itemScore = item.getTrendRating() * item.getPurchaseCount();
             for (String token : tokens) {
-                tokenScoreMap.merge(token, itemScore, Float::sum);
+                if(!BRAND_KEYWORDS.contains(token)){ // 브랜드 키워드 뺌
+                    tokenScoreMap.merge(token, itemScore, Float::sum);    
+                }
             }
         }
         log.info("tokenScoreMap:{}", tokenScoreMap);

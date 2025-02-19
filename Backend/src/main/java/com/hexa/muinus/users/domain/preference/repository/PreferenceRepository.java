@@ -1,6 +1,5 @@
 package com.hexa.muinus.users.domain.preference.repository;
 
-import com.hexa.muinus.elasticsearch.dto.PreferTrendsProjection;
 import com.hexa.muinus.users.domain.preference.Preference;
 import com.hexa.muinus.users.domain.preference.PreferenceId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,5 +55,29 @@ public interface PreferenceRepository extends JpaRepository<Preference, Preferen
         WHERE u.email = :userEmail AND  p.updated_at >= :date AND daily_score > 0 ORDER BY p.item_id;
     """, nativeQuery = true)
     List<Integer> getRecentItems(String userEmail, LocalDate date);
+    interface PreferTrendsProjection {
+        int getItemId();
+        String getItemName();
+        float getTrendRating(); // 전체 구매 개수 대비 아이템 구매 개수
+        int getPurchaseCount(); // 사용자의 구매 횟수
+    }
 
+    @Query(value = """
+        SELECT yp.user_no, (SUM(mp.monthly_score * yp.monthly_score)) / ((SQRT(SUM(POW(mp.monthly_score, 2)))) * (SQRT(SUM(POW(yp.monthly_score, 2))))) AS similarity
+        FROM preference mp
+        INNER JOIN preference yp ON mp.item_id = yp.item_id
+        JOIN users u ON u.user_no = mp.user_no
+        WHERE mp.updated_at = :date
+        AND u.email = :userEmail
+        AND mp.user_no != yp.user_no
+        GROUP BY mp.user_no, yp.user_no
+        HAVING similarity >= :minSimilarity
+        ORDER BY similarity DESC
+    """, nativeQuery = true)
+    List<PreferenceSimilarity> getPreferenceSimilarity (String userEmail, LocalDate date, float minSimilarity);
+
+    interface PreferenceSimilarity {
+        int getUserNo();
+        float getSimilarity();
+    }
 }

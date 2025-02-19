@@ -122,7 +122,6 @@ public class ItemSearchEngine {
         SearchHits<ESItem> hits = elasticsearchOperations.search(query, ESItem.class, IndexCoordinates.of("items"));
 
         return shuffleSameScore(hits.getSearchHits());
-
     }
 
     public NativeQuery createNativeQueryForSearch(List<String> tokens,  String field, SearchNativeDTO condition, int page, int pageSize){

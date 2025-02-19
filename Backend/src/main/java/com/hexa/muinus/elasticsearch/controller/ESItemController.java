@@ -7,6 +7,7 @@ import com.hexa.muinus.elasticsearch.service.ESItemService;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
 import com.hexa.muinus.elasticsearch.service.ItemSearchEngine;
 import com.hexa.muinus.elasticsearch.service.SimpleRecommandService;
+import com.hexa.muinus.recommand.service.UserRecommander;
 import com.hexa.muinus.store.domain.item.Item;
 import com.hexa.muinus.store.domain.item.repository.ItemRepository;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class ESItemController {
 
     private final ESItemService esItemService;
     private final ItemSearchEngine searchEngine;
-    private final SimpleRecommandService recommandService;
+    private final UserRecommander userRecommander;
 
     @GetMapping("/autocomplete")
     public List<ESItem> autocomplete(@RequestParam String prefix) throws IOException {
@@ -78,22 +79,23 @@ public class ESItemController {
      * @return
      */
     @GetMapping("/recommand")
-    public ResponseEntity<List<ESItem>> getRecommandedItems(@Authorization String userEmail) {
+    public ResponseEntity<List<Item>> getRecommandedItems(@Authorization String userEmail) {
         log.info("Getting Recommanded Items - user: {}", userEmail);
-        return ResponseEntity.ok(recommandService.getRecommendedItems(userEmail));
+//        return ResponseEntity.ok(recommandService.getRecommendedItems(userEmail));
+        return ResponseEntity.ok(userRecommander.getRecommendedItems(userEmail));
     }
 
     private final ItemRepository itemRepository;
 
     @GetMapping("/recommand-test")
-    public ResponseEntity<List<Optional<Item>>> getRecommandTest(/*@Authorization String userEmail*/) {
-        List<Optional<Item>> list = new ArrayList<>();
-        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
-        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
-        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
-        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
-        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
-        return ResponseEntity.ok(list);
+    public ResponseEntity<List<Item>> getRecommandTest(/*@Authorization String userEmail*/) {
+//        List<Optional<Item>> list = new ArrayList<>();
+//        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+//        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+//        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+//        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+//        list.add(itemRepository.findById((int)(Math.random()*100 + 10)));
+        return ResponseEntity.ok(userRecommander.getRecommendedItems("chaehee13@naver.com"));
     }
 
 

@@ -2,8 +2,6 @@ package com.hexa.muinus.store.domain.store.repository;
 
 import com.hexa.muinus.store.domain.store.Store;
 import com.hexa.muinus.store.dto.store.StoreDTO;
-import com.hexa.muinus.store.dto.store.StoreMapProjection;
-import com.hexa.muinus.store.dto.store.StoreSearchProjection;
 import com.hexa.muinus.users.domain.user.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -70,4 +68,27 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     int saveStore(Integer userNo, String name, Double longitude, Double latitude, String address, String registrationNo, String flimarketYn, Byte fliMarketSectionCount);
 
     Store findStoreByUser_Email(String userEmail);
+
+    interface StoreMapProjection {
+        int getStoreNo();
+        String getName();
+        Double getLocationX();
+        Double getLocationY();
+        double getDistance();
+    }
+
+    interface StoreSearchProjection {
+        int getStoreNo();
+        String getName();
+        double getLocationX();
+        double getLocationY();
+        String getAddress();
+        String getPhone();
+        String getItemName();
+        int getSalePrice();
+        int getDiscountRate();
+        int getQuantity();
+        Character getFlimarketYn() ;
+        double getDistance();
+    }
 }

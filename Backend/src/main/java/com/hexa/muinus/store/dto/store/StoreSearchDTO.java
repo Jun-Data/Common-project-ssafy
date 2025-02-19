@@ -25,7 +25,7 @@ public class StoreSearchDTO {
     private YesNo flimarketYn;
     private Double distance; // 검색 위치와의 거리(m)
 
-    public StoreSearchDTO(StoreSearchProjection projection) {
+    public StoreSearchDTO(StoreRepository.StoreSearchProjection projection) {
         this.storeNo = projection.getStoreNo();
         this.storeName = projection.getName();
         this.locationX = projection.getLocationX();

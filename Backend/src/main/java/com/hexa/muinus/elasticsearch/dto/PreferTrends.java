@@ -1,5 +1,6 @@
 package com.hexa.muinus.elasticsearch.dto;
 
+import com.hexa.muinus.users.domain.preference.repository.PreferenceRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ public class PreferTrends {
     float trendRating;
     int purchaseCount;
 
-    public PreferTrends(PreferTrendsProjection projection) {
+    public PreferTrends(PreferenceRepository.PreferTrendsProjection projection) {
         this.itemId = projection.getItemId();
         this.itemName = projection.getItemName();
         this.trendRating = projection.getTrendRating();
