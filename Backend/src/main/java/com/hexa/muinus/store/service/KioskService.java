@@ -61,6 +61,7 @@ public class KioskService {
         Integer price = storeItemService.findStoreItemByStoreAndItem(store, item).getSalePrice();
 
         return ScanBarcodeResponseDTO.builder()
+                .itemId(item.getItemId())
                 .itemName(item.getItemName())
                 .price(price)
                 .build();

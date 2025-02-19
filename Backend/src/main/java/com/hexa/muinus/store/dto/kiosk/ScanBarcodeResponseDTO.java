@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class ScanBarcodeResponseDTO {
 
+    private Integer itemId;
     private String itemName;
     private Integer price;
 }
