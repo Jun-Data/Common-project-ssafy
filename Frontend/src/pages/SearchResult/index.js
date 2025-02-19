@@ -120,7 +120,14 @@ const SearchResult = () => {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder={itemName}
                         />
-                        <button className="resultclearbutton" onClick={() => setSearchQuery('')}>x</button>
+                        <button className="resultclearbutton" 
+                                           onClick={() => {
+                                            if (searchQuery) {
+                                                setSearchQuery('');
+                                            } else {
+                                                window.history.back();
+                                            }
+                                        }}>x</button>
                         <div className="search-result-controls">
                             <AddressSearchTrigger
                                 address={address}

@@ -6,7 +6,6 @@ const FleaRequestApi = async (formData) => {
         const response = await apiClient.post(`/api/fli/register`, formData);
 
         if (response.status >= 200 && response.status < 300) {
-            // alert("플리마켓 제품 신청이 완료되었습니다!")
             Swal.fire({
                 icon: 'success',
                 title: '신청 성공',

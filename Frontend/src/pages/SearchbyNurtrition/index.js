@@ -28,7 +28,13 @@ const SearchbyNurtrition = () => {
                 />
                 <button
                     className="nutritionsearchbtn"
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => {
+                        if (searchQuery) {
+                            setSearchQuery('');
+                        } else {
+                            window.history.back();
+                        }
+                    }}
                 >
                     x
                 </button>

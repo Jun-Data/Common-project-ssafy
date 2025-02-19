@@ -53,7 +53,7 @@ const StoredetailRequestPopup = () => {
     const handleItemClick = (item) => {
         setProductImage(item.itemImageUrl)
         setSelectedItem(item.item_id);
-        setMessage(`${item.item_name}을 원하시는군요!`);
+        setMessage(`${item.item_name}`);
         setQuery('')
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
 
@@ -92,7 +92,7 @@ const StoredetailRequestPopup = () => {
             Swal.fire({
                 icon: "error",
                 title: "오류 발생!",
-                text: "다시 시도해주세요.",
+                html: "다시 시도해주세요. <br>하루 1회만 입고 가능합니다!",
             });
                 }
     };

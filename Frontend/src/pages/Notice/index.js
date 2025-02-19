@@ -309,6 +309,8 @@ const ModalContent = styled.div`
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
+    max-height: 80vh; /* 최대 높이 설정 */
+    overflow: auto; /* 스크롤 허용 */
 `;
 
 const Input = styled.input`

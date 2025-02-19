@@ -15,18 +15,18 @@
 /* 기본 팝업 컨텐츠 */
 .popup-content {
   background: white;
-  padding: 24px;
+  /* padding: 24px; */
   border-radius: 12px;
   max-width: 400px;
   width: 80%;
-  max-height: 80vh;
+  /* max-height: 80vh; */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: relative;
 }
 
 /* 쿠폰팝업 전용 스타일 */
 .coupon-popup-content {
-  composes: popup-content; /* CSS 모듈 사용시 */
+  /* composes: popup-content; CSS 모듈 사용시 */
   background-color: white;
   width: 400px;
   padding: 25px;

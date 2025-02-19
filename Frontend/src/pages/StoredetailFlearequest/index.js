@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import FleaRequestApi from "../../api/FleaRequestApi";
 // import './style.css';
 import styled from "styled-components";
@@ -122,7 +121,6 @@ const StoredetailFlearequest = () => {
 
   return (
     <div>
-      <HeaderContainer />
       <Container>
         <ModalBackground>
           <ModalContent>
@@ -271,7 +269,7 @@ const ModalBackground = styled.div`
   width: 100%;
   height: 100%;
   position: fixed;
-  top: 15px;
+  top: 0;
   left: 0;
   display: flex;
   justify-content: center;
@@ -282,13 +280,13 @@ const ModalBackground = styled.div`
 const ModalContent = styled.div`
   background-color: #ffffff;
   width: 80%;
-  height: 85%;
+  height: 80%;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 800px;
-  margin-top: 27px;
+  max-height: 80vh;
+  overflow-y: auto; /* 세로 스크롤 허용 */
 `;
 
 const Input = styled.input`

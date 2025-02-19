@@ -107,13 +107,13 @@ const FleaRequests = () => {
       {selectedRequest && (
         <ModalOverlay>
           <ModalContent>
-            <h3>판매 요청 상세</h3>
+            <h3>플리리 요청 상세</h3>
             <RequestItem><strong>아이템 이름:</strong> {selectedRequest.itemName}</RequestItem>
             <RequestItem><strong>수량:</strong> {selectedRequest.quantity}</RequestItem>
             <RequestItem><strong>가격:</strong> {selectedRequest.price}원</RequestItem>
-            <RequestItem><strong>입고 날짜:</strong> {selectedRequest.expirationDate}일</RequestItem>
+            <RequestItem><strong>입고 기간:</strong> {selectedRequest.expirationDate}일</RequestItem>
             <RequestItem><strong>판매자 계좌 정보:</strong> {selectedRequest.userAccount} ({selectedRequest.userBank}, {selectedRequest.accountName})</RequestItem>
-            <RequestItem><strong>제품 이미지:</strong> <img src={selectedRequest.imageUrl} alt={selectedRequest.itemName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></RequestItem>
+            <RequestItem><img src={selectedRequest.imageUrl} alt={selectedRequest.itemName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></RequestItem>
 
             <ButtonContainer>
             <ActionButtons>
@@ -214,7 +214,7 @@ const ButtonContainer = styled.div`
 const ActionButtons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 50px;
+  gap: 20px;
   width: 100%;
   max-width: 300px; /* 버튼 최대 너비 설정 */
   margin-bottom: 10px; /* 닫기 버튼과 간격 */
@@ -257,12 +257,11 @@ const RejectButton = styled.button`
 const CloseButton = styled.button`
   background: #f8f9fa;
   color: black;
-  padding: 7px 97px;
+  padding: 7px 85px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 15px;
-  margin-top: 10px;
 
   &:hover {
     background: #b0b0b0;
