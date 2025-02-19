@@ -272,13 +272,13 @@ const ModalBackground = styled.div`
 const ModalContent = styled.div`
     background-color: #ffffff;
     width: 80%;
-    height: 80%;
+    height: 85%;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    overflow-y: auto;
     max-width: 800px;
+    margin-top: 27px;
 `;
 
 const Input = styled.input`

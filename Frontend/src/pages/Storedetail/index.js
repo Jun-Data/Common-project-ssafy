@@ -6,7 +6,6 @@ import StoreDetailApi from "../../api/StoreDetailApi";
 import CouponGetApi from "../../api/CouponGetApi";
 import CouponListApi from "../../api/CouponListApi";
 import useAuth from "../../hooks/useAuth";
-import axios from "axios";
 import Button from "../../components/Button";
 import "./style.css";
 import Swal from "sweetalert2";
@@ -25,7 +24,7 @@ const StoreDetail = () => {
   const nStoreNo = Number(storeNo);
   const navigate = useNavigate();
   const { logindata } = useAuth();
-  const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+  const url = encodeURI(window.location.href);
 
   // 상태 관리 함수들
   const handleTabClick = (tab) => setActiveTab(tab);
@@ -42,8 +41,9 @@ const StoreDetail = () => {
         icon: "error",
         title: "오류 발생!",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+    }).then(()=>{
+      window.location.href = `https://i12a506.p.ssafy.io/api/users/login?redirect=${url}`;
     });
-      axios.get(`${apiUrl}/api/users/login`, {});
       return false;
     }
     return true;
@@ -65,7 +65,7 @@ const StoreDetail = () => {
       console.error("쿠폰 처리 실패:", error);
       alert("쿠폰 조회 중 오류가 발생했습니다");
     }
-  };
+
 
   const handleCouponReceive = async (coupon) => {
     if (!checkLogin()) return;

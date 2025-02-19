@@ -6,7 +6,7 @@ const RequestApi = async ({ storeId, itemId }) => {
             storeId: storeId,
             itemId: itemId,
         });
-
+        console.log(response)
         if (response.status >= 200 && response.status < 300) {
             console.log("API 호출 성공:", response.data);
             return response.data;
@@ -15,7 +15,7 @@ const RequestApi = async ({ storeId, itemId }) => {
     } catch (error) {
         console.error("API 호출 오류:", error.response?.data || error.message);
         throw error;
-    }
+    }   
 };
 
 export default RequestApi;
