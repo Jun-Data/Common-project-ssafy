@@ -7,12 +7,13 @@
 
 .product-grid {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 30px;
     overflow-x: auto;
 }
 
 .product-card {
+    margin-top: 20px;
     display: grid;
     max-width: 200px;
     grid-template-rows: 3fr 1fr 0.5fr;
@@ -35,7 +36,6 @@
 
 /* 상품 정보 영역 */
 .product-details {
-    padding: 12px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -43,9 +43,7 @@
 }
 
 .product-name {
-    font-size: 0.95em; /* 작은 화면용 폰트 크기 */
-    margin-bottom: 8px;
-    -webkit-line-clamp: 2;
+    font-size: 15px;
 }
 
 .product-price {
@@ -75,4 +73,12 @@
     .image-container {
         height: 160px;
     }
+}
+
+.fleaemptynotice {
+    width: 100%;
+    height: auto;
+    font-size: 25px;
+    align-self: center;
+    justify-self: center;
 }

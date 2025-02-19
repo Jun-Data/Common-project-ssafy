@@ -39,8 +39,8 @@ const KioskHeaderContainer = () => {
           {logindata ? (
               // 로그인되어 있다면 usertype에 따라 분기 처리
               logindata.userType === "A" ? (
-                  <a href={`${apiUrl}/api/users/logout`} className="logout-button">
-                    로그아웃
+                  <a href={`${apiUrl}/api/users/logout?redirect=${apiUrl}/kiosk`} className="logout-button">
+                    <img src="/logout.png" />
                   </a>
               ) : (
                   <div className="auth-message">
@@ -55,7 +55,7 @@ const KioskHeaderContainer = () => {
                   href={`${apiUrl}/api/users/login?redirect=${apiUrl}`}
                   className="login-button"
               >
-                <button className="login-button">로그인</button>
+                <img src="/login.png" />
               </a>
           )}
         </div>

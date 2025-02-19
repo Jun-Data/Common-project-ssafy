@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useParams } from "react-router-dom";
 import { BarcodeScanner } from '@thewirv/react-barcode-scanner';
 import apiClient from '../../api/apiClient';
-import useAuth from "../../hooks/useAuth";
+
+
 
 const BarcodeScannerComponent = ({ onAddToCart }) => {
-    const [isCameraActive, setIsCameraActive] = useState(true);
     const [isScanningAllowed, setIsScanningAllowed] = useState(true);
-    const { logindata } = useAuth();
+    const { storeNo } = useParams();
+
 
     const handleScanSuccess = async (scannedData) => {
         if (!isScanningAllowed) return;
 
         setIsScanningAllowed(false);
-        setTimeout(() => setIsScanningAllowed(true), 3000);
+        setTimeout(() => setIsScanningAllowed(true), 4000);
 
         try {
-            const storeNo = logindata.storeNo;
             const barcode = scannedData;
 
             // apiClient를 사용하여 API 호출
@@ -24,32 +25,27 @@ const BarcodeScannerComponent = ({ onAddToCart }) => {
             });
 
             const product = response.data;
+            console.log(product);
 
             if (response.status === 200) {
-                alert('테스트 API 호출 성공!');
+                console.log('테스트 API 호출 성공!');
                 onAddToCart({
                     id: product.itemId,
                     itemName: product.itemName,
                     price: product.price,
                 });
             } else {
-                console.error('API 요청 실패:', product.message || '알 수 없는 오류');
-                alert('테스트 API 호출 실패!');
+                console.error(product.message || '알 수 없는 오류');
             }
         } catch (error) {
-            console.error('테스트 API 호출 중 오류 발생:', error);
+            console.error(error);
 
             if (error.response && error.response.data) {
-                alert(`테스트 API 호출 중 오류가 발생했습니다: ${error.response.data.message}`);
+                console.error(`테스트 API 호출 중 오류가 발생했습니다: ${error.response.data.message}`);
             } else {
-                alert('테스트 API 호출 중 알 수 없는 오류가 발생했습니다.');
+                console.error('테스트 API 호출 중 알 수 없는 오류가 발생했습니다.');
             }
         }
-    };
-
-    // 카메라 활성화 상태를 관리하는 버튼 추가 (필요 시)
-    const toggleCamera = () => {
-        setIsCameraActive((prevState) => !prevState);
     };
 
     return (

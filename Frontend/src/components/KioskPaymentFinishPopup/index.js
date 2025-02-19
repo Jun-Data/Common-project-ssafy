@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./style.css";
 
 const KioskPaymentFinishPopup = ({ onClose }) => {
-    const [countdown, setCountdown] = useState(3); // 초기 카운트다운 시간 5초
+    const [countdown, setCountdown] = useState(15);
 
     useEffect(() => {
         // 1초마다 countdown을 감소시키는 타이머 설정

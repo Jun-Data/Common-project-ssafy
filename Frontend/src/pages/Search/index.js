@@ -1,4 +1,3 @@
-// Search.jsx (메인 페이지)
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SearchApi from "../../api/searchApi";
@@ -6,7 +5,6 @@ import SearchBar from "../../components/SearchBar";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import SearchDropdownList from "../../components/SearchDropdownList";
 import SearchNavbar from "../../components/SearchNavbar";
-import useAuth from "../../hooks/useAuth";
 import './style.css';
 
 const debounce = (func, delay) => {
@@ -20,12 +18,13 @@ const debounce = (func, delay) => {
 };
 
 const Search = () => {
+
+
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { logindata } = useAuth();
     const queryParams = new URLSearchParams(location.search);
 
     const lat = queryParams.get('lat');
@@ -53,7 +52,7 @@ const Search = () => {
 
     const handleItemClick = (item) => {
         setDropdownVisible(false);
-        navigate(`/search/results?lat=${lat}&lng=${lng}&itemId=${item.itemId}&itemName=${item.itemName}`);
+        navigate(`/search/results?lat=${lat}&lng=${lng}&itemId=${item.item_id}&itemName=${item.item_name}`);
     };
 
     return (
