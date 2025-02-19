@@ -63,7 +63,12 @@
 .mainscreentohome {
     flex: 1;
     min-height: 60px;
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: 40px;
+}
+
+.mainscreenpayment {
+    background-color: #3498db;
+    color: white;
 }
 
 .popup-overlay {

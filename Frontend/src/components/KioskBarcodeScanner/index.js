@@ -28,9 +28,8 @@ const BarcodeScannerComponent = ({ onAddToCart }) => {
             console.log(product);
 
             if (response.status === 200) {
-                console.log('테스트 API 호출 성공!');
                 onAddToCart({
-                    id: product.itemId,
+                    itemId: product.itemId,
                     itemName: product.itemName,
                     price: product.price,
                 });
@@ -52,6 +51,7 @@ const BarcodeScannerComponent = ({ onAddToCart }) => {
         <div>
                 <BarcodeScanner
                     onSuccess={handleScanSuccess}
+                    constraints={{ facingMode: "user" }}
                     onError={(error) => console.error('스캐너 오류:', error)}
                 />
         </div>

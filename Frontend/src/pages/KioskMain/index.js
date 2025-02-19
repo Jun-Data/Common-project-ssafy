@@ -1,24 +1,28 @@
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BarcodeScannerComponent from "../../components/KioskBarcodeScanner";
 import Cartpage from "../../components/KioskCartpage";
 import KioskFleaproductlist from "../../components/KioskFleaproductlist";
 import PaymentPopup from '../../components/KioskPaymentPopup';
 import KioskCouponPopup from "../../components/KioskCouponPopup";
 import KioskPaymentFinishPopup from "../../components/KioskPaymentFinishPopup";
+import KioskPaymentApi from "../../api/KioskPaymentApi";
 import './style.css';
 import Swal from 'sweetalert2';
 
 const KioskMainScreen = () => {
     const [state, setState] = useState({
         cartItems: [],
-        discount: 0,
+        couponId: null,
+        discountRate: 0,
         isPaymentPopupOpen: false,
         isCouponPopupOpen: false,
         isPaymentFinish: false,
         isCouponPromptOpen: false
     });
+
     const navigate = useNavigate();
+    const storeNo = Number(useParams().storeNo)
 
     const updateState = (newState) => {
         setState(prev => ({ ...prev, ...newState }));
@@ -105,32 +109,96 @@ const KioskMainScreen = () => {
         );
     };
 
+// 동적 할인율 적용 계산
     const calculateTotalPrice = () => {
-        return state.cartItems.reduce((total, item) =>
-            total + item.price * item.quantity, 0) - state.discount;
+        const subtotal = state.cartItems.reduce((acc, item) =>
+            acc + (item.price * item.quantity), 0);
+
+        return subtotal - Math.floor(subtotal * (state.discountRate / 100));
     };
 
-    const handleConfirmPayment = (method) => {
-        updateState({
-            isPaymentPopupOpen: false,
-            cartItems: [],
-            discount: 0,
-            isPaymentFinish: true
-        });
+
+    const handleConfirmPayment = async (method) => {
+        try {
+            // 데이터 분류 로직
+            const itemsForPayment = [];
+            const fliItemsForPayment = [];
+
+            state.cartItems.forEach(item => {
+                const subtotal = item.price * item.quantity;
+
+                if (item.fliItemId) { // 플리마켓 상품
+                    fliItemsForPayment.push({
+                        fliItemId: item.fliItemId,
+                        fliItemName: item.fliItemName || item.itemName,
+                        quantity: item.quantity,
+                        price: item.price,
+                        subtotal: subtotal
+                    });
+                } else { // 일반 상품
+                    itemsForPayment.push({
+                        itemId: item.itemId,
+                        itemName: item.itemName,
+                        quantity: item.quantity,
+                        price: item.price,
+                        subtotal: subtotal
+                    });
+                }
+            });
+
+            const subtotal = itemsForPayment.reduce((sum, item) => sum + item.subtotal, 0)
+                + fliItemsForPayment.reduce((sum, item) => sum + item.subtotal, 0);
+
+            const requestData = {
+                storeNo: storeNo,
+                itemsForPayment,
+                fliItemsForPayment,
+                couponId: state.couponId,
+                totalAmount: subtotal - Math.floor(subtotal * (state.discountRate / 100))
+            };
+
+            console.log(requestData);
+
+            // API 호출
+            await KioskPaymentApi(requestData);
+
+            // 성공 시 상태 업데이트
+            updateState({
+                isPaymentPopupOpen: false,
+                cartItems: [],
+                couponId: null,
+                discountRate: 0,
+                isPaymentFinish: true
+            });
+
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "결제 실패",
+                text: "결제 처리 중 오류가 발생했습니다.",
+            });
+            console.error("Payment error:", error);
+        }
     };
 
-    const handleApplyCoupon = (couponAmount) => {
+
+// 수정된 handleApplyCoupon 함수
+    const handleApplyCoupon = (couponData) => {
+        const currentSubtotal = state.cartItems.reduce((acc, item) =>
+            acc + (item.price * item.quantity), 0);
+
         updateState({
-            discount: couponAmount,
+            couponId: couponData.couponId,
+            discountRate: couponData.discountRate,
             isCouponPopupOpen: false,
             isPaymentPopupOpen: true
         });
-        alert(`쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`);
+
         Swal.fire({
             icon: "success",
-            title: "요청 완료!",
-            text: `쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`,
-        })
+            title: "쿠폰 적용 완료!",
+            text: `${couponData.discountRate}% 할인이 적용되었습니다. (할인액: ${Math.floor(currentSubtotal * couponData.discountRate/100).toLocaleString()}원)`
+        });
     };
 
 
@@ -206,12 +274,16 @@ const KioskMainScreen = () => {
                     <div className="popup-content">
 
                         <KioskCouponPopup
-                        onClose={() => updateState({
-                            isCouponPopupOpen: false,
-                            isPaymentPopupOpen: true
-                        })}
-                        onApplyCoupon={handleApplyCoupon}
-                    />
+                            onClose={() => updateState({
+                                isCouponPopupOpen: false,
+                                isPaymentPopupOpen: true
+                            })}
+                            onApplyCoupon={(couponData) => {
+                                handleApplyCoupon(couponData);
+                                updateState({ isPaymentPopupOpen: true });
+                            }}
+                        />
+
                     </div>
                 </div>
             )}

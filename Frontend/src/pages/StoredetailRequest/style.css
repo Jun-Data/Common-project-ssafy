@@ -50,7 +50,8 @@
 
 .requestitemimage {
     grid-row: 3;
-    width: 100%;
+    width: 80%;
+    max-height: 60vh;
     height: 100%;
     display: grid;
     place-items: center;

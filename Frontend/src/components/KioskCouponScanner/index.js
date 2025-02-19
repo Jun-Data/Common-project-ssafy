@@ -50,6 +50,7 @@ const CouponScannerComponent = ({ onConfirm }) => {
         <div>
             <BarcodeScanner
                 onSuccess={couponScanSuccess}
+                constraints={{ facingMode: "user" }}
                 onError={(error) => console.error('스캐너 오류:', error)}
             />
         </div>
