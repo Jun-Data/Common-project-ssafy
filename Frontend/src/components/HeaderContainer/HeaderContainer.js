@@ -128,11 +128,6 @@ function HeaderContainer() {
             <img src="/user.png" alt="User Icon" className="user-icon"
             onClick={handleDropdown}
             />
-            // <FontAwesomeIcon
-            //   icon={faUser}
-            //   className="login-icon"
-            //   onClick={handleDropdown}
-            // />
           ) : (
             <a href={`https://i12a506.p.ssafy.io/api/users/login?redirect=${url}`}>
               <img src="/login.png" alt="Login Icon" className="login-icon"/>

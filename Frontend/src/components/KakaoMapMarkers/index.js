@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useBaseMap } from "../../contexts/KakaoMapContext";
+import { useNavigate } from 'react-router-dom';
 
 const KakaoMapMarkers = ({ storelist }) => {
 
     const { baseMap, isSDKLoaded } = useBaseMap();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!baseMap || !storelist || !isSDKLoaded) return;
@@ -18,7 +20,6 @@ const KakaoMapMarkers = ({ storelist }) => {
 
             const iwContent = `
               <div style="
-                width: 100px;
                 padding: 15px;
                 text-align: center;
                 color: #333;
@@ -28,7 +29,8 @@ const KakaoMapMarkers = ({ storelist }) => {
                 border-radius: 8px;  
                 white-space: normal;  /* 줄바꿈 허용 */
                 word-wrap: break-word;  /* 긴 단어도 줄 바꿈 */
-              ">
+                cursor: pointer;"
+              id="store-${store.storeNo}">
                 ${store.storeName}
                 <div style="
                   position: absolute;
@@ -47,6 +49,14 @@ const KakaoMapMarkers = ({ storelist }) => {
             window.kakao.maps.event.addListener(marker, 'click', () => {
                 baseMap.panTo(marker.getPosition());
                 infowindow.open(baseMap, marker);
+
+            // 정보창 클릭 시 상세 페이지 이동
+            setTimeout(() => {
+              const infoElement = document.getElementById(`store-${store.storeNo}`);
+              if (infoElement) {
+                  infoElement.addEventListener("click", () => navigate(`/storedetail/${store.storeNo}`));
+              }
+          }, 100); // 정보창이 렌더링된 후 이벤트 추가
             });
 
             return marker;
@@ -56,7 +66,7 @@ const KakaoMapMarkers = ({ storelist }) => {
         return () => {
             markers.forEach((marker) => marker.setMap(null));
         };
-    }, [storelist, baseMap, isSDKLoaded]);
+    }, [storelist, baseMap, isSDKLoaded, navigate]);
 
     return null;
 };

@@ -75,12 +75,20 @@ const Search = () => {
             <div className="searchpagenavbar">
                 <SearchNavbar lat={lat} lng={lng} />
             </div>
-            <div className="searchpagerecommend">
-                <ul>
-                    <li>원하시는 제품을 검색하면 해당 제품을 보유한<br/> 근처 가게를 볼 수 있어요.</li>
-                    <li>메인페이지에서 <img src="/mylocation.png"/>을 눌러 위치를 설정할 수 있어요.</li>
-                    <li>영양분으로도 제품을 검색해보세요!</li>
-                </ul>
+            <div className="searchpagerecommend" style={{ marginTop: "50px" }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                <li style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", marginTop:"20px", marginLeft: "3px" }}>
+                    제품명을 검색하시면 제품을 보유한 근처 매장이 나와요!
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "8px" ,marginLeft: "3px"}}>
+                    원하는 영양분으로도 제품을 검색해보세요!
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", marginLeft: "3px" }}>
+                    메인페이지에서 
+                    <img src="/mylocation.png" style={{ width: "18px", height: "18px", verticalAlign: "middle" }} alt="위치 설정 아이콘" /> 
+                    을 눌러 위치를 재설정할 수 있어요!
+                </li>
+            </ul>
             </div>
         </div>
     );

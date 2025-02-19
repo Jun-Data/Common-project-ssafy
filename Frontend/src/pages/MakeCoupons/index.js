@@ -113,7 +113,7 @@ function MakeCoupons() {
             <HeaderContainer />
             <MyPageHeader />
             <h2>쿠폰 등록 페이지</h2>
-            <p>매장 이용자를 위한 쿠폰을 등록해 보세요!</p>
+            <p>매장 이용자들이 사용할 수 있는 쿠폰을 만들어 보세요!</p>
 
             {/* 쿠폰 유형 선택 */}
             <CouponTypeContainer>

@@ -29,8 +29,12 @@ const SearchBar = ({
     };
 
     const handleClear = () => {
-        onClear?.();
-        setLocalQuery("");
+        if (localQuery) { //검색어 있으면 검색어 비움움
+            onClear?.();
+            setLocalQuery("");
+        } else { // 없으면 메인페이지
+            navigate("/");
+        }
     };
 
     return (

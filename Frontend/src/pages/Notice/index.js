@@ -195,6 +195,7 @@ const Notice = () => {
             <HeaderContainer />
                 <MyPageHeader />
                 <Title>공지사항</Title>
+                <p>매장 이용자들을 위한 공지를 작성해보세요!</p>
                 <ButtonWrapper>
                     <EditButton onClick={() => setModalIsOpen(true)}>공지 작성하기</EditButton>
                 </ButtonWrapper>

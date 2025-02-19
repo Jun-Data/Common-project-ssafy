@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './style.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBowlFood } from "@fortawesome/free-solid-svg-icons";
 
 const SearchNavbar = ({lat, lng}) => {
     const navigate = useNavigate()
@@ -35,9 +37,19 @@ const SearchNavbar = ({lat, lng}) => {
             className="searchnavbarr"
             style={{
                 bottom: isKeyboardVisible ? '50px' : '0', // 키보드가 보이면 50px 위로 이동
+                fontSize: "16px",
+                fontWeight: "bold",
+                padding: "12px 20px",
+                border: "none",
+                borderRadius: "25px",
+                cursor: "pointer",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease-in-out",
+                backgroundColor: "#dbe2ef",
+                marginTop: "30px",
             }}
         >
-            영양분으로 검색하기
+            <FontAwesomeIcon icon={faBowlFood} />  영양분으로 검색하기
         </button>
     );
 };

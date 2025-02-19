@@ -10,8 +10,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 2px solid #f9f7f7;
     background: #fff;
+    padding: 10px 10px;  /* 내부 여백 추가 */
+    border: 2px solid #e0e0e0; /* 연한 그레이 톤으로 변경 */
+    border-radius: 12px; /* 모서리를 둥글게 */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+    transition: all 0.3s ease-in-out; /* 부드러운 전환 효과 */
+    margin-top: 10px;
 }
 
 .search-input-searchpage {
