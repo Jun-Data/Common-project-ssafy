@@ -13,6 +13,7 @@
 }
 
 .searchpagesearchbar {
+    margin: 0;
     position: relative;
     grid-row: 2;
     width: 100%;
@@ -20,10 +21,7 @@
     z-index: 100;
 }
 
-.searchpagedropdown {
-    box-sizing: border-box;
-    position: fixed;
-    z-index: 101;
+.search-dropdown-list.search-page-dropdown {
     width: 100%;
 }
 

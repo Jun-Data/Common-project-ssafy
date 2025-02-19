@@ -114,9 +114,6 @@ const SearchResult = () => {
                 <div className="resultheader"><HeaderContainer/></div>
                 <div className="search-input-container">
                     <div className="resultsearchbar">
-                        <button className="resultbackbutton" onClick={() => navigate(-1)}>
-                            <img src="/back-button.png" alt="뒤로 가기" />
-                        </button>
                         <input
                             className="resultsearchinput"
                             value={searchQuery}

@@ -35,6 +35,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+    border: 2px solid #e0e0e0; /* 연한 그레이 톤으로 변경 */
+    box-sizing: border-box;
 }
 
 
@@ -47,8 +50,13 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     align-content: center;
-    padding-left: 10px;
+    padding-left: 20px;
     border: none;
+    font-size: 16px;
+}
+
+.resultsearchinput::placeholder {
+    font-size: 16px;
 }
 
 .resultsearchinput:focus {

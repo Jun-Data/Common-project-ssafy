@@ -67,6 +67,7 @@ const Search = () => {
                 {isDropdownVisible && results?.length > 0 && (
                     <div className="searchpagedropdown">
                         <SearchDropdownList
+                            className="search-page-dropdown"
                             results={results}
                             onItemClick={handleItemClick}
                         />

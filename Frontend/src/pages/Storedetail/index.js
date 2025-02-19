@@ -6,7 +6,6 @@ import StoreDetailApi from "../../api/StoreDetailApi";
 import CouponGetApi from "../../api/CouponGetApi";
 import CouponListApi from "../../api/CouponListApi";
 import useAuth from "../../hooks/useAuth";
-import axios from "axios";
 import Button from "../../components/Button";
 import "./style.css";
 import Swal from "sweetalert2";
@@ -25,7 +24,6 @@ const StoreDetail = () => {
   const nStoreNo = Number(storeNo);
   const navigate = useNavigate();
   const { logindata } = useAuth();
-  const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
   const url = encodeURI(window.location.href);
 
   // 상태 관리 함수들
@@ -84,9 +82,9 @@ const StoreDetail = () => {
   };
 
   // 페이지 이동 함수들
-  const navigateRequestPage = () => navigate(`/storedetail/${storeNo}/request`);
-  const navigateFlearequest = () => navigate(`/storeDetail/${storeNo}/flearequest`);
-  const navigateToVideoCall = () => navigate(`/${storeNo}/videocall`);
+  const navigateRequestPage = (storeNo) => navigate(`/storedetail/${storeNo}/request`);
+  const navigateFlearequest = (storeNo) => navigate(`/storeDetail/${storeNo}/flearequest`);
+  const navigateToVideoCall = (storeNo) => navigate(`/${storeNo}/videocall`);
 
   // 팝업 닫기 함수
   const closePopup = () => {
@@ -135,9 +133,9 @@ const StoreDetail = () => {
         {/* 액션 버튼 그룹 */}
         <div className="storedetail-btnlist">
           <button className="couponrequestbtn" onClick={() => checkLogin() && handleCouponListGet(nStoreNo)}>쿠폰수령</button>
-          <button className="requestbtn" onClick={()=> checkLogin() && navigateRequestPage}>입고요청</button>
-          <button className="flearequestbtn" onClick={()=> checkLogin() && navigateFlearequest}>플리신청</button>
-          <button className="videocallbtn" onClick={()=> checkLogin() && navigateToVideoCall}>화상통화</button>
+          <button className="requestbtn" onClick={()=> checkLogin() && navigateRequestPage(nStoreNo)}>입고요청</button>
+          <button className="flearequestbtn" onClick={()=> checkLogin() && navigateFlearequest(nStoreNo)}>플리신청</button>
+          <button className="videocallbtn" onClick={()=> checkLogin() && navigateToVideoCall(nStoreNo)}>화상통화</button>
         </div>
 
         {/* 네비게이션 바 */}

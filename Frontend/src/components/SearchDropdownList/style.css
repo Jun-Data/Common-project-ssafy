@@ -1,44 +1,25 @@
-/* 드롭다운 리스트 스타일 */
 .search-dropdown-list {
-    display: flex;
-    justify-content: center;
+    position: absolute;
     width: 100%;
-    height: auto;
-    max-height: 400px;/* 높이를 내용에 맞게 조정 */
-    margin: 0;
     background-color: white;
-    border-bottom: 3px solid #3f72af;
+    box-sizing: border-box;
+    border-left: 2px solid #e0e0e0;
+    border-right: 2px solid #e0e0e0;
+    font-family: "helvetica" ;
 }
 
-/* 드롭다운 리스트의 UL 스타일 */
 .search-dropdown-list ul {
-    width: 100%; /* UL이 부모 컨테이너 너비를 채우도록 설정 */
-    padding-left: 0; /* 내부 여백 제거 */
     margin: 0;
-    list-style-type: none; /* 기본 리스트 스타일 제거 */
+    padding: 0;
 }
 
-/* 리스트 아이템 스타일 */
 .search-dropdown-list li {
-    display: flex; /* 플렉스 박스 사용 */
-    align-items: center; /* 세로 정렬 */
-    width: 100%; /* li가 부모 너비를 채우도록 설정 */
-    min-height: 30px; /* 최소 높이 */
-    height: auto; /* 높이를 내용에 맞게 조정 */
-    padding: 10px; /* 내부 여백 추가 */
-    background-color: white;
-    border-bottom: 1px solid #3f72af; /* 구분선 추가 */
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    margin-top: 10px;
+    padding-left: 20px;
+    border-bottom: 1px solid #3498db;
 }
 
-/* 마지막 아이템의 구분선 제거 */
 .search-dropdown-list li:last-child {
-    border-bottom: none;
-}
-
-/* 호버 효과 추가 (선택 사항) */
-.search-dropdown-list li:hover {
-    background-color: #f8f8ff; /* 연한 배경색으로 변경 */
+    margin-bottom: 0;
+    padding-bottom: 0;
 }

@@ -4,15 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 메인페이지 css 수정 (#135)">
+    <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 키오스크 css flex로 수정 (#135)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +61,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "FE/FIX/#139",
+    "git-widget-placeholder": "FE/FEAT/#146",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
     "node.js.detected.package.eslint": "true",
@@ -118,7 +119,7 @@
       <workItem from="1739781327516" duration="6000" />
       <workItem from="1739882723898" duration="12236000" />
       <workItem from="1739904889326" duration="338000" />
-      <workItem from="1739923276863" duration="27848000" />
+      <workItem from="1739923276863" duration="33717000" />
     </task>
     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
       <option name="closed" value="true" />
@@ -288,7 +289,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739943443673</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="[FE/FIX] 키오스크 css flex로 수정 (#135)">
+      <option name="closed" value="true" />
+      <created>1739967810759</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1739967810759</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -317,6 +326,7 @@
     <MESSAGE value="[FE/FIX] 메인페이지 css 수정 (#131)" />
     <MESSAGE value="[FE/FIX] 메인페이지 css 수정 (#129)" />
     <MESSAGE value="[FE/FIX] 메인페이지 css 수정 (#135)" />
-    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 메인페이지 css 수정 (#135)" />
+    <MESSAGE value="[FE/FIX] 키오스크 css flex로 수정 (#135)" />
+    <option name="LAST_COMMIT_MESSAGE" value="[FE/FIX] 키오스크 css flex로 수정 (#135)" />
   </component>
 </project>

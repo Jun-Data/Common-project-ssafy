@@ -51,7 +51,6 @@ const StoredetailRequestPopup = () => {
     };
 
     const handleItemClick = (item) => {
-        console.log(item)
         setProductImage(item.itemImageUrl)
         setSelectedItem(item.item_id);
         setMessage(`${item.item_name}을 원하시는군요!`);
@@ -80,8 +79,6 @@ const StoredetailRequestPopup = () => {
                 itemId,
             });
 
-            // API 응답 처리
-            console.log('요청 성공:', result);
             Swal.fire({
                 icon: "success",
                 title: "요청 완료!",
@@ -115,7 +112,10 @@ const StoredetailRequestPopup = () => {
                         <SearchBar setQuery={handleQueryChange} onClear={handleClear} />
                         {isDropdownVisible && results?.length > 0 && (
                             <div className="requestdropdown">
-                                <SearchDropdownList results={results} onItemClick={handleItemClick}/>
+                                <SearchDropdownList
+                                    className="request-page-dropdown"
+                                    results={results}
+                                    onItemClick={handleItemClick}/>
                             </div>
                         )}
                     </div>
