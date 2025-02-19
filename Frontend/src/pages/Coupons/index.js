@@ -16,6 +16,7 @@ function Coupons() {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/coupon/receive/list`, {
                     withCredentials: true,
                 });
+                console.log(response)
                 console.log("응답 데이터:", response.data);
                 setCoupons(response.data);
 
@@ -182,7 +183,7 @@ const ModalContent = styled.div`
     justify-content: center; /* 세로축 가운데 정렬 */
     align-items: center; /* 가로축 가운데 정렬 */
     text-align: center;
-    gap: 50px;
+    gap: 10px;
     padding: 5px;
 `;
 const Button = styled.button`
@@ -201,7 +202,7 @@ const Button = styled.button`
 
 const BarcodeImage = styled.img`
   max-width:90%;  /* 이미지가 container 크기에 맞게 조절됨 */
-  max-height: 100px;  /* 이미지 최대 높이 설정 */
+  max-height: 200px;  /* 이미지 최대 높이 설정 */
   object-fit: contain;  /* 이미지 비율을 유지하며 크기를 맞춤 */
 `;
 
