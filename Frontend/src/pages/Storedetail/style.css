@@ -1,3 +1,131 @@
+/* ================= 공통 팝업 스타일 ================= */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 기본 팝업 컨텐츠 */
+.popup-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 80%;
+  max-height: 80vh;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* 쿠폰팝업 전용 스타일 */
+.coupon-popup-content {
+  composes: popup-content; /* CSS 모듈 사용시 */
+  background-color: white;
+  width: 400px;
+  padding: 25px;
+  display: block; /* 기본 팝업의 flex 설정 제거 */
+}
+
+/* ============ 쿠폰 팝업 컴포넌트 스타일 ============ */
+.coupon-popup-title {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.4em;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.coupon-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.coupon-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.coupon-item:hover {
+  background: #f1f3f5;
+}
+
+.coupon-name {
+  font-weight: 600;
+  color: #3498db;
+}
+
+.coupon-date {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+/* CSS 추가/수정 부분 */
+.coupon-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.coupon-desc {
+  font-size: 0.85em;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.coupon-meta {
+  text-align: right;
+  margin-left: 15px;
+}
+
+.coupon-discount {
+  display: block;
+  color: #e74c3c;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.coupon-item {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.coupon-item:hover {
+  transform: translateX(5px);
+  background: #f8f9fa;
+}
+
+/* ============ 기존 팝업 내부 요소 ============ */
+.popup-field {
+  margin: 12px 0;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.popup-field label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
 /* ============ 메인 레이아웃 ============ */
 .searchpagedom {
   display: grid;
@@ -92,13 +220,12 @@
 .couponrequestbtn,
 .requestbtn,
 .flearequestbtn,
-.videocallbtn{
+.videocallbtn {
   box-sizing: border-box;
   border: #dbe2ef 1px solid;
   border-radius: 15px;
-  width: auto; /* 30% → auto로 변경 */
-  flex: 1 1 0%; /* 추가 */
-  min-width: 0; /* 추가 */
+  flex: 1 1 0%;
+  min-width: 0;
   background-color: #f0f0ff;
 }
 
@@ -144,7 +271,6 @@
   overflow: hidden;
 }
 
-/* 텍스트 컨테이너 */
 .item-info {
   flex: 1;
   min-width: 0;
@@ -161,70 +287,10 @@
   flex-shrink: 0;
 }
 
-/* ============ 팝업 스타일 ============ */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 80%;
-  height: 65%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column; /* 세로 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
-  justify-content: center; /* 세로 중앙 정렬 */
-  text-align: center; /* 텍스트도 중앙 정렬 */
-}
-
-.popup-field {
-  margin: 12px 0;
-  padding: 8px;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.popup-field label {
-  display: block;
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-/* VideoChat.css */
-.video-chat {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.session-form {
-  max-width: 500px;
-  margin: 0 auto 20px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-.mode-selector {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+/* ============ 비디오 채팅 관련 ============ */
+.video-chat { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.session-form { max-width: 500px; margin: 0 auto 20px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+.mode-selector { display: flex; gap: 10px; margin-bottom: 20px; }
 
 .mode-button {
   flex: 1;
@@ -337,65 +403,10 @@
   border-radius: 4px;
 }
 
-.fliitem-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.fliitem-price,
-.fliitem-quantity {
-  margin: 12px 0;
-  font-weight: 500;
-}
-
-.fliitem-quantity strong {
-  color: #2a9d8f; /* 수량 강조 (녹색) */
-}
-
-.announcement-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.announcement-date {
-  font-size: 1rem;
-  color: #777;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.announcement-content {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.store-item-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-
-
-/* 가격 스타일 */
-.store-item-price {
-  font-size: 1rem;
-  margin: 3;
-}
-
-/* 수량 스타일 */
-.store-item-quantity {
-  font-size: 1rem;
-  color: #2a9d8f; /* 수량 강조 (녹색) */
-  margin: 3;
-}
-
+/* ============ 타이포그래피 ============ */
+.fliitem-title { font-size: 2rem; font-weight: bold; margin-bottom: 12px; color: #333; }
+.announcement-title { font-size: 2rem; font-weight: bold; color: #333; margin-bottom: 20px; text-align: center; }
+.store-item-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 20px; }
+.store-item-price { font-size: 1rem; margin: 3; }
+.store-item-quantity { font-size: 1rem; color: #2a9d8f; margin: 3; }
 

@@ -53,9 +53,11 @@ const StoredetailRequestPopup = () => {
     const handleItemClick = (item) => {
         console.log(item)
         setProductImage(item.itemImageUrl)
-        setSelectedItem(item.itemId);
-        setMessage(`${item.item_name}을 원하시는군요!`);
+        setSelectedItem(item.item_id);
+        setMessage(`${item.item_name}\n이 선택되었어요!`)
+        setQuery('')
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
+
     };
 
     const handleSubmit = async () => {

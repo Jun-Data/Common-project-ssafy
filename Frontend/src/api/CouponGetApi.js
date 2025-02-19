@@ -8,41 +8,48 @@ const CouponGetApi = async (nStoreNo, couponId) => {
             couponId: couponId,
         });
 
-        // 성공 케이스
-        if (response.status === 200) {
-            Swal.fire({
-                icon: "success",
-                title: "요청 완료!",
-                text: "쿠폰이 발급되었어요!",
-            });            
-            return response.data
+        // HTTP 상태 코드 분기 처리
+        if (response.status >= 200 && response.status < 300) {
+            alert('🎉 쿠폰 발급 성공!');
+            return response.data;
         }
 
-        // 에러 코드 확인
-        const errorCode = response.data?.errorCode
-        const errorMessage = response.data?.message || "쿠폰 발급 실패"
+        // 서버 커스텀 에러 처리
+        const serverError = response.data || {};
+        const errorMessage = serverError.message || "쿠폰 처리 중 오류 발생";
+        const errorCode = serverError.errorCode || "UNKNOWN_ERROR";
 
-        // 40930: 이미 수령한 쿠폰
-        if (errorCode) {
-            Swal.fire({
-                icon: "error",
-                title: "오류 발생!",
-                text: "이미 발급한 쿠폰입니다!",
-            });
-            return { isError: true, errorCode } // 추가 작업을 위한 정보 반환
+        // 중복 수령 케이스 (40930)
+        if (errorCode === 40930) {
+            alert(`⚠️ ${errorMessage}`);
+            return { isError: true, errorCode };
         }
 
-        // 기타 에러 처리
-        alert(errorMessage)
-        throw new Error(errorMessage)
+        // 기타 서버 에러
+        alert(`❗ ${errorMessage}`);
+        throw new Error(`[${errorCode}] ${errorMessage}`);
 
     } catch (error) {
-        // 네트워크 에러 등 예상치 못한 오류
+        // 네트워크 레벨 에러
         if (!error.response) {
-            alert(`시스템 오류: ${error.message}`)
+            const networkErrorMsg = error.message.includes('Network Error')
+                ? '서버 연결 실패'
+                : error.message;
+            alert(`🚨 시스템 오류: ${networkErrorMsg}`);
+            throw new Error(`NETWORK_ERROR: ${networkErrorMsg}`);
         }
-        throw error
+
+        // HTTP 에러 응답 처리
+        const status = error.response.status;
+        const serverMessage = error.response.data?.message
+            || `서버 오류 (${status})`;
+
+        alert(`⚠️ ${serverMessage}`);
+        return {
+            isError: true,
+            errorCode: error.response.data?.errorCode || status
+        };
     }
-}
+};
 
 export default CouponGetApi;
