@@ -18,7 +18,8 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findTopByItemIdIsIn(Collection<Integer> itemIds);
 
     @Query(value = """
-        SELECT i.* FROM item i
+        SELECT i.* 
+        FROM item i
         JOIN (
         	SELECT p.item_id, SUM(p.monthly_score * s.similarity) AS item_score FROM preference p
         	JOIN\s
@@ -27,15 +28,15 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
         		FROM preference mp
         		INNER JOIN preference yp ON mp.item_id = yp.item_id
         		JOIN users u ON u.user_no = mp.user_no
-        		WHERE mp.updated_at : '2025-02-18'
-        		AND u.email = '2'
+        		WHERE mp.updated_at = :yesterday
+        		AND u.email = :userEmail   
         		AND mp.user_no != yp.user_no
         		GROUP BY mp.user_no, yp.user_no
-        		HAVING similarity >= 0.5
+        		HAVING similarity >= :minSimilarity
         	) s
         	ON p.user_no = s.your_no
-        	WHERE p.item_id NOT IN (SELECT sp.item_id FROM preference sp\s
-                                    WHERE sp.updated_at = s.updated_at AND sp.user_no = s.my_no AND daily_score > 0)
+        	WHERE p.item_id NOT IN (SELECT sp.item_id FROM preference sp
+                                    WHERE sp.updated_at >= :recentDate AND sp.user_no = s.my_no AND daily_score > 0)
         	GROUP BY item_id
         	) si
         ON si.item_id = i.item_id
