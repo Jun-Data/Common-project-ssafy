@@ -1,139 +1,96 @@
+/* Grid → Flex 변환 핵심 부분 */
 .kioskmainscreen {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     max-width: 800px;
-    width: 100%;
-    height: 100%;
-    grid-template-rows: 38vh 38vh 20vh;
-    grid-template-areas:
-        "cartpage"
-        "kioskpleaproductlist"
-        "scanner";
-    place-items: center;
+    width: 100vw;
+    height: 100dvh;
     background-color: #e9ecef;
+    overflow: hidden;
 }
 
-
-.mainscreennotice button {
-    width: 20%;
-    height: 100%;
-    font-size: 20px;
-    border-radius: 1px;
+/* 공통 Flex 아이템 속성 */
+.kioskmainscreen > * {
+    width: 95%;
+    margin: 0 auto;
 }
 
 .mainscreencartpage {
-    box-sizing: border-box;
-    grid-area: cartpage;
-    width: 95%;
-    height: 95%;
-    margin-top: 2vh;
+    flex: 1 1 38vh; /* 초기 높이 38vh 유지 */
+    min-height: 300px; /* 최소 높이 제한 */
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 2vh;
+    overflow-y: auto; /* 스크롤 가능 영역 */
 }
 
 .kioskpleaproductlist {
-    box-sizing: border-box;
-    grid-area: kioskpleaproductlist;
-    width: 95%;
-    height: 95%;
-    margin-top: 2vh;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+    flex: 1 1 38vh;
+    min-height: 300px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 2vh auto;
+    overflow: hidden;
+}
 
 .barcodebuttoncontainer {
-    margin-top: 45px;
-    grid-area: scanner;
-    width: 95%;
-    height: 100%;
+    flex: 0 0 20vh; /* 고정 높이 영역 */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 5%;
+    margin: 2vh auto;
 }
 
+/* 바코드 스캐너 섹션 */
 .mainscreenbarcodescanner {
-    box-sizing: border-box;
-    width: 40%;
+    flex: 1 1 40%;
+    min-width: 300px;
 }
 
+/* 버튼 영역 개선 */
 .buttonzone {
-    width: 50%;
-    height: 100%;
-    display: grid;
-    grid-template-rows: 1fr 0.5fr 0.5fr;
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
     gap: 15px;
-    place-items: center;
+    justify-content: space-between;
 }
 
 .cartpagetotal {
-    grid-row: 1;
-    align-items: center;
-    width: 95%;
-    height: 26%;
-    text-align: left;
-    font-size: 40px;
-    margin-right: 5%;
-    color: black;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); /* 반응형 폰트 */
+    height: auto;
+    padding: 10px 0;
 }
 
-.mainscreenpayment {
-    grid-row: 2;
-    width: 100%;
-    height: 100%;
-    font-size: 40px;
-    border-radius: 5px;
-}
-
+.mainscreenpayment,
 .mainscreentohome {
-    grid-row: 3;
-    width: 100%;
-    height: 100%;
-    font-size: 40px;
-    border-radius: 5px;
+    flex: 1;
+    min-height: 60px;
+    font-size: clamp(1.2rem, 3vw, 2rem);
 }
 
-
-.mainscreenpayment {
-    background-color: #4a90e2;
+.popup-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
-.mainscreentohome {
-    background-color: #cccccc;
-}
-
-/* 쿠폰 확인 팝업 스타일 */
-.coupon-prompt-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
+/* 쿠폰 팝업 조정 */
 .coupon-prompt-content {
-    width: 60%;
-    height: 50%;
-    background: white;
-    border-radius: 10px;
-    text-align: center;
-    display: grid;
-    place-items: center;
-    grid-template-rows: 4fr 1fr;
-    font-size: 35px;
-}
-
-.coupon-prompt-buttons{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    width: min(600px, 90vw);
+    height: min(400px, 50vh);
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
 }
 
 .coupon-prompt-buttons button {
-    width: 160px;
-    height: 70px;
-    font-size: 20px;
+    width: min(160px, 30vw);
+    height: min(70px, 10vh);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+}
 
+/* 가로 모드 대응 */
+@media (orientation: landscape) {
+    .kioskpleaproductlist {
+        flex-basis: 45vh;
+    }
+
+    .mainscreenpayment,
+    .mainscreentohome {
+        min-height: 80px;
+    }
 }

@@ -6,11 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 메인페이지 css 수정 (#135)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/CouponGetApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Storedetail/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/StoredetailRequest/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Kiosk/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/KioskMain/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +118,7 @@
       <workItem from="1739781327516" duration="6000" />
       <workItem from="1739882723898" duration="12236000" />
       <workItem from="1739904889326" duration="338000" />
-      <workItem from="1739923276863" duration="17319000" />
+      <workItem from="1739923276863" duration="27848000" />
     </task>
     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
       <option name="closed" value="true" />
@@ -278,7 +280,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739939235607</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="[FE/FIX] 메인페이지 css 수정 (#135)">
+      <option name="closed" value="true" />
+      <created>1739943443673</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1739943443673</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

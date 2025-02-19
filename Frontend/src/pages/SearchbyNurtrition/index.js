@@ -24,7 +24,7 @@ const SearchbyNurtrition = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="음식 이름으로 검색"
+                    placeholder="아이스크림 이름으로 검색"
                 />
                 <button
                     className="nutritionsearchbtn"

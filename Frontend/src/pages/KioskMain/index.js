@@ -156,10 +156,12 @@ const KioskMainScreen = () => {
                     <button className="mainscreentohome" onClick={() => navigate("/kiosk")}>홈으로</button>
                 </div>
             </div>
+
+
             {/* 쿠폰 적용 확인 팝업 추가 */}
             {state.isCouponPromptOpen && (
-                <div className="coupon-prompt-overlay">
-                    <div className="coupon-prompt-content">
+                <div className="popup-overlay">
+                    <div className="popup-content">
                         <h2>쿠폰을<br/><br/>적용하시겠습니까?</h2>
                         <div className="coupon-prompt-buttons">
                             <button
@@ -187,31 +189,44 @@ const KioskMainScreen = () => {
 
             {/* 수정된 결제 팝업 호출 방식 */}
             {state.isPaymentPopupOpen && (
-                <PaymentPopup
-                    total={calculateTotalPrice()}
-                    onClose={() => updateState({ isPaymentPopupOpen: false })}
-                    onConfirm={handleConfirmPayment}
-                />
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <PaymentPopup
+                        total={calculateTotalPrice()}
+                        onClose={() => updateState({ isPaymentPopupOpen: false })}
+                        onConfirm={handleConfirmPayment}
+                    />
+                    </div>
+                </div>
             )}
 
             {/* 쿠폰 팝업 닫힐 때 결제창 자동 호출 */}
             {state.isCouponPopupOpen && (
-                <KioskCouponPopup
-                    onClose={() => updateState({
-                        isCouponPopupOpen: false,
-                        isPaymentPopupOpen: true
-                    })}
-                    onApplyCoupon={handleApplyCoupon}
-                />
+                <div className="popup-overlay">
+                    <div className="popup-content">
+
+                        <KioskCouponPopup
+                        onClose={() => updateState({
+                            isCouponPopupOpen: false,
+                            isPaymentPopupOpen: true
+                        })}
+                        onApplyCoupon={handleApplyCoupon}
+                    />
+                    </div>
+                </div>
             )}
 
             {state.isPaymentFinish && (
-                <KioskPaymentFinishPopup
-                    onClose={() => {
-                        updateState({ isPaymentFinish: false });
-                        navigate('/kiosk');
-                    }}
-                />
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <KioskPaymentFinishPopup
+                        onClose={() => {
+                            updateState({ isPaymentFinish: false });
+                            navigate('/kiosk');
+                        }}
+                    />
+                    </div>
+                </div>
             )}
         </div>
     );

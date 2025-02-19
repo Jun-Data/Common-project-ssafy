@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import KioskHeaderContainer from "../../components/KioskHeaderContainer";
 import useAuth from "../../hooks/useAuth";
@@ -11,8 +12,17 @@ const Kiosk = () => {
         if (logindata) {
             const storeNumber = logindata.storeNo;
             navigate(`/kiosk/${storeNumber}/main`);
+        } else {
+            alert("로그인이 필요한 서비스입니다!");
         }
     };
+
+    useEffect(() => {
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.documentElement.style.overflow = 'auto';
+        };
+    }, []);
 
     return (
         <div className="kiosk">
