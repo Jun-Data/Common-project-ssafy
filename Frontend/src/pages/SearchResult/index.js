@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
 import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
@@ -8,6 +8,8 @@ import AddressSearchTrigger from "../../components/AddressSearchTrigger";
 import { useBaseMap } from "../../contexts/KakaoMapContext";
 import useReverseGeocoding from "../../hooks/useReverseGeocoding";
 import useGeocoding from "../../hooks/useGeocoding";
+import SearchDropdownList from "../../components/SearchDropdownList";
+import searchApi from "../../api/searchApi";
 import './style.css'
 
 const SearchResult = () => {
@@ -20,6 +22,8 @@ const SearchResult = () => {
 
     // 상태 관리 추가
     const [address, setAddress] = useState("");
+    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+    const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
     const [isManualAddress, setIsManualAddress] = useState(false);
     const [storelist, setStorelist] = useState([]);
 
@@ -31,6 +35,35 @@ const SearchResult = () => {
 
     const itemId = queryParams.get('itemId');
     const itemName = queryParams.get('itemName');
+
+    // 검색어 변경 핸들러
+    const handleSearchChange = useCallback(async (query) => {
+        if (!query) {
+            setSearchResults([]);
+            return;
+        }
+        try {
+            const results = await searchApi(query);
+            setSearchResults(results);
+        } catch (error) {
+            console.error("검색 실패:", error);
+            setSearchResults([]);
+        }
+    }, []);
+
+// 검색어 디바운싱 효과
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            // 검색어가 있을 때만 API 호출
+            if (searchQuery) {
+                handleSearchChange(searchQuery);
+            } else {
+                setSearchResults([]); // 검색어가 비면 결과 초기화
+            }
+        }, 300);
+
+        return () => clearTimeout(debounceTimer);
+    }, [searchQuery, handleSearchChange]);
 
     // 주소 초기화 효과
     useEffect(() => {
@@ -66,29 +99,52 @@ const SearchResult = () => {
         }
     };
 
+    // 드롭다운 아이템 선택 핸들러
+    const handleItemSelect = (selectedItem) => {
+        navigate({
+            pathname: location.pathname,
+            search: `?lat=${coords.lat}&lng=${coords.lng}&itemId=${selectedItem.item_id}&itemName=${selectedItem.item_name}`
+        });
+        setSearchQuery(selectedItem.item_name);
+        setSearchResults([]);
+    };
+
     return (
         <div className="result-page">
-            <div className="resultpagecontents">
                 <div className="resultheader"><HeaderContainer/></div>
+                <div className="search-input-container">
                     <div className="resultsearchbar">
                         <button className="resultbackbutton" onClick={() => navigate(-1)}>
-                            <img src="/back-button.png" />
+                            <img src="/back-button.png" alt="뒤로 가기" />
                         </button>
-                        <p className="resultsearchinput">{itemName}</p>
+                        <input
+                            className="resultsearchinput"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={itemName}
+                        />
+                        <button className="resultclearbutton" onClick={() => setSearchQuery('')}>x</button>
                         <div className="search-result-controls">
                             <AddressSearchTrigger
                                 address={address}
                                 onAddressComplete={handleAddressComplete}
                                 setIsManualAddress={setIsManualAddress}
                             />
+                        </div>
                     </div>
+                    {searchQuery && (  // 검색어가 있을 때만 드롭다운 표시
+                        <div className="searchresultdropdown">
+                            <SearchDropdownList
+                            results={searchResults}
+                            onItemClick={handleItemSelect}
+                            /></div>
+                    )}
                 </div>
                 <DraggableBottomSheet
                     coords={coords}
                     setStorelist={setStorelist}
                     itemId={itemId}
                 />
-            </div>
             {isSDKLoaded && (
                 <>
                     <KakaoMapContainer coords={coords} />

@@ -3,7 +3,7 @@
     display: grid;
     width: 100%;
     height: 100%;
-    grid-template-rows: 8% 13% auto; /* 상단, 중단, 하단 비율 */
+    grid-template-rows: 7% 20% 73%; /* 상단, 중단, 하단 비율 */
     position: relative;
     z-index: 100;
 }
@@ -130,4 +130,5 @@
 .nutrition-text {
     font-size: 16px;
     color: #333;
+    text-align: center;
 }

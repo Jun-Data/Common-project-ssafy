@@ -1,43 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import NutritionSearchEmptyApi from "../../api/NutritionSearchEmptyApi";
+import NutritionSearchApi from "../../api/NutritionSearchApi";
 import './style.css'
 
-
-const SearchNutritionScroll = ({ coords }) => {
-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
+const SearchNutritionScroll = ({ coords, searchQuery }) => {
     const navigate = useNavigate();
-
-    // 상태 관리
     const [maxSugar, setMaxSugar] = useState(100);
     const [maxCal, setMaxCal] = useState(500);
     const [items, setItems] = useState([]);
     const [error, setError] = useState(null);
 
-    console.log(coords)
-    // API 호출 함수
-    const fetchItems = async (maxSugar, maxCal) => {
-        try {
-            const response = await axios.get(`${apiUrl}/api/items/search`, {
-                params: {
-                    minSugar: 0, // 항상 0으로 고정
-                    maxSugar,
-                    minCal: 0, // 항상 0으로 고정
-                    maxCal,
-                },
-            });
-            setItems(response.data); // 받아온 데이터를 상태에 저장
-        } catch (err) {
-            console.error('API 호출 중 오류 발생:', err);
-            setError('데이터를 불러오는 중 오류가 발생했습니다.');
-        }
-    };
+    console.log(searchQuery);
 
-    // 값이 변경될 때마다 API 호출
     useEffect(() => {
-        fetchItems(maxSugar, maxCal);
-    }, [maxSugar, maxCal]);
+        const fetchData = async () => {
+            try {
+                let result;
+                if (searchQuery) {
+                    // 검색어 있을 때: 일반 검색 API 사용
+                    result = await NutritionSearchApi(maxSugar, maxCal, searchQuery);
+                } else {
+                    // 검색어 없을 때: 기본 필터 API 사용
+                    result = await NutritionSearchEmptyApi(maxSugar, maxCal);
+                }
+                setItems(result || []);
+                setError(null);
+            } catch (err) {
+                setError('데이터 로딩에 실패했습니다');
+                setItems([]);
+            }
+        };
+        fetchData();
+    }, [maxSugar, maxCal, searchQuery]); // 검색어 변경 감지
+
 
     return (
         <div className="scrollcontents">
@@ -74,19 +70,19 @@ const SearchNutritionScroll = ({ coords }) => {
                         {items.map((item) => (
                             <li
                                 className="nutritionli"
-                                key={item.itemId}
+                                key={item.item_id}
                                 onClick={() =>
                                     navigate(
-                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.itemId}&itemName=${item.itemName}`
+                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.item_id}&itemName=${item.item_name}`
                                     )
                                 }
                             >
                                 <img
                                     src={item.itemImageUrl} // 이미지 URL
-                                    alt={item.itemName}
+                                    alt={item.item_name}
                                     className="nutrition-image"
                                 />
-                                <span className="nutrition-text">{item.itemName}</span>
+                                <span className="nutrition-text">{item.item_name}</span>
                             </li>
                         ))}
                     </ul>

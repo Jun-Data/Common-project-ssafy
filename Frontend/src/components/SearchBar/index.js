@@ -42,6 +42,7 @@ const SearchBar = ({
             {(isSearchPage || isStoreDetailPage) && (
                 <div className="search-container">
                     <input
+                        autoFocus
                         type="text"
                         className="search-input-searchpage"
                         placeholder="검색어를 입력하세요"

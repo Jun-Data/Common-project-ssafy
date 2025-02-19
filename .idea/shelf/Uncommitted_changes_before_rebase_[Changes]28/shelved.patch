@@ -1,0 +1,659 @@
+Index: Frontend/src/pages/SearchbyNurtrition/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.searchbynurtritioncontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    grid-template-rows: 8vh 92vh;\n}\n\n.nutritionheader {\n    grid-row: 1;\n    position: relative;\n    z-index: 200;\n}\n\n.nutritionScroll {\n    grid-row: 2;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchbyNurtrition/style.css b/Frontend/src/pages/SearchbyNurtrition/style.css
+--- a/Frontend/src/pages/SearchbyNurtrition/style.css	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/pages/SearchbyNurtrition/style.css	(date 1739927588522)
+@@ -2,7 +2,7 @@
+     width: 100%;
+     height: 100%;
+     display: grid;
+-    grid-template-rows: 8vh 92vh;
++    grid-template-rows: 8vh 6vh 86vh;
+ }
+ 
+ .nutritionheader {
+@@ -11,6 +11,31 @@
+     z-index: 200;
+ }
+ 
+-.nutritionScroll {
++.nutritionsearchbar {
+     grid-row: 2;
++    width: 100%;
++    height: 100%;
++    box-sizing: border-box;
++    display: flex;
++    border: 1px solid #3f72af;
++}
++
++.nutritionsearchbar input {
++    width: 80%;
++    border: none;
++    background-color: transparent;
++    padding-left: 15px;
++}
++
++.nutritionsearchbtn {
++    width: 20%;
++    border: none;
++    background-color: transparent;
++    font-size: 15px;
++    padding: 0;
++}
++
++
++.nutritionScroll {
++    grid-row: 3;
+ }
+\ No newline at end of file
+Index: Frontend/src/components/SearchBar/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\nimport { useNavigate, useLocation, useMatch } from \"react-router-dom\";\nimport AddressSearchTrigger from \"../AddressSearchTrigger\";\nimport './style.css';\n\nconst SearchBar = ({\n                       coords,\n                       setQuery,\n                       onClear,\n                       address,\n                       error,\n                       onAddressComplete,\n                       setIsManualAddress\n                   }) => {\n    const [localQuery, setLocalQuery] = useState(\"\");\n    const navigate = useNavigate();\n    const isStoreDetailPage = useMatch('/storedetail/*');\n    const isSearchPage = useLocation().pathname === '/search';\n\n    const handleSearch = () => {\n        if (coords) {\n            navigate(`/search?lat=${coords.lat}&lng=${coords.lng}`);\n        }\n    };\n\n    const handleInputChange = (e) => {\n        setLocalQuery(e.target.value);\n        setQuery?.(e.target.value);\n    };\n\n    const handleClear = () => {\n        onClear?.();\n        setLocalQuery(\"\");\n    };\n\n    return (\n        <div className=\"searchbar\">\n            {(isSearchPage || isStoreDetailPage) && (\n                <div className=\"search-container\">\n                    <input\n                        type=\"text\"\n                        className=\"search-input-searchpage\"\n                        placeholder=\"검색어를 입력하세요\"\n                        value={localQuery}\n                        onChange={handleInputChange}\n                    />\n                    <button\n                        className=\"clear-btn\"\n                        onClick={handleClear}\n                        aria-label=\"검색어 지우기\"\n                    >\n                        ×\n                    </button>\n                </div>\n            )}\n\n            {!isSearchPage && !isStoreDetailPage && (\n                <div className=\"main-search-container\">\n                    <input\n                        type=\"text\"\n                        className=\"search-input-mainpage\"\n                        placeholder=\"원하는 제품을 이름으로 검색해보세요\"\n                        onClick={handleSearch}\n                    />\n                    <AddressSearchTrigger\n                        className=\"search-input-address-search\"\n                        address={address}\n                        error={error}\n                        onAddressComplete={onAddressComplete}\n                        setIsManualAddress={setIsManualAddress}\n                    />\n                </div>\n            )}\n        </div>\n    );\n};\n\nexport default SearchBar;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchBar/index.js b/Frontend/src/components/SearchBar/index.js
+--- a/Frontend/src/components/SearchBar/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/components/SearchBar/index.js	(date 1739930570412)
+@@ -38,6 +38,7 @@
+             {(isSearchPage || isStoreDetailPage) && (
+                 <div className="search-container">
+                     <input
++                        autoFocus
+                         type="text"
+                         className="search-input-searchpage"
+                         placeholder="검색어를 입력하세요"
+Index: Frontend/src/pages/SearchResult/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.result-page {\n    width: 100%;\n    height: 100%;\n    position: fixed;\n    z-index: 100;\n    top: 0;\n}\n\n.resultpagecontents {\n    width: 100%;\n    height: 100%;\n    display: grid;\n    place-items: center;\n    grid-template-rows: 8vh 6vh auto;\n    position: relative;\n    z-index: 100;\n}\n\n.resultheader {\n    grid-row: 1;\n    width: 100%;\n}\n\n.resultsearchbar {\n    box-sizing: border-box;\n    border: 2px solid #3f72af;\n    background-color: white;\n    grid-row: 2;\n    width: 100%;\n    height: 100%;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n\n.resultsearchinput {\n    box-sizing: inherit;\n    width: 75%;\n    height: 100%;\n    background-color: transparent;\n    text-align: left;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    align-content: center;\n    padding-left: 10px;\n}\n\n.resultbackbutton {\n    box-sizing: inherit;\n    width: 10%;\n    height: 100%;\n    background-color: transparent;\n    border: none;\n}\n\n.resultbackbutton img {\n    width: 80%;\n    height: 80%;\n    object-fit: scale-down;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/style.css b/Frontend/src/pages/SearchResult/style.css
+--- a/Frontend/src/pages/SearchResult/style.css	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/pages/SearchResult/style.css	(date 1739939121472)
+@@ -2,30 +2,34 @@
+     width: 100%;
+     height: 100%;
+     position: fixed;
+-    z-index: 100;
++    z-index: 10;
+     top: 0;
+-}
+-
+-.resultpagecontents {
+-    width: 100%;
+-    height: 100%;
+     display: grid;
+-    place-items: center;
+-    grid-template-rows: 8vh 6vh auto;
++    grid-template-rows: auto 1fr;
+     position: relative;
+-    z-index: 100;
+ }
++
+ 
+ .resultheader {
+-    grid-row: 1;
+     width: 100%;
++    position: relative;
++    z-index: 150;
++}
++
++.search-input-container {
++    position: absolute;
++    top: 8vh;
++    left: 0;
++    right: 0;
++    height: 48px;
++    padding: 0;
++    display: grid;
++    z-index: 140;
+ }
+ 
+ .resultsearchbar {
+-    box-sizing: border-box;
+-    border: 2px solid #3f72af;
+     background-color: white;
+-    grid-row: 2;
++    grid-row: 1;
+     width: 100%;
+     height: 100%;
+     display: flex;
+@@ -44,9 +48,15 @@
+     text-overflow: ellipsis;
+     align-content: center;
+     padding-left: 10px;
++    border: none;
++}
++
++.resultsearchinput:focus {
++    outline: none;
+ }
+ 
+-.resultbackbutton {
++.resultbackbutton,
++.resultclearbutton{
+     box-sizing: inherit;
+     width: 10%;
+     height: 100%;
+@@ -58,4 +68,16 @@
+     width: 80%;
+     height: 80%;
+     object-fit: scale-down;
+-}
+\ No newline at end of file
++}
++
++.searchresultdropdown {
++    grid-row: 2;
++    width: 100%;
++}
++
++.DraggableBottomSheet {
++    position: fixed;
++    bottom: 0;
++    z-index: 200 !important;
++}
++
+Index: Frontend/src/pages/SearchResult/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useMemo, useEffect } from \"react\";\nimport { useLocation, useNavigate } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport DraggableBottomSheet from \"../../components/DraggableBottomSheet/DraggableBottomSheet\";\nimport KakaoMapMarkers from \"../../components/KakaoMapMarkers\";\nimport KakaoMapContainer from \"../../components/KakaoMapContainer\";\nimport AddressSearchTrigger from \"../../components/AddressSearchTrigger\";\nimport { useBaseMap } from \"../../contexts/KakaoMapContext\";\nimport useReverseGeocoding from \"../../hooks/useReverseGeocoding\";\nimport useGeocoding from \"../../hooks/useGeocoding\";\nimport './style.css'\n\nconst SearchResult = () => {\n    const { isSDKLoaded } = useBaseMap()\n    const { coordToAddress } = useReverseGeocoding();\n    const { addressToCoord } = useGeocoding();\n    const navigate = useNavigate();\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n    // 상태 관리 추가\n    const [address, setAddress] = useState(\"\");\n    const [isManualAddress, setIsManualAddress] = useState(false);\n    const [storelist, setStorelist] = useState([]);\n\n    // 좌표 객체 메모이제이션\n    const coords = useMemo(() => ({\n        lat: parseFloat(queryParams.get('lat')),\n        lng: parseFloat(queryParams.get('lng'))\n    }), [queryParams.get('lat'), queryParams.get('lng')]);\n\n    const itemId = queryParams.get('itemId');\n    const itemName = queryParams.get('itemName');\n\n    // 주소 초기화 효과\n    useEffect(() => {\n        const fetchAddress = async () => {\n            try {\n                const newAddress = await coordToAddress(coords);\n                setAddress(newAddress);\n            } catch (err) {\n                console.error(\"주소 변환 실패:\", err);\n                setAddress(\"주소 정보 불러오기 실패\");\n            }\n        };\n\n        if (isSDKLoaded) {\n            fetchAddress();\n        }\n    }, [coords, isSDKLoaded, coordToAddress]);\n\n    // 주소 변경 핸들러\n    const handleAddressComplete = async (fullAddress) => {\n        try {\n            const newCoords = await addressToCoord(fullAddress);\n            if (newCoords) {\n                navigate({\n                    pathname: location.pathname,\n                    search: `?lat=${newCoords.lat}&lng=${newCoords.lng}&itemId=${itemId}&itemName=${itemName}`\n                });\n                setAddress(fullAddress);\n                setIsManualAddress(true);\n            }\n        } catch (err) {\n            console.error(\"주소 변환 오류:\", err);\n        }\n    };\n\n    return (\n        <div className=\"result-page\">\n            <div className=\"resultpagecontents\">\n                <div className=\"resultheader\"><HeaderContainer/></div>\n                    <div className=\"resultsearchbar\">\n                        <button className=\"resultbackbutton\" onClick={() => navigate(-1)}>\n                            <img src=\"/back-button.png\" />\n                        </button>\n                        <p className=\"resultsearchinput\">{itemName}</p>\n                        <div className=\"search-result-controls\">\n                            <AddressSearchTrigger\n                                address={address}\n                                onAddressComplete={handleAddressComplete}\n                                setIsManualAddress={setIsManualAddress}\n                            />\n                    </div>\n                </div>\n                <DraggableBottomSheet\n                    coords={coords}\n                    setStorelist={setStorelist}\n                    itemId={itemId}\n                />\n            </div>\n            {isSDKLoaded && (\n                <>\n                    <KakaoMapContainer coords={coords} />\n                    <KakaoMapMarkers storelist={storelist} />\n                </>\n            )}\n        </div>\n    )\n}\n\nexport default SearchResult;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchResult/index.js b/Frontend/src/pages/SearchResult/index.js
+--- a/Frontend/src/pages/SearchResult/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/pages/SearchResult/index.js	(date 1739939121477)
+@@ -1,4 +1,4 @@
+-import { useState, useMemo, useEffect } from "react";
++import { useState, useMemo, useEffect, useCallback } from "react";
+ import { useLocation, useNavigate } from "react-router-dom";
+ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+ import DraggableBottomSheet from "../../components/DraggableBottomSheet/DraggableBottomSheet";
+@@ -8,6 +8,8 @@
+ import { useBaseMap } from "../../contexts/KakaoMapContext";
+ import useReverseGeocoding from "../../hooks/useReverseGeocoding";
+ import useGeocoding from "../../hooks/useGeocoding";
++import SearchDropdownList from "../../components/SearchDropdownList";
++import searchApi from "../../api/searchApi";
+ import './style.css'
+ 
+ const SearchResult = () => {
+@@ -20,6 +22,8 @@
+ 
+     // 상태 관리 추가
+     const [address, setAddress] = useState("");
++    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
++    const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
+     const [isManualAddress, setIsManualAddress] = useState(false);
+     const [storelist, setStorelist] = useState([]);
+ 
+@@ -32,6 +36,35 @@
+     const itemId = queryParams.get('itemId');
+     const itemName = queryParams.get('itemName');
+ 
++    // 검색어 변경 핸들러
++    const handleSearchChange = useCallback(async (query) => {
++        if (!query) {
++            setSearchResults([]);
++            return;
++        }
++        try {
++            const results = await searchApi(query);
++            setSearchResults(results);
++        } catch (error) {
++            console.error("검색 실패:", error);
++            setSearchResults([]);
++        }
++    }, []);
++
++// 검색어 디바운싱 효과
++    useEffect(() => {
++        const debounceTimer = setTimeout(() => {
++            // 검색어가 있을 때만 API 호출
++            if (searchQuery) {
++                handleSearchChange(searchQuery);
++            } else {
++                setSearchResults([]); // 검색어가 비면 결과 초기화
++            }
++        }, 300);
++
++        return () => clearTimeout(debounceTimer);
++    }, [searchQuery, handleSearchChange]);
++
+     // 주소 초기화 효과
+     useEffect(() => {
+         const fetchAddress = async () => {
+@@ -66,29 +99,52 @@
+         }
+     };
+ 
++    // 드롭다운 아이템 선택 핸들러
++    const handleItemSelect = (selectedItem) => {
++        navigate({
++            pathname: location.pathname,
++            search: `?lat=${coords.lat}&lng=${coords.lng}&itemId=${selectedItem.item_id}&itemName=${selectedItem.item_name}`
++        });
++        setSearchQuery(selectedItem.item_name);
++        setSearchResults([]);
++    };
++
+     return (
+         <div className="result-page">
+-            <div className="resultpagecontents">
+                 <div className="resultheader"><HeaderContainer/></div>
++                <div className="search-input-container">
+                     <div className="resultsearchbar">
+                         <button className="resultbackbutton" onClick={() => navigate(-1)}>
+-                            <img src="/back-button.png" />
++                            <img src="/back-button.png" alt="뒤로 가기" />
+                         </button>
+-                        <p className="resultsearchinput">{itemName}</p>
++                        <input
++                            className="resultsearchinput"
++                            value={searchQuery}
++                            onChange={(e) => setSearchQuery(e.target.value)}
++                            placeholder={itemName}
++                        />
++                        <button className="resultclearbutton" onClick={() => setSearchQuery('')}>x</button>
+                         <div className="search-result-controls">
+                             <AddressSearchTrigger
+                                 address={address}
+                                 onAddressComplete={handleAddressComplete}
+                                 setIsManualAddress={setIsManualAddress}
+                             />
++                        </div>
+                     </div>
++                    {searchQuery && (  // 검색어가 있을 때만 드롭다운 표시
++                        <div className="searchresultdropdown">
++                            <SearchDropdownList
++                            results={searchResults}
++                            onItemClick={handleItemSelect}
++                            /></div>
++                    )}
+                 </div>
+                 <DraggableBottomSheet
+                     coords={coords}
+                     setStorelist={setStorelist}
+                     itemId={itemId}
+                 />
+-            </div>
+             {isSDKLoaded && (
+                 <>
+                     <KakaoMapContainer coords={coords} />
+Index: Frontend/src/components/KioskPaymentFinishPopup/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useEffect } from 'react';\nimport \"./style.css\";\n\nconst KioskPaymentFinishPopup = ({ onClose }) => {\n    const [countdown, setCountdown] = useState(15);\n\n    useEffect(() => {\n        // 1초마다 countdown을 감소시키는 타이머 설정\n        const timer = setInterval(() => {\n            setCountdown((prev) => prev - 1);\n        }, 1000);\n\n        // countdown이 0이 되면 onClose 호출 및 타이머 정리\n        if (countdown === 0) {\n            onClose();\n        }\n\n        // 컴포넌트가 언마운트되거나 countdown이 변경될 때 타이머 정리\n        return () => clearInterval(timer);\n    }, [countdown, onClose]);\n\n    return (\n        <div className=\"kiosk-finish-popup\">\n            <div className=\"kiosk-finish-content\">\n                <h2 className=\"kiosk-finish-notice\">결제가 완료되었습니다.</h2>\n                <div className=\"kiosk-finish-scanner\">\n                    {countdown}초 후 홈 화면으로 이동합니다.<br/>\n                    놓고가신 물건이 없는지 다시한번 확인해주세요!\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default KioskPaymentFinishPopup;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/KioskPaymentFinishPopup/index.js b/Frontend/src/components/KioskPaymentFinishPopup/index.js
+--- a/Frontend/src/components/KioskPaymentFinishPopup/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/components/KioskPaymentFinishPopup/index.js	(date 1739934276019)
+@@ -2,7 +2,7 @@
+ import "./style.css";
+ 
+ const KioskPaymentFinishPopup = ({ onClose }) => {
+-    const [countdown, setCountdown] = useState(15);
++    const [countdown, setCountdown] = useState(5);
+ 
+     useEffect(() => {
+         // 1초마다 countdown을 감소시키는 타이머 설정
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"[FE/FIX] 메인페이지 css 수정 (#129)\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/package-lock.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/package-lock.json\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/package.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/package.json\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Frontend/src/pages/Search/index.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Frontend/src/pages/Search/index.js\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"JavaScript File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Rebase.Settings\">\n    <option name=\"NEW_BASE\" value=\"origin/Frontend\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitLabMergeRequestFiltersHistory\">{\n  &quot;lastFilter&quot;: {}\n}</component>\n  <component name=\"GitLabMergeRequestsSettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A506.git&quot;,\n    &quot;second&quot;: &quot;e33ee6b4-1615-45ef-a98a-173e132f977f&quot;\n  }\n}</component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"2sfU0UdfCWOTDN8Cw8GdwsNPGOD\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#134&quot;,\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages/KioskMain\" />\n      <recent name=\"$PROJECT_DIR$/Frontend/src/pages\" />\n    </key>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f896b346-e63a-4955-9c5d-cb4b97fbcc7e\" name=\"Changes\" comment=\"\" />\n      <created>1738845899858</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1738845899858</updated>\n      <workItem from=\"1738845900970\" duration=\"3670000\" />\n      <workItem from=\"1738886022718\" duration=\"24462000\" />\n      <workItem from=\"1738913909041\" duration=\"306000\" />\n      <workItem from=\"1738914277977\" duration=\"35000\" />\n      <workItem from=\"1738914322054\" duration=\"4199000\" />\n      <workItem from=\"1739081872737\" duration=\"36070000\" />\n      <workItem from=\"1739152824324\" duration=\"47000\" />\n      <workItem from=\"1739152876382\" duration=\"26000\" />\n      <workItem from=\"1739152929279\" duration=\"24000\" />\n      <workItem from=\"1739153054176\" duration=\"42770000\" />\n      <workItem from=\"1739247929410\" duration=\"30265000\" />\n      <workItem from=\"1739291868462\" duration=\"14695000\" />\n      <workItem from=\"1739308289993\" duration=\"36322000\" />\n      <workItem from=\"1739350559470\" duration=\"19822000\" />\n      <workItem from=\"1739426375278\" duration=\"2000\" />\n      <workItem from=\"1739426451033\" duration=\"11909000\" />\n      <workItem from=\"1739452113566\" duration=\"11559000\" />\n      <workItem from=\"1739513711472\" duration=\"63743000\" />\n      <workItem from=\"1739750470079\" duration=\"12985000\" />\n      <workItem from=\"1739781327516\" duration=\"6000\" />\n      <workItem from=\"1739882723898\" duration=\"12236000\" />\n      <workItem from=\"1739904889326\" duration=\"338000\" />\n      <workItem from=\"1739923276863\" duration=\"2384000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739427567928</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739427567928</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739428785456</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739428785456</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432038269</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432038269</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739432340013</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739432340013</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"[FE/FIX] 배포 테스트 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739433129149</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739433129149</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739435017686</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739435017686</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739466231792</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739466231792</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739610602839</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739610602839</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739670282959</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739670282959</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739696098939</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739696098939</updated>\n    </task>\n    <task id=\"LOCAL-00011\" summary=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739708076864</created>\n      <option name=\"number\" value=\"00011\" />\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739708076864</updated>\n    </task>\n    <task id=\"LOCAL-00012\" summary=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739722788572</created>\n      <option name=\"number\" value=\"00012\" />\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739722788573</updated>\n    </task>\n    <task id=\"LOCAL-00013\" summary=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739754878271</created>\n      <option name=\"number\" value=\"00013\" />\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739754878271</updated>\n    </task>\n    <task id=\"LOCAL-00014\" summary=\"[FE/FIX] 메인페이지 css 수정 (#122)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739844698225</created>\n      <option name=\"number\" value=\"00014\" />\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739844698225</updated>\n    </task>\n    <task id=\"LOCAL-00015\" summary=\"[FE/FIX] 메인페이지 css 수정 (#129)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739852240829</created>\n      <option name=\"number\" value=\"00015\" />\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739852240829</updated>\n    </task>\n    <task id=\"LOCAL-00016\" summary=\"[FE/FIX] 메인페이지 css 수정 (#131)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739868829683</created>\n      <option name=\"number\" value=\"00016\" />\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739868829683</updated>\n    </task>\n    <task id=\"LOCAL-00017\" summary=\"[FE/FIX] 메인페이지 css 수정 (#129)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1739901147961</created>\n      <option name=\"number\" value=\"00017\" />\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1739901147961</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"18\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"[FE/FIX] 배포 테스트 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 지도 호출 흐름 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 키오스크 ui 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 뒤로가기 시 지도 코드 꼬이는 현상 수정 (#68)\" />\n    <MESSAGE value=\"[FE/FIX] 제품 입고요청 Api 정상작동 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템 신청 온라인 환경 테스트 (#113)\" />\n    <MESSAGE value=\"[FE/FIX] 플리아이템, 쿠폰수령, 입고요청 api 완료(#118)\" />\n    <MESSAGE value=\"[FE/FIX] 메인페이지 css 수정 (#122)\" />\n    <MESSAGE value=\"[FE/FIX] 메인페이지 css 수정 (#131)\" />\n    <MESSAGE value=\"[FE/FIX] 메인페이지 css 수정 (#129)\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"[FE/FIX] 메인페이지 css 수정 (#129)\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/.idea/workspace.xml	(date 1739939149434)
+@@ -6,15 +6,16 @@
+   <component name="ChangeListManager">
+     <list default="true" id="f896b346-e63a-4955-9c5d-cb4b97fbcc7e" name="Changes" comment="[FE/FIX] 메인페이지 css 수정 (#129)">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package-lock.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskBarcodeScanner/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskCartpage/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskFleaproductlist/style.css" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/index.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchDropdownList/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/api/resultBottomsheetApi.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentFinishPopup/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/KioskPaymentFinishPopup/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchBar/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/SearchNutritionScroll/style.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/Search/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchResult/style.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/index.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/SearchbyNurtrition/style.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -58,22 +59,22 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;FE/FIX/#134&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "git-widget-placeholder": "FE/FIX/#135",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "/Users/mac/Downloads/SSAFY/SSAFY_season2/commonproject",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/Frontend/src/components/KioskCouponPopup" />
+@@ -120,7 +121,7 @@
+       <workItem from="1739781327516" duration="6000" />
+       <workItem from="1739882723898" duration="12236000" />
+       <workItem from="1739904889326" duration="338000" />
+-      <workItem from="1739923276863" duration="2384000" />
++      <workItem from="1739923276863" duration="13134000" />
+     </task>
+     <task id="LOCAL-00001" summary="[FE/FIX] 배포 테스트 (#68)">
+       <option name="closed" value="true" />
+@@ -258,7 +259,23 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739901147961</updated>
+     </task>
+-    <option name="localTasksCounter" value="18" />
++    <task id="LOCAL-00018" summary="[FE/FIX] 메인페이지 css 수정 (#129)">
++      <option name="closed" value="true" />
++      <created>1739925905795</created>
++      <option name="number" value="00018" />
++      <option name="presentableId" value="LOCAL-00018" />
++      <option name="project" value="LOCAL" />
++      <updated>1739925905795</updated>
++    </task>
++    <task id="LOCAL-00019" summary="[FE/FIX] 메인페이지 css 수정 (#129)">
++      <option name="closed" value="true" />
++      <created>1739925924491</created>
++      <option name="number" value="00019" />
++      <option name="presentableId" value="LOCAL-00019" />
++      <option name="project" value="LOCAL" />
++      <updated>1739925924491</updated>
++    </task>
++    <option name="localTasksCounter" value="20" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+Index: Frontend/src/api/resultBottomsheetApi.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import axios from 'axios';\n\nconst apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\nconst resultBottomSheetApi = async ({ coords, itemId, receivedData }) => {\n    try {\n        // API 호출\n        const response = await axios.get(`${apiUrl}/api/store/list`, {\n            params: { x: coords.lat,\n                      y: coords.lng,\n                      itemId: itemId,\n                      },\n        });\n\n        const resultnearStorelist = response.data;\n\n        if (response.status === 200) {\n            receivedData(resultnearStorelist); // 데이터를 부모 컴포넌트로 전달\n        } else {\n            console.error('API 요청 실패:');\n        }\n    } catch (error) {\n        if (axios.isCancel(error)) {\n            console.log('요청이 취소되었습니다:', error.message);\n        } else if (error.response) {\n            console.error('API 호출 중 오류 발생:', error.response.data);\n        } else if (error.request) {\n            console.error('응답을 받지 못했습니다:', error.request);\n        } else {\n            console.error('요청 설정 중 오류 발생:', error.message);\n        }\n\n    }\n};\n\nexport default resultBottomSheetApi\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/api/resultBottomsheetApi.js b/Frontend/src/api/resultBottomsheetApi.js
+--- a/Frontend/src/api/resultBottomsheetApi.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/api/resultBottomsheetApi.js	(date 1739935429374)
+@@ -5,9 +5,9 @@
+ const resultBottomSheetApi = async ({ coords, itemId, receivedData }) => {
+     try {
+         // API 호출
+-        const response = await axios.get(`${apiUrl}/api/store/list`, {
+-            params: { x: coords.lat,
+-                      y: coords.lng,
++        const response = await axios.get(`${apiUrl}/api/items/store-items`, {
++            params: { lat: coords.lat,
++                      lon: coords.lng,
+                       itemId: itemId,
+                       },
+         });
+Index: Frontend/src/components/SearchNutritionScroll/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* 전체 컨테이너 */\n.scrollcontents {\n    display: grid;\n    width: 100%;\n    height: 100%;\n    grid-template-rows: 8% 13% auto; /* 상단, 중단, 하단 비율 */\n    position: relative;\n    z-index: 100;\n}\n\n/* 상단 공지 영역 */\n.scrollnotice {\n    grid-row: 1;\n    display: grid;\n    place-items: center; /* 수직 및 수평 가운데 정렬 */\n    position: relative;\n    text-align: center;\n    font-size: 20px;\n    font-weight: bold; /* 강조 텍스트 */\n    z-index: 100;\n}\n\n/* 슬라이더 UI 영역 */\n.scrollui {\n    grid-row: 2;\n    display: grid;\n    align-content: space-evenly; /* 슬라이더 간격 조정 */\n    border-top: #3f72af solid 1px;\n    border-bottom: #3f72af solid 1px;\n}\n\n.scrollui label {\n    display: grid;\n    grid-template-columns: 130px 160px; /* 150px은 텍스트 영역, 나머지는 input 영역 */\n    align-items: center;\n    justify-content: center;\n    gap: 1rem;  /* 간격 설정 (원하는 값으로 조절) */\n}\n\n.scrollui label p {\n    padding-left: 10px;\n    margin: 0;\n    text-align: left;\n}\n\n.scrollui label input {\n    width: 100%;  /* input은 할당된 영역을 꽉 채웁니다. */\n}\n\n/* 검색 결과 영역 */\n.nutritionsearchresult {\n    grid-row: 3;\n    display: grid;\n    margin-top: 5px;\n}\n\n/* 검색 결과 리스트 (ul) */\n/* ul 스타일 */\n.nutritionul {\n    width: 100%;\n    height: 100%;\n    overflow-y: auto; /* 세로 스크롤 활성화 */\n    list-style-type: none; /* 기본 리스트 스타일 제거 */\n    padding-left: 0;\n    margin-top: 0;\n}\n\n/* li 스타일 */\n.nutritionli {\n    display: flex; /* 이미지와 텍스트를 가로로 정렬 */\n    align-items: center; /* 세로 가운데 정렬 */\n    width: calc(100% - 20px); /* 좌우 여백을 고려한 너비 */\n    height: 80px; /* 고정된 높이 */\n    margin: 10px auto; /* 위아래 간격 및 가운데 정렬 */\n    padding: 10px;\n    border-radius: 10px;\n    border: 1px solid #ddd;\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);\n    background-color: #f9f9f9;\n    cursor: pointer;\n}\n\n/* 이미지 스타일 */\n.nutrition-image {\n    width: 60px; /* 고정된 너비 */\n    height: 60px; /* 고정된 높이 */\n    object-fit: cover; /* 이미지 비율 유지하며 잘림 방지 */\n    border-radius: 8px; /* 둥근 모서리 추가 (선택 사항) */\n    margin-right: 15px; /* 텍스트와의 간격 */\n}\n\n/* 텍스트 스타일 */\n.nutrition-text {\n    font-size: 16px;\n    color: #333;\n}\n\n\n/* 리스트 아이템 호버 효과 (선택 사항) */\n.nutritionli:hover {\n    background-color: #f0f0ff; /* 호버 시 배경색 변경 */\n    cursor: pointer; /* 클릭 가능 마우스 커서 표시 */\n}\n\n/* 스크롤바 스타일링 (선택 사항) */\n.nutritionul::-webkit-scrollbar {\n    width: 6px;\n}\n\n.nutritionul::-webkit-scrollbar-thumb {\n    background-color: #ccc; /* 스크롤바 색상 설정 */\n    border-radius: 3px;\n}\n\n.nutritionul::-webkit-scrollbar-track {\n    background-color: #f9f9f9; /* 스크롤 트랙 색상 설정 */\n}\n\n\n/* 이미지 스타일 */\n.nutrition-image {\n    width: 60px; /* 고정된 너비 */\n    height: 60px; /* 고정된 높이 */\n    object-fit: cover; /* 이미지 비율 유지하며 잘림 방지 */\n    border-radius: 8px; /* 둥근 모서리 추가 (선택 사항) */\n    margin-right: 15px; /* 텍스트와의 간격 */\n}\n\n/* 텍스트 스타일 */\n.nutrition-text {\n    font-size: 16px;\n    color: #333;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchNutritionScroll/style.css b/Frontend/src/components/SearchNutritionScroll/style.css
+--- a/Frontend/src/components/SearchNutritionScroll/style.css	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/components/SearchNutritionScroll/style.css	(date 1739927625660)
+@@ -3,7 +3,7 @@
+     display: grid;
+     width: 100%;
+     height: 100%;
+-    grid-template-rows: 8% 13% auto; /* 상단, 중단, 하단 비율 */
++    grid-template-rows: 7% 20% 73%; /* 상단, 중단, 하단 비율 */
+     position: relative;
+     z-index: 100;
+ }
+@@ -130,4 +130,5 @@
+ .nutrition-text {
+     font-size: 16px;
+     color: #333;
++    text-align: center;
+ }
+\ No newline at end of file
+Index: Frontend/src/pages/Search/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\nimport { useLocation, useNavigate } from \"react-router-dom\";\nimport SearchApi from \"../../api/searchApi\";\nimport SearchBar from \"../../components/SearchBar\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchDropdownList from \"../../components/SearchDropdownList\";\nimport SearchNavbar from \"../../components/SearchNavbar\";\nimport './style.css';\n\nconst debounce = (func, delay) => {\n    let timeoutId;\n    return (...args) => {\n        if (timeoutId) clearTimeout(timeoutId);\n        timeoutId = setTimeout(() => {\n            func(...args);\n        }, delay);\n    };\n};\n\nconst Search = () => {\n\n\n    const [query, setQuery] = useState(\"\");\n    const [results, setResults] = useState([]);\n    const [isDropdownVisible, setDropdownVisible] = useState(false);\n    const navigate = useNavigate();\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n    const lat = queryParams.get('lat');\n    const lng = queryParams.get('lng');\n\n    const debouncedFetchResults = debounce(async (searchQuery) => {\n        try {\n            const data = await SearchApi(searchQuery);\n            setResults(data);\n            setDropdownVisible(data.length > 0);\n        } catch (error) {\n            console.error(\"검색 오류:\", error);\n        }\n    }, 500);\n\n    const handleQueryChange = (newQuery) => {\n        setQuery(newQuery);\n        debouncedFetchResults(newQuery);\n    };\n\n    const handleClear = () => {\n        setDropdownVisible(false);\n        setResults([]);\n    };\n\n    const handleItemClick = (item) => {\n        setDropdownVisible(false);\n        navigate(`/search/results?lat=${lat}&lng=${lng}&itemId=${item.item_id}&itemName=${item.item_name}`);\n    };\n\n    return (\n        <div className=\"searchpage\">\n            <div className=\"searchpageheader\"><HeaderContainer /></div>\n            <div className=\"searchpagesearchbar\">\n                <SearchBar\n                    setQuery={handleQueryChange}\n                    onClear={handleClear}\n                />\n                {isDropdownVisible && results?.length > 0 && (\n                    <div className=\"searchpagedropdown\">\n                        <SearchDropdownList\n                            results={results}\n                            onItemClick={handleItemClick}\n                        />\n                    </div>\n                )}\n            </div>\n            <div className=\"searchpagenavbar\">\n                <SearchNavbar lat={lat} lng={lng} />\n            </div>\n            <div className=\"searchpagerecommend\">\n                <ul>\n                    <li>원하시는 제품을 검색하면 해당 제품을 보유한<br/> 근처 가게를 볼 수 있어요.</li>\n                    <li>메인페이지에서 <img src=\"/mylocation.png\"/>을 눌러 위치를 설정할 수 있어요.</li>\n                    <li>영양분으로도 제품을 검색해보세요!</li>\n                </ul>\n            </div>\n        </div>\n    );\n};\n\nexport default Search;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/Search/index.js b/Frontend/src/pages/Search/index.js
+--- a/Frontend/src/pages/Search/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/pages/Search/index.js	(date 1739936542752)
+@@ -63,6 +63,7 @@
+                     setQuery={handleQueryChange}
+                     onClear={handleClear}
+                 />
++
+                 {isDropdownVisible && results?.length > 0 && (
+                     <div className="searchpagedropdown">
+                         <SearchDropdownList
+Index: Frontend/src/components/SearchNutritionScroll/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState, useEffect } from 'react';\nimport { useNavigate, useLocation } from 'react-router-dom';\nimport axios from 'axios';\nimport './style.css'\n\n\nconst SearchNutritionScroll = ({ coords }) => {\n    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;\n\n    const navigate = useNavigate();\n\n    // 상태 관리\n    const [maxSugar, setMaxSugar] = useState(100);\n    const [maxCal, setMaxCal] = useState(500);\n    const [items, setItems] = useState([]);\n    const [error, setError] = useState(null);\n\n    console.log(coords)\n    // API 호출 함수\n    const fetchItems = async (maxSugar, maxCal) => {\n        try {\n            const response = await axios.get(`${apiUrl}/api/items/search`, {\n                params: {\n                    minSugar: 0, // 항상 0으로 고정\n                    maxSugar,\n                    minCal: 0, // 항상 0으로 고정\n                    maxCal,\n                },\n            });\n            setItems(response.data); // 받아온 데이터를 상태에 저장\n        } catch (err) {\n            console.error('API 호출 중 오류 발생:', err);\n            setError('데이터를 불러오는 중 오류가 발생했습니다.');\n        }\n    };\n\n    // 값이 변경될 때마다 API 호출\n    useEffect(() => {\n        fetchItems(maxSugar, maxCal);\n    }, [maxSugar, maxCal]);\n\n    return (\n        <div className=\"scrollcontents\">\n            <div className=\"scrollnotice\">영양분으로 검색하기</div>\n\n            <div className=\"scrollui\">\n                <label>\n                    <p>당 함유량: {maxSugar}</p>\n                    <input\n                        type=\"range\"\n                        min=\"0\"\n                        max=\"100\"\n                        value={maxSugar}\n                        onChange={(e) => setMaxSugar(Number(e.target.value))}\n                    />\n                </label>\n                <label>\n                    <p>칼로리: {maxCal}</p>\n                    <input\n                        type=\"range\"\n                        min=\"0\"\n                        max=\"500\"\n                        value={maxCal}\n                        onChange={(e) => setMaxCal(Number(e.target.value))}\n                    />\n                </label>\n            </div>\n\n            <div className=\"nutritionsearchresult\">\n                {error && <p style={{ color: 'red' }}>{error}</p>}\n                {!error && items.length === 0 && <p>데이터가 없습니다.</p>}\n                {!error && items.length > 0 && (\n                    <ul className=\"nutritionul\">\n                        {items.map((item) => (\n                            <li\n                                className=\"nutritionli\"\n                                key={item.itemId}\n                                onClick={() =>\n                                    navigate(\n                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.itemId}&itemName=${item.itemName}`\n                                    )\n                                }\n                            >\n                                <img\n                                    src={item.itemImageUrl} // 이미지 URL\n                                    alt={item.itemName}\n                                    className=\"nutrition-image\"\n                                />\n                                <span className=\"nutrition-text\">{item.itemName}</span>\n                            </li>\n                        ))}\n                    </ul>\n                )}\n            </div>\n        </div>\n    );\n};\n\nexport default SearchNutritionScroll;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/components/SearchNutritionScroll/index.js b/Frontend/src/components/SearchNutritionScroll/index.js
+--- a/Frontend/src/components/SearchNutritionScroll/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/components/SearchNutritionScroll/index.js	(date 1739930153808)
+@@ -1,43 +1,39 @@
+-import React, { useState, useEffect } from 'react';
+-import { useNavigate, useLocation } from 'react-router-dom';
+-import axios from 'axios';
++import { useState, useEffect } from 'react';
++import { useNavigate } from 'react-router-dom';
++import NutritionSearchEmptyApi from "../../api/NutritionSearchEmptyApi";
++import NutritionSearchApi from "../../api/NutritionSearchApi";
+ import './style.css'
+ 
+-
+-const SearchNutritionScroll = ({ coords }) => {
+-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+-
++const SearchNutritionScroll = ({ coords, searchQuery }) => {
+     const navigate = useNavigate();
+-
+-    // 상태 관리
+     const [maxSugar, setMaxSugar] = useState(100);
+     const [maxCal, setMaxCal] = useState(500);
+     const [items, setItems] = useState([]);
+     const [error, setError] = useState(null);
+ 
+-    console.log(coords)
+-    // API 호출 함수
+-    const fetchItems = async (maxSugar, maxCal) => {
+-        try {
+-            const response = await axios.get(`${apiUrl}/api/items/search`, {
+-                params: {
+-                    minSugar: 0, // 항상 0으로 고정
+-                    maxSugar,
+-                    minCal: 0, // 항상 0으로 고정
+-                    maxCal,
+-                },
+-            });
+-            setItems(response.data); // 받아온 데이터를 상태에 저장
+-        } catch (err) {
+-            console.error('API 호출 중 오류 발생:', err);
+-            setError('데이터를 불러오는 중 오류가 발생했습니다.');
+-        }
+-    };
++    console.log(searchQuery);
++
++    useEffect(() => {
++        const fetchData = async () => {
++            try {
++                let result;
++                if (searchQuery) {
++                    // 검색어 있을 때: 일반 검색 API 사용
++                    result = await NutritionSearchApi(maxSugar, maxCal, searchQuery);
++                } else {
++                    // 검색어 없을 때: 기본 필터 API 사용
++                    result = await NutritionSearchEmptyApi(maxSugar, maxCal);
++                }
++                setItems(result || []);
++                setError(null);
++            } catch (err) {
++                setError('데이터 로딩에 실패했습니다');
++                setItems([]);
++            }
++        };
++        fetchData();
++    }, [maxSugar, maxCal, searchQuery]); // 검색어 변경 감지
+ 
+-    // 값이 변경될 때마다 API 호출
+-    useEffect(() => {
+-        fetchItems(maxSugar, maxCal);
+-    }, [maxSugar, maxCal]);
+ 
+     return (
+         <div className="scrollcontents">
+@@ -74,19 +70,19 @@
+                         {items.map((item) => (
+                             <li
+                                 className="nutritionli"
+-                                key={item.itemId}
++                                key={item.item_id}
+                                 onClick={() =>
+                                     navigate(
+-                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.itemId}&itemName=${item.itemName}`
++                                        `/search/results?lat=${coords.lat}&lng=${coords.lng}&itemId=${item.item_id}&itemName=${item.item_name}`
+                                     )
+                                 }
+                             >
+                                 <img
+                                     src={item.itemImageUrl} // 이미지 URL
+-                                    alt={item.itemName}
++                                    alt={item.item_name}
+                                     className="nutrition-image"
+                                 />
+-                                <span className="nutrition-text">{item.itemName}</span>
++                                <span className="nutrition-text">{item.item_name}</span>
+                             </li>
+                         ))}
+                     </ul>
+Index: Frontend/src/pages/SearchbyNurtrition/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useLocation } from \"react-router-dom\";\nimport HeaderContainer from \"../../components/HeaderContainer/HeaderContainer\";\nimport SearchNutritionScroll from \"../../components/SearchNutritionScroll\";\nimport './style.css'\n\nconst SearchbyNurtrition = () => {\n\n    const location = useLocation();\n    const queryParams = new URLSearchParams(location.search);\n\n    const coords = {lat: queryParams.get('lat'), lng: queryParams.get('lng')}\n\n\n    return (\n    <div className=\"searchbynurtritioncontents\">\n        <div className=\"nutritionheader\"><HeaderContainer/></div>\n        <div className=\"nutritionScroll\"><SearchNutritionScroll coords={coords}/></div>\n    </div>\n)\n}\n\nexport default SearchbyNurtrition
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Frontend/src/pages/SearchbyNurtrition/index.js b/Frontend/src/pages/SearchbyNurtrition/index.js
+--- a/Frontend/src/pages/SearchbyNurtrition/index.js	(revision 4d76cffa6d45993b7462ce9d3e545628a14a2d2d)
++++ b/Frontend/src/pages/SearchbyNurtrition/index.js	(date 1739930260652)
+@@ -1,22 +1,48 @@
++import { useState } from "react";
+ import { useLocation } from "react-router-dom";
+ import HeaderContainer from "../../components/HeaderContainer/HeaderContainer";
+ import SearchNutritionScroll from "../../components/SearchNutritionScroll";
+ import './style.css'
+ 
+ const SearchbyNurtrition = () => {
+-
+     const location = useLocation();
+     const queryParams = new URLSearchParams(location.search);
++    const [searchQuery, setSearchQuery] = useState('');
+ 
+-    const coords = {lat: queryParams.get('lat'), lng: queryParams.get('lng')}
+-
++    const coords = {
++        lat: queryParams.get('lat'),
++        lng: queryParams.get('lng')
++    }
+ 
+     return (
+-    <div className="searchbynurtritioncontents">
+-        <div className="nutritionheader"><HeaderContainer/></div>
+-        <div className="nutritionScroll"><SearchNutritionScroll coords={coords}/></div>
+-    </div>
+-)
++        <div className="searchbynurtritioncontents">
++            <div className="nutritionheader"><HeaderContainer/></div>
++
++            {/* 검색 입력 섹션 */}
++            <div className="nutritionsearchbar">
++                <input
++                    type="text"
++                    value={searchQuery}
++                    onChange={(e) => setSearchQuery(e.target.value)}
++                    placeholder="음식 이름으로 검색"
++                />
++                <button
++                    className="nutritionsearchbtn"
++                    onClick={() => setSearchQuery('')}
++                >
++                    x
++                </button>
++            </div>
++
++            {/* 스크롤 컴포넌트에 검색어 전달 */}
++            <div className="nutritionScroll">
++                <SearchNutritionScroll
++                    coords={coords}
++                    searchQuery={searchQuery}
++                />
++            </div>
++        </div>
++    )
+ }
+ 
+-export default SearchbyNurtrition
+\ No newline at end of file
++export default SearchbyNurtrition

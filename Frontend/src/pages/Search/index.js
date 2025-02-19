@@ -63,6 +63,7 @@ const Search = () => {
                     setQuery={handleQueryChange}
                     onClear={handleClear}
                 />
+
                 {isDropdownVisible && results?.length > 0 && (
                     <div className="searchpagedropdown">
                         <SearchDropdownList
