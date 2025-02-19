@@ -23,9 +23,6 @@ public class QueryCreator {
                 .boost(boost);
     }
 
-    public static Function<RangeQuery.Builder, ObjectBuilder<RangeQuery>> buildRangeFilter(String field, double min, double max) {
-        return r -> r.number(rn -> rn.field(field).gte(min).lte(max));
-    }
 
     public static Function<TermsQuery.Builder, ObjectBuilder<TermsQuery>> buildTermsQuery(String field, List<Integer> values) {
         List<FieldValue> fieldValues = values.stream()

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class ESItemController {
     private final SimpleRecommandService recommandService;
 
     @GetMapping("/autocomplete")
-    public List<ESItem> autocomplete(@RequestParam String prefix) {
+    public List<ESItem> autocomplete(@RequestParam String prefix) throws IOException {
         return esItemService.autocompleteItemName(prefix);
     }
 
@@ -38,7 +39,7 @@ public class ESItemController {
     public List<ESItem> searchByRange(@RequestParam(required = false) Integer minSugar,
                                       @RequestParam(required = false) Integer maxSugar,
                                       @RequestParam(required = false) Integer minCal,
-                                      @RequestParam(required = false) Integer maxCal) {
+                                      @RequestParam(required = false) Integer maxCal) throws IOException {
         return esItemService.searchBySugarAndCalorieRange(minSugar, maxSugar, minCal, maxCal);
     }
 
@@ -51,21 +52,12 @@ public class ESItemController {
      * @return        검색된 매장 리스트
      */
     @GetMapping("/store-items")
-    public ResponseEntity<List<ESStoreItem>> searchStoreItems(
+    public ResponseEntity<List<ESStoreItem>> searchStoreItems (
             @RequestParam("itemId") Integer itemId,
             @RequestParam("lat") double lat,
-            @RequestParam("lon") double lon) {
+            @RequestParam("lon") double lon) throws IOException {
 
         List<ESStoreItem> results = esItemService.searchStoreItemsByRange(itemId, lat, lon);
-        return ResponseEntity.ok(results);
-    }
-
-    @GetMapping("/store-list")
-    public ResponseEntity<List<ESStoreItem>> searchStore(
-            @RequestParam("lat") double lat,
-            @RequestParam("lon") double lon) {
-
-        List<ESStoreItem> results = esItemService.searchStoreByRange(lat, lon);
         return ResponseEntity.ok(results);
     }
 

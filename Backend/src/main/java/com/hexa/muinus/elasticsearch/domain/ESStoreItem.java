@@ -1,5 +1,6 @@
 package com.hexa.muinus.elasticsearch.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Document(indexName = "store_items")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ESStoreItem {
 
     @Id
@@ -53,5 +55,5 @@ public class ESStoreItem {
     private GeoPoint location;
 
     @Transient
-    private Double distance;
+    private Integer distance;
 }

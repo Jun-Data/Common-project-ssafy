@@ -137,8 +137,6 @@ public class ItemSearchEngine {
                         b.should(s -> s.constantScore(QueryCreator.buildConstantScoreQuery(field, token, boost)));
                     });
 
-                    b.filter(f -> f.range(QueryCreator.buildRangeFilter("sugars", condition.getMinSugar(), condition.getMaxSugar())));
-                    b.filter(f -> f.range(QueryCreator.buildRangeFilter("calories", condition.getMinCal(), condition.getMaxCal())));
 
                     // 최소 매치 수
                     b.minimumShouldMatch("1");

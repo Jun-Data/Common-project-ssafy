@@ -3,6 +3,9 @@ package com.hexa.muinus.elasticsearch.config;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -14,10 +17,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 @Configuration
 public class ElasticsearchConfig {
@@ -32,18 +35,15 @@ public class ElasticsearchConfig {
     private String password;
 
     /**
-     * RestClient 생성
-     * - 인증정보가 있으면 Basic 인증을 적용합니다.
+     * RestClient 생성 - 인증정보가 있으면 Basic 인증 적용
      */
     @Bean
     public RestClient restClient() {
         RestClientBuilder builder = RestClient.builder(HttpHost.create(esUri));
         if (username != null && !username.isEmpty()) {
             BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(
-                    AuthScope.ANY,
-                    new UsernamePasswordCredentials(username, password)
-            );
+            credsProvider.setCredentials(AuthScope.ANY,
+                    new UsernamePasswordCredentials(username, password));
             builder.setHttpClientConfigCallback(
                     httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credsProvider)
             );
@@ -52,12 +52,18 @@ public class ElasticsearchConfig {
     }
 
     /**
-     * ElasticsearchClient 생성
-     * - RestClient를 기반으로 RestClientTransport와 JacksonJsonpMapper를 사용합니다.
+     * ElasticsearchClient 생성 - 커스터마이징된 ObjectMapper를 사용하여 JacksonJsonpMapper 적용
      */
     @Bean
     public ElasticsearchClient elasticsearchClient(RestClient restClient) {
-        RestClientTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+        ObjectMapper objectMapper = new ObjectMapper();
+        // JavaTimeModule 등록 (Java 8 날짜/시간 지원)
+        objectMapper.registerModule(new JavaTimeModule());
+        // Elasticsearch가 반환하는 스네이크 케이스 JSON을 도메인 클래스의 카멜 케이스와 매핑
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+
+        JacksonJsonpMapper jsonpMapper = new JacksonJsonpMapper(objectMapper);
+        RestClientTransport transport = new RestClientTransport(restClient, jsonpMapper);
         return new ElasticsearchClient(transport);
     }
 
@@ -70,8 +76,7 @@ public class ElasticsearchConfig {
     }
 
     /**
-     * ElasticsearchConverter 생성
-     * - 도메인 객체와 Elasticsearch 문서 간의 변환을 지원합니다.
+     * ElasticsearchConverter 생성 - 도메인 객체와 Elasticsearch 문서 간의 변환 지원
      */
     @Bean
     public ElasticsearchConverter elasticsearchConverter(SimpleElasticsearchMappingContext mappingContext) {
@@ -81,14 +86,12 @@ public class ElasticsearchConfig {
     @Bean
     public GenericConversionService conversionService() {
         GenericConversionService conversionService = new GenericConversionService();
-        // 커스텀 변환기 등록
         conversionService.addConverter(new StringToLocalDateTimeConverter());
         return conversionService;
     }
 
     /**
-     * ElasticsearchOperations 빈 생성
-     * - 새로운 ElasticsearchTemplate은 org.springframework.data.elasticsearch.client.elc 패키지에 있습니다.
+     * ElasticsearchOperations 빈 생성 - ElasticsearchTemplate 사용 (org.springframework.data.elasticsearch.client.elc)
      */
     @Bean("elasticsearchTemplate")
     public ElasticsearchOperations elasticsearchOperations(ElasticsearchClient client, ElasticsearchConverter converter) {
