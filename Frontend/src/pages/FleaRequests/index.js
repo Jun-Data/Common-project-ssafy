@@ -98,6 +98,8 @@ const FleaRequests = () => {
             <RequestItem><strong>수량:</strong> {request.quantity}</RequestItem>
             <RequestItem><strong>섹션 번호:</strong> {request.sectionNumber}</RequestItem>
             <RequestItem><img src={request.imageUrl} alt={request.itemName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></RequestItem>
+            
+
           </RequestCard>
         ))
       ) : (
