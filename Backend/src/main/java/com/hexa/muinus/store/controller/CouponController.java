@@ -3,6 +3,7 @@ package com.hexa.muinus.store.controller;
 import com.hexa.muinus.store.dto.coupon.CouponTypeResponseDto;
 import com.hexa.muinus.store.dto.coupon.CouponRequestDto;
 import com.hexa.muinus.store.dto.coupon.CouponListResponseDto;
+import com.hexa.muinus.store.service.CouponFacade;
 import com.hexa.muinus.store.service.CouponService;
 import com.hexa.muinus.users.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import java.util.List;
 public class CouponController {
 
     private final CouponService couponService;
+    private final CouponFacade couponFacade;
 
     // 쿠폰 종류 전체 조회
     @GetMapping("/type")
@@ -50,7 +52,7 @@ public class CouponController {
     // 쿠폰 수령
     @PostMapping("/receive")
     public ResponseEntity<?> receiveCoupon(HttpServletRequest request, @Valid @RequestBody ReceiveCouponRequestDto receiveCouponRequestDto){
-        couponService.receiveCoupon(request, receiveCouponRequestDto);
+        couponFacade.receiveCouponWithRetry(request, receiveCouponRequestDto);
         return ResponseEntity.ok("쿠폰 수령이 완료되었습니다.");
     }
 
@@ -71,7 +73,7 @@ public class CouponController {
 
     // 쿠폰 바코드 인식
     @PostMapping("/check")
-        public ResponseEntity<CouponQRCodeCheckResponseDto> checkCouponBarcode(HttpServletRequest request, @Valid @RequestBody CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
+        public ResponseEntity<CouponQRCodeCheckResponseDto> checkCouponQR(HttpServletRequest request, @Valid @RequestBody CouponQRCodeCheckRequestDto couponQRCodeCheckRequestDto){
         CouponQRCodeCheckResponseDto responseDto = couponService.checkCouponQR(request, couponQRCodeCheckRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }

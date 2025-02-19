@@ -22,8 +22,12 @@ import com.hexa.muinus.users.domain.coupon.UserCouponHistoryId;
 import com.hexa.muinus.users.domain.user.Users;
 import com.hexa.muinus.users.domain.user.repository.UserRepository;
 import com.hexa.muinus.users.dto.*;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +45,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CouponService {
 
+    @PersistenceContext
+    private EntityManager entityManager;
     private final CouponRepository couponRepository;
     private final CouponHistoryRepository couponHistoryRepository;
     private final UserCouponHistoryRepository userCouponHistoryRepository;
@@ -136,25 +143,16 @@ public class CouponService {
                 .toList();
     }
     
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void decreaseCouponCount(CouponHistoryId couponHistoryId){
-        int updateRows = couponHistoryRepository.decreaseCouponCount(couponHistoryId);
-        
-        if(updateRows == 0){
-            throw new OptimisticLockException("쿠폰 감소 실패 - 재고 부족 또는 충돌 발생");
-        }
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    /**
+     * 쿠폰 발급 처리의 단일 시도를 담당
+     * 낙관적 락 충돌이 나면 예외를 그대로 던진다.
+     * 재시도는 이 메소드를 감싸는 쪽(Facade)에서 담당.
+     * @param receiveCouponRequestDto
+     */
+    @Transactional
     public void receiveCoupon(HttpServletRequest request, ReceiveCouponRequestDto receiveCouponRequestDto) {
-        int maxAttempts = 5;// 최대 재시도 횟수
-        int attempt = 0;
-        
-        while(attempt < maxAttempts){
-            try{
                 // 이메일 추출
                 String email = jwtProvider.getUserEmailFromAccessToken(request);
-
                 // 로그인 유저 확인
                 Users user = userRepository.findByEmail(email);
                 Integer userNo = user.getUserNo();
@@ -188,7 +186,7 @@ public class CouponService {
                         receiveCouponRequestDto.getCouponId()
                 );
 
-                // 쿠폰 히스토리 조회
+                // 쿠폰 히스토리 조회(이 때는 낙관적 락이 안걸림)
                 CouponHistory couponHistory = couponHistoryRepository.findById(couponHistoryId)
                         .orElseThrow(CouponNotIssuedException::new);
 
@@ -197,9 +195,14 @@ public class CouponService {
                     throw new CouponOutOfStock(userCouponHistoryId.getStoreNo(), userCouponHistoryId.getCouponId());
                 }
 
-                // 쿠폰 개수 감소(트랜잭션 분리)
-                decreaseCouponCount(couponHistoryId);
+                // 쿠폰 개수 감소
+                couponHistory.setCount(couponHistory.getCount() - 1);
 
+                //flush()를 통해 즉시 DB에 반영 -> 데드락 발생 시 여기서 예외
+                entityManager.flush();
+
+                // 변경 사항 저장(낙관적 락: @Version 체크됨)
+                couponHistoryRepository.save(couponHistory);
 
                 // 새로운 UserCouponHistory 생성.
                 UserCouponHistory userCouponHistory = new UserCouponHistory(
@@ -211,18 +214,9 @@ public class CouponService {
                 );
                 userCouponHistoryRepository.save(userCouponHistory);
 
-                return; //성공 시 종료;
-                
-            } catch (OptimisticLockException e){
-                attempt++;
-                log.warn("낙관적 락 충돌 발생 - 재시도 {}/{}", attempt, maxAttempts);
-                
-                if(attempt >= maxAttempts){
-                    log.error("최대 재시도 횟수 초과 - 쿠폰 수령 실패");
-                    throw new RuntimeException("쿠폰 수령 중 충돌이 발생했습니다. 다시 시도해주세요");
-                }
-            }
-        }
+                // 다시 flush()해 insert 시 발생할 수 있는 DeadLock도 조기 감지
+//                entityManager.flush();
+
     }
 
     @Transactional(readOnly = true)
@@ -253,7 +247,6 @@ public class CouponService {
                             history.getUsedAt()
                     );
                 }).toList();
-
     }
 
     @Transactional
