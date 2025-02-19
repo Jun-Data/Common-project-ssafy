@@ -35,6 +35,10 @@ public class OpenViduController {
         for (Session session : activeSessions) {
             if (session.getSessionId().equals(storeNo)) {
                 log.info("Session already exists for storeNo: {}", storeNo);
+                log.info("참가자 수 : {} ",session.getConnections().size());
+                if (session.getConnections().size() > 1) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
                 return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409 Conflict
             }
         }
