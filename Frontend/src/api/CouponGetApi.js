@@ -1,4 +1,5 @@
 import apiClient from "./apiClient";
+import Swal from "sweetalert2";
 
 const CouponGetApi = async (nStoreNo, couponId) => {
     try {
@@ -9,7 +10,11 @@ const CouponGetApi = async (nStoreNo, couponId) => {
 
         // 성공 케이스
         if (response.status === 200) {
-            alert('쿠폰 발급 성공!')
+            Swal.fire({
+                icon: "success",
+                title: "요청 완료!",
+                text: "쿠폰이 발급되었어요!",
+            });            
             return response.data
         }
 
@@ -19,7 +24,11 @@ const CouponGetApi = async (nStoreNo, couponId) => {
 
         // 40930: 이미 수령한 쿠폰
         if (errorCode) {
-            alert(errorMessage) // 서버에서 받은 메시지 바로 표시
+            Swal.fire({
+                icon: "error",
+                title: "오류 발생!",
+                text: "이미 발급한 쿠폰입니다!",
+            });
             return { isError: true, errorCode } // 추가 작업을 위한 정보 반환
         }
 

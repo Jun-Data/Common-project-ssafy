@@ -184,8 +184,12 @@ function OwnerSignUp() {
                 const businessStatusCode = response.data.data[0].b_stt_cd;
                 if (businessStatusCode === "01") {
                     // 성공적인 인증 후 처리
-                    alert("✅ 사업자등록번호가 정상입니다.");
-
+                    // alert("✅ 사업자등록번호가 정상입니다.");
+                    Swal.fire({
+                        icon: "success",
+                        title: "요청 완료!",
+                        text: "사업자등록번호가 정상입니다다",
+                    });
                     // 사업자등록번호 유효성 검사를 통과한 후, 폼에 값 반영
                     setFormData((prevFormData) => ({
                     ...prevFormData,
@@ -196,13 +200,28 @@ function OwnerSignUp() {
                         registrationNumber: "", // 에러 메시지 초기화
                     }));
                 } else {
-                    alert("❌ 사업자등록번호 유효하지 않음.");
+                    // alert("❌ 사업자등록번호 유효하지 않음.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "오류 발생!",
+                        text: "사업자등록번호 유효하지 않습니다",
+                    });
                 }
             } else {
-                alert("❓ 알 수 없는 응답 상태입니다.");
+                // alert("❓ 알 수 없는 응답 상태입니다.");
+                Swal.fire({
+                    icon: "error",
+                    title: "오류 발생!",
+                    text: "알 수 없는 응답 상태입니다",
+                });
             }
         } catch (error) {
-            alert("사업자등록번호 조회에 실패했습니다.");
+            // alert("사업자등록번호 조회에 실패했습니다.");
+            Swal.fire({
+                icon: "error",
+                title: "오류 발생!",
+                text: "사업자등록번호 조회에 실패했습니다",
+            });
         }
     };
     

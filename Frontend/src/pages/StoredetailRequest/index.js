@@ -7,7 +7,7 @@ import SearchBar from "../../components/SearchBar";
 import SearchDropdownList from "../../components/SearchDropdownList";
 import './style.css';
 import Button from "../../components/Button";
-
+import Swal from "sweetalert2";
 
 // 디바운스 함수 정의
 const debounce = (func, delay) => {
@@ -51,9 +51,10 @@ const StoredetailRequestPopup = () => {
     };
 
     const handleItemClick = (item) => {
+        console.log(item)
         setProductImage(item.itemImageUrl)
         setSelectedItem(item.itemId);
-        setMessage(`${item.itemName}\n이 선택되었어요!`)
+        setMessage(`${item.item_name}을 원하시는군요!`);
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
     };
 
@@ -62,8 +63,12 @@ const StoredetailRequestPopup = () => {
         const storeId = nStoreNo;
 
         if (itemId === 0) {
-            alert('제품을 선택 후 제출해주세요');
-            return; // 함수 실행 중지
+            Swal.fire({
+                icon: "warning",
+                title: "제품을 선택해주세요!",
+                text: "제품을 선택한 후 제출할 수 있습니다.",
+            });
+        return; // 함수 실행 중지
         }
 
         try {
@@ -75,13 +80,22 @@ const StoredetailRequestPopup = () => {
 
             // API 응답 처리
             console.log('요청 성공:', result);
-            alert('요청이 성공적으로 전달되었어요!')
-            navigate(-1)
+            Swal.fire({
+                icon: "success",
+                title: "요청 완료!",
+                text: "요청이 성공적으로 전달되었어요!",
+            }).then(() => {
+                navigate(-1);
+            });
 
         } catch (error) {
             console.error('요청 실패:', error);
-            alert('오류가 발생했습니다. 다시 시도해주세요.')
-        }
+            Swal.fire({
+                icon: "error",
+                title: "오류 발생!",
+                text: "다시 시도해주세요.",
+            });
+                }
     };
 
     const handleClear = () => {
@@ -115,7 +129,7 @@ const StoredetailRequestPopup = () => {
                     </div>
                     <div className="requestbuttonzone">
                         <Button type="SECONDARY" className="requestbuttons" onClick={() => navigate(-1)}>닫기</Button>
-                        <Button type="PRIMARY" className="requestbuttons" onClick={handleSubmit}>제출하기</Button>
+                        <Button type="PRIMARY" className="requestbuttons" onClick={handleSubmit}>요청하기</Button>
                     </div>
                 </div>
             </div>

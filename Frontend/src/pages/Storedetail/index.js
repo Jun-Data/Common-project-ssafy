@@ -9,6 +9,7 @@ import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import Button from "../../components/Button";
 import "./style.css";
+import Swal from "sweetalert2";
 
 const StoreDetail = () => {
   const [productData, setProductData] = useState(null); // API 데이터를 저장할 상태
@@ -28,7 +29,12 @@ const StoreDetail = () => {
   // 수정 필요
   const checkLogin = () => {
     if (!logindata) {
-      alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+      // alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+      Swal.fire({
+        icon: "error",
+        title: "오류 발생!",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+    });
       axios.get(`${apiUrl}/api/users/login`, {});
       return false;
     }
@@ -41,7 +47,12 @@ const StoreDetail = () => {
     try {
       const couponList = await CouponListApi(nStoreNo);
       if (!couponList || couponList.length === 0 || !couponList[0]?.couponId) {
-        alert("사용 가능한 쿠폰이 없습니다");
+        // alert("사용 가능한 쿠폰이 없습니다");
+        Swal.fire({
+          icon: "error",
+          title: "오류 발생!",
+          text: "사용 가능한 쿠폰이 없습니다",
+      });
         return;
       }
 

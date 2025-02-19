@@ -7,6 +7,7 @@ import PaymentPopup from '../../components/KioskPaymentPopup';
 import KioskCouponPopup from "../../components/KioskCouponPopup";
 import KioskPaymentFinishPopup from "../../components/KioskPaymentFinishPopup";
 import './style.css';
+import Swal from 'sweetalert2';
 
 const KioskMainScreen = () => {
     const [state, setState] = useState({
@@ -36,7 +37,12 @@ const KioskMainScreen = () => {
             if (existing) {
                 // Check if adding more exceeds stock
                 if (existing.quantity + 1 > product.quantity) {
-                    alert(`재고가 부족합니다. 최대 ${product.quantity}개까지 담을 수 있습니다.`);
+                    // alert(`재고가 부족합니다. 최대 ${product.quantity}개까지 담을 수 있습니다.`);
+                    Swal.fire({
+                        icon: "warning",
+                        title: "재고 부족!",
+                        text: `재고가 부족합니다. 최대 ${product.quantity}개까지 담을 수 있습니다`,
+                    });
                     return prevItems; // Return without changes
                 }
                 return prevItems.map((item) =>
@@ -47,7 +53,12 @@ const KioskMainScreen = () => {
             } else {
                 // Check if initial quantity exceeds stock
                 if (product.quantity < 1) {
-                    alert(`재고가 부족합니다.`);
+                    // alert(`재고가 부족합니다.`);
+                    Swal.fire({
+                        icon: "error",
+                        title: "재고 부족!",
+                        text: "현재 재고가 없습니다.",
+                    });
                     return prevItems;
                 }
                 return [
@@ -64,7 +75,12 @@ const KioskMainScreen = () => {
                 if (item.itemName === itemName) {
                     // Check if increment exceeds stock
                     if (item.quantity + 1 > item.stockQuantity) {
-                        alert(`재고가 부족합니다. 최대 ${item.stockQuantity}개까지 담을 수 있습니다.`);
+                        // alert(`재고가 부족합니다. 최대 ${item.stockQuantity}개까지 담을 수 있습니다.`);
+                        Swal.fire({
+                            icon: "warning",
+                            title: "재고 부족!",
+                            text: `재고가 부족합니다. 최대 ${item.stockQuantity}개까지 담을 수 있습니다`,
+                        });
                         return item; // No change to the item
                     }
                     return { ...item, quantity: item.quantity + 1 };
@@ -110,6 +126,11 @@ const KioskMainScreen = () => {
             isPaymentPopupOpen: true
         });
         alert(`쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`);
+        Swal.fire({
+            icon: "success",
+            title: "요청 완료!",
+            text: `쿠폰이 적용되었습니다! ${couponAmount.toLocaleString()}원 할인`,
+        })
     };
 
 
