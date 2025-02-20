@@ -304,7 +304,7 @@ const ModalBackground = styled.div`
 const ModalContent = styled.div`
     background-color: #ffffff;
     width: 80%;
-    height: 70%;
+    height: 65%;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -335,7 +335,7 @@ const TextArea = styled.textarea`
     margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    min-height: 210px;
+    min-height: 190px;
     outline: none;
     transition: border-color 0.3s ease;
 
@@ -369,7 +369,7 @@ const UploadContainer = styled.div`
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 60px;
+    margin-top: 30px;
     gap: 30px;
 `;
 
