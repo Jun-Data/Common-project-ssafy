@@ -27,7 +27,7 @@
 }
 
 .clear-btn {
-    flex: 0 0 50px;
+    /* flex: 0 0 50px; */
     width: 30px;
     height: 100%;
     background: none;
