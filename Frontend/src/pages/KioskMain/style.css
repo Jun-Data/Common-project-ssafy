@@ -17,7 +17,7 @@
 .mainscreencartpage {
   /* flex: 1 1 38vh; */
   /* min-height: 300px; */
-  height: 50vh;
+  height: 40vh;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2vh;
   overflow-y: auto; /* 스크롤 가능 영역 */
@@ -40,17 +40,23 @@
 
 /* 바코드 스캐너 섹션 */
 .mainscreenbarcodescanner {
-  flex: 1 1 40%;
-  min-width: 300px;
+  flex: 1 1 20%;
+  min-width: 200px;
 }
-
-/* 버튼 영역 개선 */
-.buttonzone {
-  flex: 1 1 50%;
+.buttonzonecontainer {
+  flex: 1 1 60%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  justify-content: space-between;
+}
+/* 버튼 영역 개선 */
+.buttonzone {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: row;
+  gap: 1.5vh;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  justify-content: center;
 }
 
 .cartpagetotal {
@@ -59,17 +65,59 @@
   padding: 10px 0;
 }
 
+/* 공통 스타일 */
 .mainscreenpayment,
 .mainscreentohome {
-  flex: 1;
-  min-height: 60px;
+  flex: 0 1 auto;
+  min-height: 40px;
   font-size: 40px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+  padding: 16px 32px;
 }
 
+/* mainscreenpayment 버튼 전용 스타일 */
 .mainscreenpayment {
-  background-color: #3498db;
-  color: white;
+  background-color: #3498db; /* 파란색 계열 배경 */
+  color: #fff;              /* 글자색: 흰색 */
 }
+
+/* mainscreenpayment 호버 & 클릭 시 */
+.mainscreenpayment:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mainscreenpayment:active {
+  background-color: #1c658c;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* mainscreentohome 버튼 전용 스타일 (원하는 색상으로 변경) */
+.mainscreentohome {
+  background-color: #2ecc71; /* 초록색 계열 배경 */
+  color: #fff;              /* 글자색: 흰색 */
+}
+
+/* mainscreentohome 호버 & 클릭 시 */
+.mainscreentohome:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mainscreentohome:active {
+  background-color: #1e8449;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
 
 .popup-overlay {
   background-color: rgba(0, 0, 0, 0.7);
@@ -96,6 +144,6 @@
 
   .mainscreenpayment,
   .mainscreentohome {
-    min-height: 80px;
+    min-height: 40px;
   }
 }

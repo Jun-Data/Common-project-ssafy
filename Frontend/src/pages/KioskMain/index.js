@@ -215,13 +215,15 @@ const KioskMainScreen = () => {
             <div className="kioskpleaproductlist"><KioskFleaproductlist onAddToCart={handleAddToCart}/></div>
             <div className="barcodebuttoncontainer">
                 <div className="mainscreenbarcodescanner"><BarcodeScannerComponent onAddToCart={handleAddToCart}/></div>
-                <div className="buttonzone">
+                <div className="buttonzonecontainer">
                     <div className="cartpagetotal">총 금액: {calculateTotalPrice().toLocaleString()}원</div>
-                    <button
-                        className="mainscreenpayment"
-                        onClick={() => updateState({ isCouponPromptOpen: true })}>결제하기
-                    </button>
-                    <button className="mainscreentohome" onClick={() => navigate("/kiosk")}>홈으로</button>
+                    <div className="buttonzone">
+                        <button
+                            className="mainscreenpayment"
+                            onClick={() => updateState({isCouponPromptOpen: true})}>결제하기
+                        </button>
+                        <button className="mainscreentohome" onClick={() => navigate("/kiosk")}>홈으로</button>
+                    </div>
                 </div>
             </div>
 
@@ -235,7 +237,7 @@ const KioskMainScreen = () => {
                             <button
                                 onClick={() => {
                                     updateState({
-                                    isCouponPromptOpen: false,
+                                        isCouponPromptOpen: false,
                                     isCouponPopupOpen: true
                                     })
                                 }}
