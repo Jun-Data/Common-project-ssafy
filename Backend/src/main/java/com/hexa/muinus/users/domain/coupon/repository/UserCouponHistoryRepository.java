@@ -3,6 +3,8 @@ package com.hexa.muinus.users.domain.coupon.repository;
 import com.hexa.muinus.users.domain.coupon.UserCouponHistory;
 import com.hexa.muinus.users.domain.coupon.UserCouponHistoryId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,8 @@ public interface UserCouponHistoryRepository extends JpaRepository<UserCouponHis
 
     boolean existsById(UserCouponHistoryId id);
 
-    //특정 사용자의 모든 쿠폰을 조회
-    List<UserCouponHistory> findByUser_userNo(Integer userNo);
+    @Query("SELECT uch FROM UserCouponHistory uch WHERE uch.user.userNo = :userNo AND uch.usedAt IS NULL")
+    List<UserCouponHistory> findUnusedCouponsByUser(@Param("userNo") Integer userNo);
+
 
 }

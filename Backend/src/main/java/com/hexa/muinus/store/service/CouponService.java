@@ -228,7 +228,8 @@ public class CouponService {
         Users user = userRepository.findByEmail(email);
 
         // UserCouponHistory 조회
-        List<UserCouponHistory> userCouponHistories = userCouponHistoryRepository.findByUser_userNo(user.getUserNo());
+        int userNo = user.getUserNo();
+        List<UserCouponHistory> userCouponHistories = userCouponHistoryRepository.findUnusedCouponsByUser(userNo);
 
         // 변환(ReceiveCouponResponseDto)
         return userCouponHistories.stream()
