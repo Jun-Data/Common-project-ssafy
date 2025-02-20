@@ -48,7 +48,7 @@ public class GuestTransactions {
                 .receiptCode(receiptCode)
                 .store(store)
                 .guest(guestUser)
-                .totalAmount(requestDTO.getTotalAmount())
+                .totalAmount(requestDTO.getTotalPrice())
                 .status(TxnStatus.SUCCESS)
                 .build();
     }

@@ -48,7 +48,7 @@ public class Transactions {
                 .receiptCode(receiptCode)
                 .store(store)
                 .user(user)
-                .totalAmount(requestDTO.getTotalAmount())
+                .totalAmount(requestDTO.getTotalPrice())
                 .status(TxnStatus.SUCCESS)
                 .build();
     }
