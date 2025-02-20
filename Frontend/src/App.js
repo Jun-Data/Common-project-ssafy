@@ -24,7 +24,6 @@ import VideoCall from "./pages/VideoCall";
 import { KakaoMapProvider } from "./contexts/KakaoMapContext";
 
 function App() {
-
   const location = useLocation();
 
   // 지도 페이지 판별 로직
@@ -44,7 +43,6 @@ function App() {
   return (
     <div className="App">
       <div className="appcontainer">
-      <div>
         <KakaoMapProvider>
           <Routes>
             <Route path="/signup" element={<SignUp />} />
@@ -61,7 +59,7 @@ function App() {
             <Route path="/oauth/kakao" element={<KakaoRedirect />} />
 
             <Route path="/kiosk" element={<Kiosk />} />
-            <Route path="/kiosk/:storeNo/main" element={<KioskMainScreen/>}/>
+            <Route path="/kiosk/:storeNo/main" element={<KioskMainScreen />} />
 
             <Route path="/" element={<MainPage />} />
             <Route
@@ -92,7 +90,6 @@ function App() {
           transition: "opacity 0.3s ease, visibility 0.3s ease",
         }}
       ></div>
-      </div>
     </div>
   );
 }
