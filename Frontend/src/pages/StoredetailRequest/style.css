@@ -23,6 +23,8 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 25px;
+    max-height: 80vh;
+    overflow: auto; /* 내부 요소가 넘치면 스크롤 */
 }
 
 
