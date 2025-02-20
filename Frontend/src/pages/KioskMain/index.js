@@ -154,7 +154,7 @@ const KioskMainScreen = () => {
                 itemsForPayment,
                 fliItemsForPayment,
                 couponId: state.couponId,
-                totalAmount: subtotal - Math.floor(subtotal * (state.discountRate / 100))
+                totalPrice: subtotal - Math.floor(subtotal * (state.discountRate / 100))
             };
 
             console.log(requestData);
