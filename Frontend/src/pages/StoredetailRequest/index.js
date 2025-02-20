@@ -54,7 +54,7 @@ const StoredetailRequestPopup = () => {
         setProductImage(item.itemImageUrl)
         setSelectedItem(item.item_id);
         setMessage(`${item.item_name}`);
-        setQuery('')
+        setQuery('');
         setDropdownVisible(false); // 선택 후 드롭다운 숨김
 
     };
