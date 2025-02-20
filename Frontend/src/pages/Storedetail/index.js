@@ -261,8 +261,8 @@ const StoreDetail = () => {
               selectedType === "store"
                 ? {
                     width: "300px",
-                    height: "350px",
-                    padding: "15px",
+                    height: "330px",
+                    padding: "12px",
                   }
                 : {}
             }

@@ -472,12 +472,14 @@
   color: #333;
   margin-bottom: 20px;
 }
-.store-item-price {
+
+.store-item-price, 
+.fliitem-price {
   font-size: 1rem;
-  margin: 3;
 }
-.store-item-quantity {
+
+.store-item-quantity, 
+.fliitem-quantity {
   font-size: 1rem;
   color: #2a9d8f;
-  margin: 3;
 }
