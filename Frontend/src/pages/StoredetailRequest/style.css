@@ -18,12 +18,11 @@
     flex-direction: column; /* 세로 방향 정렬 */
     align-items: center; /* 가로 중앙 정렬 */
     width: 80%;
-    height: 80vh;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 25px;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow: auto; /* 내부 요소가 넘치면 스크롤 */
 }
 
@@ -53,7 +52,7 @@
 /* ====== 선택된 아이템 이미지 ====== */
 
 .requestitemimage {
-    height: 60vh;
+    height: 40vh;
     display: flex;
     flex-direction: column;
     place-items: center;
