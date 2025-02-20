@@ -1,14 +1,14 @@
 package com.hexa.muinus.elasticsearch.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.util.ObjectBuilder;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import com.hexa.muinus.common.exception.ESErrorCode;
 import com.hexa.muinus.common.exception.MuinusException;
 import com.hexa.muinus.elasticsearch.config.KeywordDataLoader;
 import com.hexa.muinus.elasticsearch.domain.ESItem;
 import com.hexa.muinus.elasticsearch.dto.SearchNativeDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -124,7 +123,15 @@ public class ItemSearchEngine {
         return shuffleSameScore(hits.getSearchHits());
     }
 
-    public NativeQuery createNativeQueryForSearch(List<String> tokens,  String field, SearchNativeDTO condition){
+    private List<ESItem> extractSearchResults(SearchHits<ESItem> searchHits) {
+        List<ESItem> resultList = new ArrayList<>();
+        for (SearchHit<ESItem> hit : searchHits.getSearchHits()) {
+            resultList.add(hit.getContent());
+        }
+        return resultList;
+    }
+
+    public NativeQuery createNativeQueryForSearch(List<String> tokens, String field, SearchNativeDTO condition) {
         return new NativeQueryBuilder()
                 .withQuery(q -> q.bool(b -> {
                     tokens.forEach(token -> {
@@ -133,19 +140,26 @@ public class ItemSearchEngine {
                                 : BRAND_KEYWORDS.contains(token)
                                 ? BRAND_SCORE
                                 : MAIN_SCORE;
-                        b.should(s -> s.constantScore(QueryCreator.buildConstantScoreQuery(field, token, boost)));
+
+                        // 원본 매칭 1.5배
+                        b.should(s -> s.constantScore(QueryCreator.buildFuzzyMatchQuery(field, token, boost * 1.5F))); // 정확 일치 시 더 높은 점수
+
+                        // 동의어 매칭
+                        b.should(s -> s.constantScore(QueryCreator.buildFuzzySynonymMatchQuery(field, token, boost)));
+
+
+
                     });
 
                     b.filter(f -> f.range(QueryCreator.buildRangeFilter("sugars", condition.getMinSugar(), condition.getMaxSugar())));
                     b.filter(f -> f.range(QueryCreator.buildRangeFilter("calories", condition.getMinCal(), condition.getMaxCal())));
 
-                    // 최소 매치 수
                     b.minimumShouldMatch("1");
                     return b;
                 }))
-//                .withPageable(PageRequest.of(page, pageSize))
+                .withSort(QueryCreator.buildScoreSort())
                 .build();
-
     }
+
 }
 

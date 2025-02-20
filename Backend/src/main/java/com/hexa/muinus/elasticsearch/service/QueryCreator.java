@@ -1,13 +1,14 @@
 package com.hexa.muinus.elasticsearch.service;
 
 import co.elastic.clients.elasticsearch._types.FieldValue;
-import co.elastic.clients.elasticsearch._types.query_dsl.ConstantScoreQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.util.ObjectBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 import java.util.function.Function;
@@ -37,5 +38,32 @@ public class QueryCreator {
                 .field(field)
                 .terms(t -> t.value(fieldValues));
     }
+
+    public static Function<ConstantScoreQuery.Builder, ObjectBuilder<ConstantScoreQuery>> buildFuzzyMatchQuery(String field, String text, float boost) {
+        return csq -> csq
+                .filter(f -> f.match(m -> m.field(field).query(text).fuzziness("AUTO").operator(Operator.And).boost(boost)));
+    }
+
+    public static Function<ConstantScoreQuery.Builder, ObjectBuilder<ConstantScoreQuery>> buildFuzzySynonymMatchQuery(String field, String text, float boost) {
+        return csq -> csq
+                .filter(f -> f.match(m -> m.field(field).query(text).fuzziness("AUTO").operator(Operator.Or).boost(boost)));
+    }
+
+    public static Function<MatchQuery.Builder, ObjectBuilder<MatchQuery>> buildSynonymMatchQuery(String field, String text, float boost) {
+        return match -> match
+                .field(field)
+                .query(text)
+                .operator(Operator.Or)
+                .boost(boost);
+    }
+
+    public static Sort buildScoreSort() {
+        return Sort.by(Sort.Order.desc("_score"));
+    }
+
+
+
+
+
 
 }
