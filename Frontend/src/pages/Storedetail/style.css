@@ -15,7 +15,7 @@
 /* 기본 팝업 컨텐츠 */
 .popup-content {
   background: white;
-  /* padding: 24px; */
+  padding: 24px;
   border-radius: 12px;
   max-width: 400px;
   width: 80%;
@@ -28,9 +28,11 @@
 .coupon-popup-content {
   /* composes: popup-content; CSS 모듈 사용시 */
   background-color: white;
-  width: 400px;
+  width: 80%;
   padding: 25px;
   display: block; /* 기본 팝업의 flex 설정 제거 */
+  border-radius: 10px;
+
 }
 
 /* ============ 쿠폰 팝업 컴포넌트 스타일 ============ */

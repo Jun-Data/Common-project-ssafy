@@ -20,6 +20,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 16px;
     grid-template-rows: 10vh 8vh 50vh auto; /* 행 높이를 자동 조정 */
+    grid-template-columns: 35vh; 
+
 }
 
 /* ====== 공지 메시지 ====== */

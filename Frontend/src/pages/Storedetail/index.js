@@ -53,7 +53,13 @@ const StoreDetail = () => {
     try {
       const coupons = await CouponListApi(nStoreNo);
       if (!coupons || coupons.length === 0) {
-        alert("사용 가능한 쿠폰이 없습니다");
+        // alert("사용 가능한 쿠폰이 없습니다");
+        Swal.fire({
+          icon: "error",
+          title: "오류 발생!",
+          text: "사용 가능한 쿠폰이 없습니다",
+        })
+
         return;
       }
       setCouponList(coupons);
@@ -69,7 +75,13 @@ const StoreDetail = () => {
       const result = await CouponGetApi(nStoreNo, coupon.couponId);
 
       if (!result?.isError) {
-        alert("쿠폰이 성공적으로 발급되었습니다");
+        // alert("쿠폰이 성공적으로 발급되었습니다");
+        Swal.fire({
+          icon: 'success',
+          title: '성공!',
+          text: '쿠폰이 성공적으로 발급되었습니다!',
+        });  
+  
         // 쿠폰 리스트 갱신
         const updatedList = couponList.filter(
           (c) => c.couponId !== coupon.couponId
@@ -249,7 +261,7 @@ const StoreDetail = () => {
               selectedType === "store"
                 ? {
                     width: "300px",
-                    height: "300px",
+                    height: "350px",
                     padding: "15px",
                   }
                 : {}
