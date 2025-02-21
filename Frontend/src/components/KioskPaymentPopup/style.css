@@ -1,0 +1,139 @@
+/* 팝업 컨테이너 */
+.payment-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: grid;
+    place-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px); /* 배경 블러 효과 */
+}
+
+/* 콘텐츠 영역 */
+.payment-content {
+    width: min(90%, 600px); /* 반응형 최대 너비 */
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    grid-template-rows: auto auto 1fr auto;
+    padding: 2rem;
+    display: grid;
+    gap: 2rem;
+}
+
+.payment-total {
+    font-size: 1.8rem;
+    color: #2d3436;
+    text-align: center;
+    padding: 1.2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: -1rem 0 1rem; /* 제목과의 간격 조정 */
+    font-weight: 600;
+    border: 2px solid #e9ecef;
+}
+
+/* 모바일 대응 추가 */
+@media (max-width: 768px) {
+    .payment-total {
+        font-size: 1.4rem;
+        padding: 1rem;
+    }
+}
+
+/* 제목 스타일 */
+.payment-notice {
+    font-size: clamp(1.5rem, 4vw, 2rem); /* 반응형 폰트 */
+    color: #2d3436;
+    margin: 0;
+    font-weight: 700;
+}
+
+/* 결제 옵션 버튼 그룹 */
+.payment-options {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+}
+
+/* 개별 결제 버튼 */
+.paybtn1 {
+    width: 100%;
+    height: 80px;
+    border: none;
+    background: rgb(255,235,0) ;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.paybtn2 {
+    width: 100%;
+    height: 80px;
+    border: none;
+    background: rgb(0,222,90) ;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-options button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 종횡비 유지하며 영역 채움 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 수직/수평 중앙 정렬 */
+}
+
+.payment-options button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.payment-options button img {
+    width: 50%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+/* 닫기 버튼 */
+.close-button {
+    width: 100%;
+    height: 60px;
+    background: #eee;
+    color: #666;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: #e0e0e0;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .payment-content {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .payment-options button {
+        height: 70px;
+    }
+}

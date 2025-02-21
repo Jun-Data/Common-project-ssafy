@@ -1,0 +1,29 @@
+.mainpagebackground {
+    width: 100%;
+    height: 100%;
+}
+
+.mainpagecontents {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-rows: 8vh 10vh auto;
+    position: relative;
+    z-index: 100;
+}
+
+.mainpageheader {
+    grid-row: 1;
+    position: relative;
+    width: 100%;
+}
+
+.mainpagesearchbar {
+    grid-row: 2;
+    position: relative;
+    z-index: 99;
+    width: 90%;
+    height: 60%;
+    border-radius: 4px;
+}

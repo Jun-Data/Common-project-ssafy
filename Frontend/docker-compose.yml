@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  react-app:
+    # image: muinus-fe
+    build: ./
+    container_name: muinus-fe
+    ports:
+      - "3000:3000"
+    restart: always
+    # volumes:
+    #   - shared-volume:/usr/share/nginx/html
+    # networks:
+    #   - muinus-network
+# networks:
+#   muinus-network:
+#     external: true
+
+# volumes:
+#   shared-volume:

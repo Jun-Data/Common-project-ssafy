@@ -1,9 +1,0 @@
-/* Map.css */
-
-.map {
-    width: 100%; /* 화면 크기에 맞게 100% 설정 */
-    height: 100%; /* 화면 크기에 맞게 100% 설정 */
-    position: relative; /* position 설정으로 z-index가 동작하도록 함 */
-    z-index: 100; /* 다른 요소들 아래로 배치 */
-  }
-  

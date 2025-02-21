@@ -1,0 +1,41 @@
+/* 전체 컨테이너 스타일 */
+.search-recommend {
+    background-color: #fff; /* 흰색 배경 */
+    border-radius: 12px; /* 모서리를 둥글게 */
+    padding: 16px; /* 내부 여백 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+/* "인기 추천 제품" 제목 스타일 */
+.search-recommend > p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* 진한 회색 텍스트 */
+    margin-bottom: 12px; /* 아래 여백 */
+}
+
+/* 추천 리스트 스타일 */
+.search-recommend ul {
+    list-style-type: none; /* 기본 리스트 스타일 제거 */
+    padding: 0; /* 내부 여백 제거 */
+    margin: 0; /* 외부 여백 제거 */
+}
+
+.search-recommend li {
+    font-size: 16px;
+    color: #6b6b6b; /* 중간 회색 텍스트 */
+    background-color: #f8f8f8; /* 연한 회색 배경 */
+    padding: 10px 14px; /* 내부 여백 */
+    border-radius: 8px; /* 모서리를 둥글게 */
+    margin-bottom: 8px; /* 리스트 간격 */
+}
+
+.search-recommend li:hover {
+    background-color: #eaeaea; /* 호버 시 조금 더 진한 배경색 */
+}
+
+/* "추천 리스트가 없습니다" 메시지 스타일 */
+.search-recommend > p:last-child {
+    font-size: 14px;
+    color: #999; /* 연한 회색 텍스트 */
+}

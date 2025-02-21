@@ -1,0 +1,92 @@
+.cartpagedom {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
+.cartpageemptynotice {
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    font-size: 25px;
+}
+
+.cartpageul {
+    list-style: none;
+    width: 100%;
+    min-height: 29vh;
+    justify-items: center;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+}
+
+/* 카드 내부 요소 밀집 */
+.cartpageli {
+    position: relative;
+    width: 90%;
+    height: 60px;
+    margin: 15px 0;
+    background: lightgray;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    align-content: center;
+}
+
+.item-name {
+    grid-column: 1;
+    width: 120px;
+    padding-left: 30px;
+    font-size: 20px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.eachitemprice {
+    grid-column: 2;
+    width: 90px;
+    height: 100%;
+    font-size: 20px;
+}
+
+.pricecontrol {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cartpageplmi1 {
+    width: 40px;
+    height: 100%;
+    font-size: 20px;
+}
+
+.item-quantity {
+    width: 40px;
+    height: 100%;
+    font-size: 20px;
+}
+
+
+.cartpageplmi2 {
+    width: 40px;
+    height: 100%;
+    font-size: 20px;
+}
+
+.cartpagedelete {
+    grid-column: 4;
+    background-color: red;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+}

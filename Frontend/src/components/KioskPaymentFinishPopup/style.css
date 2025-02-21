@@ -1,0 +1,53 @@
+.kiosk-finish-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better focus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 600;
+}
+
+.kiosk-finish-content {
+    width: 90%; /* Responsive width */
+    max-width: 800px; /* Limit maximum size */
+    background-color: #ffffff;
+    padding: 40px; /* Add more padding for better spacing */
+    border-radius: 16px; /* Softer rounded corners */
+    text-align: center;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3); /* Stronger shadow for depth */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    gap: 20px; /* Add spacing between elements */
+}
+
+.kiosk-finish-notice {
+    font-size: 2.5rem; /* Scalable font size */
+    font-weight: bold;
+    color: #333333; /* Neutral dark color for readability */
+}
+
+.kiosk-finish-scanner {
+    font-size: 1.5rem; /* Scalable font size for secondary text */
+    color: #555555; /* Softer gray for secondary text */
+    line-height: 1.8; /* Improve readability */
+}
+
+@media (max-width: 768px) {
+    .kiosk-finish-content {
+        padding: 20px; /* Adjust padding for smaller screens */
+        gap: 16px; /* Reduce spacing on smaller screens */
+    }
+
+    .kiosk-finish-notice {
+        font-size: 2rem; /* Scale down heading size for mobile */
+    }
+
+    .kiosk-finish-scanner {
+        font-size: 1.2rem; /* Scale down text size for mobile */
+        line-height: 1.6;
+    }
+}

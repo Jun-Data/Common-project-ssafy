@@ -1,0 +1,57 @@
+.searchpage {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 8vh 6vh 6vh auto;
+}
+
+.searchpageheader {
+    grid-row: 1;
+    width: 100%;
+    position: relative;
+    z-index: 200;
+}
+
+.searchpagesearchbar {
+    margin: 0;
+    position: relative;
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+.search-dropdown-list.search-page-dropdown {
+    width: 100%;
+}
+
+.searchpagenavbar {
+    grid-row: 3;
+    padding: 0;
+    margin: 0;
+}
+
+.searchpagerecommend {
+    grid-row: 4;
+}
+
+ul {
+    list-style: none; /* 기본 불릿 제거 */
+    padding-left: 20px;
+    margin: 20px 0;
+}
+
+li {
+    position: relative;
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 2;
+    color: #6b6b6b;
+    text-align: left;
+
+}
+
+li img {
+    width: 20px;
+    height: 20px;
+}

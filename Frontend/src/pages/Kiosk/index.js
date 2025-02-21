@@ -1,45 +1,58 @@
-import { Link } from 'react-router-dom'
-import "./index.css"
-import logoimage from "./images/kiosk_logo.png"
-import barcodeimage from "./images/barcode_icon.png"
-import description from "./images/Frame 1.png"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import KioskHeaderContainer from "../../components/KioskHeaderContainer";
+import useAuth from "../../hooks/useAuth";
+import "./style.css";
 
+const Kiosk = () => {
+    const navigate = useNavigate();
+    const { logindata } = useAuth();
 
-function Kiosk() {
+    const handleNavigate = () => {
+        if (logindata) {
+            const storeNumber = logindata.storeNo;
+            navigate(`/kiosk/${storeNumber}/main`);
+        } else {
+            alert("로그인이 필요한 서비스입니다!");
+        }
+    };
+
+    useEffect(() => {
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.documentElement.style.overflow = 'auto';
+        };
+    }, []);
+
     return (
-        <div className="Kiosk">
-            {/* Header Section */}
-            <div className="kiosk_header">
-                <div className="kiosk_image">
-                    <img src={logoimage} alt="Kiosk Logo" />
-                </div>
-                <div className="store_select">
-
-                </div>
+        <div className="kiosk">
+            <div className="headercontainer1">
+                {/* 로그인 및 권한 처리는 KioskHeaderContainer에서 모두 해결 */}
+                <KioskHeaderContainer />
+            </div>
+            <div className="barcode_image">
+                <img src="/barcode_icon.png" alt="kioskbarcode" />
             </div>
 
-            {/* Barcode Image Section */}
-            <h2 className="barcode_image">
-                <img src={barcodeimage} alt="Barcode Logo" />
-            </h2>
-
-            {/* Instruction Section */}
             <section className="instructions">
-                <p>상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!</p>
-                <p>플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!</p>
+                <p>
+                    상품은 <span className="highlight">바코드 스캐너</span>에 찍어주세요!
+                </p>
+                <p>
+                    플리마켓 제품은 <span className="highlight">키오스크</span>에서 구매하세요!
+                </p>
             </section>
 
-            {/* Start Button */}
-            <Link to="/kmain">
-                <button className="start_button">시작하기</button>
-            </Link>
-            
-            {/* Description*/}
-            <h3 className="description">
-                <img src={description} alt="instruction" />
-            </h3>
+                <button className={`start_button ${!logindata ? "disabled" : ""}`}
+                        onClick={handleNavigate}>
+                    시작하기
+                </button>
+
+            <div className="description">
+                <img src="/Description.png" alt="kioskinstruction" />
+            </div>
         </div>
     );
-}
+};
 
 export default Kiosk;

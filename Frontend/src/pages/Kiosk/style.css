@@ -1,0 +1,93 @@
+/* 기존 grid → flexbox로 변경 */
+.kiosk {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100dvh; /* 동적 뷰포트 사용 */
+    overflow: hidden;
+}
+
+/* 공통 Flex 아이템 속성 */
+.kiosk > * {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+/* 헤더 섹션 */
+.headercontainer1 {
+    height: 8dvh;
+    min-height: 80px; /* 최소 높이 보장 */
+}
+
+/* 바코드 이미지 섹션 */
+.barcode_image {
+    flex: 4 1 400px; /* 40vh 대응 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.barcode_image img {
+    max-width: 600px;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* 안내문 섹션 */
+.instructions {
+    flex: 1.2 0 12dvh; /* 12vh 대응 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 2.5rem; /* vw 단위 제거 */
+    padding: 0 30px;
+}
+
+/* 시작 버튼 */
+.start_button {
+    flex: 0 0 6dvh; /* 6vh 고정 */
+    min-height: 80px;
+    margin: 20px 0;
+    font-size: 3.5rem;
+    border-radius: 45px;
+    transform: scale(0.95); /* 터치 피드백 공간 확보 */
+    transition: transform 0.1s;
+    background-color: #3498db;
+    color: white;
+}
+
+.start_button:active {
+    transform: scale(0.92);
+}
+
+/* 설명 이미지 섹션 */
+.description {
+    flex: 3.4 1 340px; /* 34vh 대응 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 30px;
+}
+
+.description img {
+    max-width: 95%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* 미디어 쿼리: 세로/가로 모드 대응 */
+@media (orientation: landscape) {
+    .instructions {
+        font-size: 2rem;
+    }
+
+    .start_button {
+        font-size: 3rem;
+        min-height: 70px;
+    }
+
+    .barcode_image {
+        flex-basis: 50vh;
+    }
+}

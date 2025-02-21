@@ -1,0 +1,156 @@
+/* Grid → Flex 변환 핵심 부분 */
+.kioskmainscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+/* 공통 Flex 아이템 속성 */
+.kioskmainscreen > * {
+  width: 95%;
+  margin: 0 auto;
+  height: 100vh;
+}
+
+.mainscreencartpage {
+  /* flex: 1 1 38vh; */
+  /* min-height: 300px; */
+  height: 40vh;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2vh;
+  overflow-y: auto; /* 스크롤 가능 영역 */
+}
+
+.kioskpleaproductlist {
+  /* flex: 1 1 38vh; */
+  max-height: 500px;
+
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 2vh auto;
+  overflow: hidden;
+}
+
+.barcodebuttoncontainer {
+  flex: 0 0 20vh; /* 고정 높이 영역 */
+  display: flex;
+  gap: 5%;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+/* 바코드 스캐너 섹션 */
+.mainscreenbarcodescanner {
+  min-width: 100px;
+  flex: 1;
+  max-width: 200px;
+}
+.buttonzonecontainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* 버튼 영역 개선 */
+.buttonzone {
+  display: flex;
+  gap: 1.5vh;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  justify-content: center;
+  width: 100%;
+}
+
+.cartpagetotal {
+  font-size: clamp(1.5rem, 4vw, 2.5rem); /* 반응형 폰트 */
+  height: auto;
+  padding: 10px 0;
+}
+
+/* 공통 스타일 */
+.mainscreenpayment,
+.mainscreentohome {
+  width: 100%;
+  font-size: 40px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background-color 0.3s,
+    transform 0.2s,
+    box-shadow 0.3s;
+  padding: 16px 32px;
+}
+
+/* mainscreenpayment 버튼 전용 스타일 */
+.mainscreenpayment {
+  background-color: #3498db; /* 파란색 계열 배경 */
+  color: #fff; /* 글자색: 흰색 */
+}
+
+/* mainscreenpayment 호버 & 클릭 시 */
+.mainscreenpayment:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mainscreenpayment:active {
+  background-color: #1c658c;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* mainscreentohome 버튼 전용 스타일 (원하는 색상으로 변경) */
+.mainscreentohome {
+  background-color: #2ecc71; /* 초록색 계열 배경 */
+  color: #fff; /* 글자색: 흰색 */
+}
+
+/* mainscreentohome 호버 & 클릭 시 */
+.mainscreentohome:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mainscreentohome:active {
+  background-color: #1e8449;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.popup-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 쿠폰 팝업 조정 */
+.coupon-prompt-content {
+  width: min(600px, 90vw);
+  height: min(400px, 50vh);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.coupon-prompt-buttons button {
+  width: min(160px, 30vw);
+  height: min(70px, 10vh);
+  font-size: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* 가로 모드 대응 */
+@media (orientation: landscape) {
+  .kioskpleaproductlist {
+    flex-basis: 45vh;
+  }
+
+  .mainscreenpayment,
+  .mainscreentohome {
+    min-height: 40px;
+  }
+}

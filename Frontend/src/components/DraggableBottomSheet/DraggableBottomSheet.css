@@ -1,0 +1,114 @@
+/* 바텀시트를 화면 맨 아래에 고정 */
+.bottom-sheet {
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0 !important; /* 하단 고정 */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border: #dbe2ef 3px solid;
+    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+
+    touch-action: none; /* 터치 스크롤 충돌 방지 */
+    -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
+
+    max-height: 85vh;  /* 최대 높이 제한 */
+    overflow: hidden; /* 내부 컨텐츠 별도 스크롤 처리 */
+    padding: 8px 0;
+    z-index: 150;
+}
+
+.drag-handle {
+    position: absolute;
+    left: 30%;
+    width: 40%;
+    height: 20px;
+    border-radius: 6px;
+    color: #000000;
+    transition: background-color 0.3s ease;
+}
+
+/* 드래그 동작 중 */
+.drag-handle:active,
+.drag-handle.dragging {
+    background-color: #616161 !important;
+}
+
+/* bottom-sheet의 내부 콘텐츠 영역 */
+.bottom-sheet-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.fixed-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 10px 15px;
+    z-index: 2;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 스크롤 가능한 영역: ul 리스트가 포함된 부분 */
+.scrollable-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* ul 리스트 스타일 */
+.scrollable-section ul {
+    list-style: none; /* 기본 불릿 제거 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* li 스타일 */
+.scrollable-section li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #f9f9f9; /* 밝은 배경색 */
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 16px;
+}
+
+.scrollable-section li:hover {
+    background-color: #eaeaea;
+}
+
+/* 매장 이름과 거리 스타일 */
+.store-name {
+    text-align: left;
+    width: 80%;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.store-distance {
+    width: 20%;
+    height: 100%;
+}
+
+/* 작은 화면을 위한 반응형 조정 */
+@media (max-width: 768px) {
+    .scrollable-section li {
+        font-size: 14px;
+    }
+}
+
+.bottomsheetimg {
+    width: 20px;
+    height: 20px;
+}

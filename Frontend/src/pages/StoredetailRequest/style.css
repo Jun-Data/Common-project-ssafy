@@ -1,0 +1,85 @@
+/* ====== 팝업 레이아웃 ====== */
+.storedetailpagerequestpopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 화면 밖으로 스크롤이 나가지 않게 처리 */
+}
+
+.storedetailrequest {
+    display: flex;
+    flex-direction: column; /* 세로 방향 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    width: 80%;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 25px;
+    max-height: 80vh;
+    overflow: auto; /* 내부 요소가 넘치면 스크롤 */
+}
+
+
+/* ====== 공지 메시지 ====== */
+.requestnotice {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 16px; /* 공지와 검색 바 간격 */
+}
+
+/* ====== 검색 바 ====== */
+.requestsearchbar {
+    width: 100%;
+    height: 10%;
+    margin-bottom: 13px; /* 검색 바와 드롭다운 간격 */
+}
+
+.requestdropdown {
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 301; /* 드롭다운이 팝업 위에 표시되도록 설정 */
+    width: 80%;
+}
+
+/* ====== 선택된 아이템 이미지 ====== */
+
+.requestitemimage {
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    gap: 8px; /* 이미지와 텍스트 간격 조절 */
+}
+
+.requestitemimageimg {
+    width: 100%;
+    height: 70%;
+    object-fit: contain;
+    border-radius: 8px;
+    border: #dbe2ef 2px solid;
+}
+
+.requestitemimagetxt {
+    width: 100%;
+    height: 15%;
+    font-size: 17px;
+}
+
+.requestbuttonzone {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 16px;
+}
+
+.requestbuttons {
+    width: 40%;
+}
