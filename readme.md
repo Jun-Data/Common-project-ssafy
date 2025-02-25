@@ -5,6 +5,8 @@
 <br>점주들은 자신만의 매장을 창업하고 관리할 수 있습니다<br>
 수많은 무인매장들 사이에서 차별화된 무인판매점을 경험해보세요!<br>
 
+<br>
+
 ## 프로젝트 기획
 ### 기획 배경
 코로나 이후 우후죽순 생겨난 무인 판매점들은 특색없이 비슷한 모습들을 보이고, <br>사용에 있어 불편함이 있었습니다.
@@ -14,18 +16,21 @@
 - 모두가 비슷한 모습으로 경쟁력이 없음
 
 이를 개선하고자 자체 브랜드인 ‘Muinus’ 를 기획하게 되었습니다.<br>
+<br>
 
 ### 프로젝트 진행 기간
 2025.01.06 ~ 2025.02.21 (7주) SSAFY 12기 공통 프로젝트<br>
+<br>
 
 ### 협업 툴
  `Gitlab` : 코드 버전 관리 및 이슈별 브랜치를 생성해서 진행 <br>
  `Notion` : 프로젝트 기획, 명세서 / 트러블 슈팅 정리 <br>
  `Jira` : 매주 작업 우선순위 설정 및 업무 분담, 개발 진행 상황을 기록<br>
+<br>
 
 ### 프로젝트 산출물 
 [피그마](https://www.figma.com/design/4HESwFhBPoCde9Om85k5YA/%EB%AC%B4%EC%9D%B8%EB%A7%A4%EC%9E%A5?node-id=0-1&p=f&t=sa69JoB7A9gCmkJC-0)<br>
-[API 명세서](https://sweltering-outrigger-924.notion.site/17b335deddef80528298d116c3e8c086?v=764eee499b9042b98674705d435d2e32)<br><br>
+[API 명세서](https://sweltering-outrigger-924.notion.site/17b335deddef80528298d116c3e8c086?v=764eee499b9042b98674705d435d2e32)<br>
 
 ## 주요 기능
 ### 1. 로그인 / 회원가입
@@ -52,25 +57,26 @@
 ### 6. 화상 통화
 - 전화번호 노출 없이 소비자와 점주 간 연락이 가능합니다<br>
 <br>
+
 ## 아키텍처
 ![alt text](./Frontend/public/Architecture.png)
 
 ## ERD
 ![alt text](./Frontend/public/erd.png)
+<br>
 
 ## 시연
 ### 📍회원가입 및 로그인
 
 ### 소셜 로그인 (카카오)
-
-<video src="./Frontend/public/kakaosignup.mp4" controls width="200"></video>
-
+<video src="https://github.com/user-attachments/assets/c6481cf9-cbda-4667-a816-e88cfb0f3067" controls width="200"></video>
 
 ### 회원가입 (점주/매장 이용자)
-<video src="./Frontend/public/bothsignup.mp4" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/57a5ca9e-1a5a-4cbf-896d-f422e4a05701" controls width="200"></video>
+<br>
 
 ### 📍검색
-<video src="./Frontend/public/search.mp4" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/a87aa49d-c5a3-439e-8aca-e93112277c7a" controls width="200"></video>
 
 #### 검색 전
 \- 현재 위치를 기반으로 반경 1km에 있는 매장 리스트
@@ -83,10 +89,12 @@
 
 #### 검색 완료
 \- 근처 매장에 해당 제품이 있다면 지도 및 바텀 시트에 표시
+<br>
 
 ### 📍무인 매장 상세
-<video src="./Frontend/public/storedetails.mp4" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/c3f9682e-bad7-4019-8e66-62df6af45f44" controls width="200"></video>
 <br>
+
 #### 제품정보
 \- 매장 내 보유 중인 제품 정보 확인 가능
 #### 플리마켓 
@@ -97,9 +105,10 @@
 \- 원하는 제품 검색 후 요청
 #### 화상통화
 \- 점주와 소비자 즉각적인 소통 창구
+<br>
 
 ### 📍점주 마이페이지
-<video src="./Frontend/public/ownermypage.mp4" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/72f02548-8b09-4ef6-ab2c-3e266d49fb1d" controls width="200"></video>
 
 #### 플리마켓 요청 
 \- 요청된 플리 마켓 목록이 표시<br>
@@ -113,13 +122,15 @@
 
 #### 공지사항 등록
 \- 공지사항 등록 및 수정이 가능
+<br>
 
 ### 📍소비자 쿠폰
-<video src="./Frontend/public/ownermypage.mp4" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/e96c48dc-599c-4d5c-ac8e-d37f01f8fdc5" controls width="200"></video>
 
 #### 쿠폰함
 \- 보유 중인 쿠폰들 확인<br>
 \- 쿠폰 클릭 시 쿠폰 QR 생성
+<br>
 
 ### 📍키오스크
 
