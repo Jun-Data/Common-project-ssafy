@@ -69,14 +69,14 @@
 ### 📍회원가입 및 로그인
 
 ### 소셜 로그인 (카카오)
-<video src="https://github.com/user-attachments/assets/c6481cf9-cbda-4667-a816-e88cfb0f3067" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/c6481cf9-cbda-4667-a816-e88cfb0f3067" autoplay loop muted width="200"></video>
 
 ### 회원가입 (점주/매장 이용자)
-<video src="https://github.com/user-attachments/assets/57a5ca9e-1a5a-4cbf-896d-f422e4a05701" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/57a5ca9e-1a5a-4cbf-896d-f422e4a05701" autoplay loop muted width="200"></video>
 <br>
 
 ### 📍검색
-<video src="https://github.com/user-attachments/assets/a87aa49d-c5a3-439e-8aca-e93112277c7a" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/a87aa49d-c5a3-439e-8aca-e93112277c7a" autoplay loop muted width="200"></video>
 
 #### 검색 전
 \- 현재 위치를 기반으로 반경 1km에 있는 매장 리스트
@@ -92,7 +92,7 @@
 <br>
 
 ### 📍무인 매장 상세
-<video src="https://github.com/user-attachments/assets/c3f9682e-bad7-4019-8e66-62df6af45f44" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/c3f9682e-bad7-4019-8e66-62df6af45f44" autoplay loop muted width="200"></video>
 <br>
 
 #### 제품정보
@@ -108,7 +108,7 @@
 <br>
 
 ### 📍점주 마이페이지
-<video src="https://github.com/user-attachments/assets/72f02548-8b09-4ef6-ab2c-3e266d49fb1d" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/72f02548-8b09-4ef6-ab2c-3e266d49fb1d" autoplay loop muted width="200"></video>
 
 #### 플리마켓 요청 
 \- 요청된 플리 마켓 목록이 표시<br>
@@ -125,7 +125,7 @@
 <br>
 
 ### 📍소비자 쿠폰
-<video src="https://github.com/user-attachments/assets/e96c48dc-599c-4d5c-ac8e-d37f01f8fdc5" controls width="200"></video>
+<video src="https://github.com/user-attachments/assets/e96c48dc-599c-4d5c-ac8e-d37f01f8fdc5" autoplay loop muted width="200"></video>
 
 #### 쿠폰함
 \- 보유 중인 쿠폰들 확인<br>
