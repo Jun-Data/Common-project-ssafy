@@ -136,7 +136,7 @@
 ### 📍키오스크
 <video src="https://github.com/user-attachments/assets/9f120498-9db5-4028-9d38-404a05505bbe" autoplay loop muted width="200"></video>
 
-### 1. 키오스크 결제 사용
+#### 키오스크 결제 사용
 \- 결제 화면, 플리마켓과 제품이 따로 나옴<br>
 \- 화면이 보이는 스캐너에 제품 스캔시 목록에 올라옴<br>
 \- 결제 클릭 시, 쿠폰을 사용할거면 스캔<br>
